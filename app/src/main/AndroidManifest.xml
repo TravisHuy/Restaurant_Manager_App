@@ -13,7 +13,10 @@
         android:theme="@style/Theme.Restaurant_Manager_App"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,6 +24,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="false">
+
+        </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>
