@@ -1,4 +1,4 @@
-package com.nhathuy.restaurant_manager_app.model
+package com.nhathuy.restaurant_manager_app.data.model
 
 data class User(
     val id:String,
@@ -9,7 +9,7 @@ data class User(
     val address:String,
     val avatar:String,
     val role:String,
-    val provider:AuthProvider,
+    val provider: AuthProvider,
     val providerId:String,
     val authorities:Set<String>
 )
