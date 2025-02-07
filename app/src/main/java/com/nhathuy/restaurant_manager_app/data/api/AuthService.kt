@@ -11,7 +11,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface AuthService {
-
     @POST("api/auth/signup")
     suspend fun signup(@Body request : SignUpRequest):Response<AuthResponse>
     @POST("api/auth/login")
