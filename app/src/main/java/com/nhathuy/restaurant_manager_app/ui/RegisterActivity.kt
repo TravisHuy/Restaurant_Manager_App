@@ -6,7 +6,12 @@ import android.os.Bundle
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.databinding.ActivityRegisterBinding
@@ -18,11 +23,27 @@ import javax.inject.Inject
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel: AuthViewModel by viewModels { viewModelFactory }
+
+    private val googleSignInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            result ->
+        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        try {
+            val account = task.getResult(ApiException::class.java)
+            account?.serverAuthCode?.let {
+                    code ->
+                viewModel.handleOAuthCallback("GOOGLE", code)
+            }
+        }
+        catch (e:ApiException){
+            Toast.makeText(this, "Google sign in failed: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,10 +51,18 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         (application as RestaurantMangerApp).getRestaurantComponent().inject(this)
+
+        setupGoogleSignIn()
         setupClickListeners()
         observeViewModel()
     }
-
+    private fun setupGoogleSignIn(){
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestServerAuthCode(getString(R.string.google_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+    }
     private fun setupClickListeners() {
         binding.apply {
             btnSignUp.setOnClickListener {
@@ -51,13 +80,19 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
             btnSignGoogle.setOnClickListener {
-
+                startGoogleSignIn()
             }
             btnSignGithub.setOnClickListener {
 
             }
         }
     }
+
+    private fun startGoogleSignIn(){
+        val signInClient = googleSignInClient.signInIntent
+        googleSignInLauncher.launch(signInClient)
+    }
+
     private fun observeViewModel() {
         viewModel.registerResult.observe(this) {
                 result ->
