@@ -1,10 +1,13 @@
 package com.nhathuy.restaurant_manager_app.ui
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -16,14 +19,19 @@ import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.databinding.ActivityLoginBinding
 import com.nhathuy.restaurant_manager_app.resource.Resource
+import com.nhathuy.restaurant_manager_app.util.Constants
 import com.nhathuy.restaurant_manager_app.viewmodel.AuthViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
 import javax.inject.Inject
 
+/**
+ * Handles user authentication via email, Google , and Github OAuth2.
+ */
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding:ActivityLoginBinding
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var authWebView:WebView
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -43,6 +51,7 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this,"Google sign in failed: ${e.message}",Toast.LENGTH_SHORT).show()
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -52,6 +61,7 @@ class LoginActivity : AppCompatActivity() {
         setupGoogleSignIn()
         setupClickListeners()
         observeViewModel()
+        setupWebView()
     }
     private fun setupGoogleSignIn(){
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -70,21 +80,71 @@ class LoginActivity : AppCompatActivity() {
                     viewModel.login(email, password)
                 }
             }
-            textView2.setOnClickListener {
-                startActivity(Intent(this@LoginActivity,RegisterActivity::class.java))
+
+            tvRegister.setOnClickListener {
+                val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
+                startActivity(intent)
             }
+
             btnSignGoogle.setOnClickListener {
                 startGoogleSignIn()
             }
-            binding.btnSignGithub.setOnClickListener {
 
+            btnSignGithub.setOnClickListener {
+                startGithubSignIn()
             }
         }
     }
+    private fun setupWebView(){
+        authWebView = WebView(this).apply {
+            settings.javaScriptEnabled = true
+            webViewClient = object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    url: String?
+                ): Boolean {
+                    url?.let { urlString ->
+                        if (urlString.startsWith(Constants.GITHUB_REDIRECT_URI)) {
+                            val uri = Uri.parse(urlString)
+                            uri.getQueryParameter("code")?.let { code ->
+                                viewModel.handleOAuthCallback("GITHUB", code)
+                                authWebView.visibility = View.GONE
+                            }
+                            return true
+                        }
+                    }
+                    return false
+                }
+
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    binding.progressBar.visibility = View.GONE
+                }
+            }
+        }
+        binding.root.addView(authWebView)
+        authWebView.visibility = View.GONE
+    }
+
     private fun startGoogleSignIn(){
         val signInClient = googleSignInClient.signInIntent
         googleSignInLauncher.launch(signInClient)
     }
+    private fun startGithubSignIn(){
+        binding.progressBar.visibility = View.VISIBLE
+        authWebView.visibility = View.VISIBLE
+
+        val authUrl = Uri.parse(Constants.GITHUB_AUTH_URL)
+            .buildUpon()
+            .appendQueryParameter("client_id", getString(R.string.github_client_id))
+            .appendQueryParameter("scope", Constants.GITHUB_SCOPE)
+            .appendQueryParameter("redirect_uri", Constants.GITHUB_REDIRECT_URI)
+            .build()
+            .toString()
+
+        authWebView.loadUrl(authUrl)
+    }
+
     private fun observeViewModel() {
         viewModel.loginResult.observe(this) {
             result ->

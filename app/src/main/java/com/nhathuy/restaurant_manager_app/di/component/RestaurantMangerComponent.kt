@@ -10,6 +10,14 @@ import com.nhathuy.restaurant_manager_app.ui.RegisterActivity
 import dagger.Component
 import javax.inject.Singleton
 
+/**
+ * This interface is used  to create the RestaurantManagerComponent class
+ * This class is used to inject the dependencies into the activities.
+ *
+ * @version 0.1
+ * @since 07-02-2025
+ * @author TravisHuy
+ */
 @Singleton
 @Component(modules = [
     RestaurantManagerModule::class,

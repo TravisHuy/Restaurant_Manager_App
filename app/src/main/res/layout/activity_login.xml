@@ -36,7 +36,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv1" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/tv_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -61,7 +61,7 @@
             app:backgroundTint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_register" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_sign_github"
             style="@style/Widget.Material3.Button.ElevatedButton.Icon"

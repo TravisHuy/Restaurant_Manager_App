@@ -10,11 +10,37 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+/**
+ * Defines the authentication API endpoints for user registration, login, and OAuth2 authentication.
+ *
+ * @version 0.1
+ * @since 05-02-2025
+ * @author TravisHuy
+ */
 interface AuthService {
+    /**
+     * Registers a new user with the system.
+     *
+     * @param request The user registration request
+     * @return The response containing the authentication details
+     */
     @POST("api/auth/signup")
     suspend fun signup(@Body request : SignUpRequest):Response<AuthResponse>
+    /**
+     * Logs in an existing user.
+     *
+     * @param request The login request
+     * @return The response containing the authentication details
+     */
     @POST("api/auth/login")
     suspend fun login(@Body request:LoginRequest):Response<AuthResponse>
+    /**
+     * Authenticates a user using OAuth2.
+     *
+     * @param provider The OAuth2 provider
+     * @param code The authorization code
+     * @return The response containing the authentication details
+     */
     @GET("api/auth/oauth2/callback/{provider}")
     suspend fun oauthCallback(
         @Path("provider") provider: String,

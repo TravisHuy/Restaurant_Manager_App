@@ -146,4 +146,9 @@ dependencies {
     testImplementation("org.mockito:mockito-inline:3.11.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2")
     testImplementation("androidx.arch.core:core-testing:2.1.0")
+
+
+    // https://mvnrepository.com/artifact/androidx.browser/browser
+    implementation("androidx.browser:browser:1.5.0")
+
 }
