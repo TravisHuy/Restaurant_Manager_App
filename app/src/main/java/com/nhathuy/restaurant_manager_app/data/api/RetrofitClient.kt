@@ -18,10 +18,11 @@ import javax.inject.Singleton
 object RetrofitClient {
 
     /**
-     * Provides the Retrofit client for the application.
+     * Provides a singleton instance of Retrofit for authentication-related requests.
      *
-     * @return The Retrofit client
+     * @return A configured [Retrofit] instance for authentication.
      */
+    @AuthRetrofit
     @Provides
     @Singleton
     fun provideRetrofit() : Retrofit{
@@ -30,14 +31,40 @@ object RetrofitClient {
             .build();
     }
     /**
-     * Provides the authentication API service for the application.
+     * Provides a singleton instance of [AuthService] for handling authentication requests.
      *
-     * @param retrofit The Retrofit client
-     * @return The authentication API service
+     * @param retrofit The [Retrofit] instance used to create the service.
+     * @return An implementation of [AuthService].
      */
     @Provides
     @Singleton
     fun provideAuthApi(retrofit: Retrofit): AuthService{
         return retrofit.create(AuthService::class.java);
+    }
+
+    /**
+     * Provides a singleton instance of Retrofit for table-related requests.
+     *
+     * @return A configured [Retrofit] instance for handling table operations.
+     */
+    @TableRetrofit
+    @Provides
+    @Singleton
+    fun provideTableRetrofit() : Retrofit{
+        return Retrofit.Builder().baseUrl(Constants.AUTH_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+    }
+
+    /**
+     * Provides a singleton instance of [TableService] for handling table-related requests.
+     *
+     * @param retrofit The [Retrofit] instance used to create the service.
+     * @return An implementation of [TableService].
+     */
+    @Provides
+    @Singleton
+    fun provideTableApi(retrofit: Retrofit): TableService{
+        return retrofit.create(TableService::class.java);
     }
 }
