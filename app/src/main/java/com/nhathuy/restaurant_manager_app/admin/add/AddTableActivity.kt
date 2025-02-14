@@ -14,7 +14,14 @@ import com.nhathuy.restaurant_manager_app.viewmodel.AuthViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.TableViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
 import javax.inject.Inject
-
+/**
+ * Activity for adding a new table to the restaurant.
+ * This screen allows the user to add a new table to the restaurant.
+ *
+ * @return 0.1
+ * @since 14-02-2025
+ * @author TravisHuy
+ */
 class AddTableActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddTableBinding
 

@@ -15,3 +15,10 @@ annotation class AuthRetrofit
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class TableRetrofit
+
+/**
+ * Qualifier for the floor Retrofit client
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class FloorRetrofit

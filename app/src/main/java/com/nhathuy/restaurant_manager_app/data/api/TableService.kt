@@ -5,6 +5,7 @@ import com.nhathuy.restaurant_manager_app.data.model.Table
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 /**
  * Service for Table API
@@ -29,6 +30,6 @@ interface TableService {
      * @param tableDto The table data
      * @return The added table
      */
-    @POST("api/tables/add")
-    suspend fun addTable(@Body tableDto: TableDto): Table
+    @POST("api/tables/add/{floorId}")
+    suspend fun addTable(@Body tableDto: TableDto, @Path("floorId") floorId:String): Table
 }

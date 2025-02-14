@@ -5,6 +5,7 @@ import com.nhathuy.restaurant_manager_app.data.api.RetrofitClient
 import com.nhathuy.restaurant_manager_app.di.module.RepositoryModule
 import com.nhathuy.restaurant_manager_app.di.module.RestaurantManagerModule
 import com.nhathuy.restaurant_manager_app.di.module.ViewModelModule
+import com.nhathuy.restaurant_manager_app.fragment.MapFragment
 import com.nhathuy.restaurant_manager_app.ui.LoginActivity
 import com.nhathuy.restaurant_manager_app.ui.MainActivity
 import com.nhathuy.restaurant_manager_app.ui.RegisterActivity
@@ -30,4 +31,5 @@ interface RestaurantMangerComponent {
     fun inject(registerActivity: RegisterActivity)
     fun inject(mainActivity: MainActivity)
     fun inject(addTableActivity: AddTableActivity)
+    fun inject(mapFragment: MapFragment)
 }

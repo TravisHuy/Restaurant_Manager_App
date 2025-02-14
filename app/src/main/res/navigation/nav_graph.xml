@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_map">
+
+    <fragment
+        android:id="@+id/nav_map"
+        android:name="com.nhathuy.restaurant_manager_app.fragment.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_nav_map_to_nav_more"
+            app:destination="@id/nav_more" />
+        <action
+            android:id="@+id/action_nav_map_to_nav_order"
+            app:destination="@id/nav_order" />
+        <action
+            android:id="@+id/action_nav_map_to_nav_subtotal"
+            app:destination="@id/nav_subtotal" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_more"
+        android:name="com.nhathuy.restaurant_manager_app.fragment.MoreFragment"
+        android:label="fragment_more"
+        tools:layout="@layout/fragment_more" >
+        <action
+            android:id="@+id/action_nav_more_to_nav_map"
+            app:destination="@id/nav_map" />
+        <action
+            android:id="@+id/action_nav_more_to_nav_order"
+            app:destination="@id/nav_order" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_order"
+        android:name="com.nhathuy.restaurant_manager_app.fragment.OrderFragment"
+        android:label="fragment_order"
+        tools:layout="@layout/fragment_order" >
+        <action
+            android:id="@+id/action_nav_order_to_nav_map"
+            app:destination="@id/nav_map" />
+        <action
+            android:id="@+id/action_nav_order_to_nav_more"
+            app:destination="@id/nav_more" />
+        <action
+            android:id="@+id/action_nav_order_to_nav_subtotal"
+            app:destination="@id/nav_subtotal" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_subtotal"
+        android:name="com.nhathuy.restaurant_manager_app.fragment.SubTotalFragment"
+        android:label="fragment_sub_total"
+        tools:layout="@layout/fragment_sub_total" >
+        <action
+            android:id="@+id/action_nav_subtotal_to_nav_map"
+            app:destination="@id/nav_map" />
+        <action
+            android:id="@+id/action_nav_subtotal_to_nav_order"
+            app:destination="@id/nav_order" />
+    </fragment>
+</navigation>

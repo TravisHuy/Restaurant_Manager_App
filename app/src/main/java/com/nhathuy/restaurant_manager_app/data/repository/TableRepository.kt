@@ -14,5 +14,5 @@ import javax.inject.Inject
  */
 class TableRepository @Inject constructor(private val tableService: TableService){
     suspend fun getAllTables() = tableService.getAllTables()
-    suspend fun addTable(tableDto: TableDto) = tableService.addTable(tableDto)
+    suspend fun addTable(tableDto: TableDto,floorId:String) = tableService.addTable(tableDto,floorId)
 }

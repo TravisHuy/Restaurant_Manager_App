@@ -4,10 +4,21 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
+/**
+ *
+ */
 class SessionManager @Inject constructor(private val tokenManager: TokenManager){
+    /**
+     * The isLoggedIn StateFlow.
+     * This StateFlow is used to store the login state of the user.
+     */
     private val _isLoggedIn = MutableStateFlow(tokenManager.isUserLoggedIn())
     val isLoggedIn:StateFlow<Boolean> = _isLoggedIn
 
+    /**
+     * The userRole StateFlow
+     * This StateFlow is used to store the role of  the user
+     */
     private val _userRole = MutableStateFlow(tokenManager.getUserRole())
     val userRole:StateFlow<String?> = _userRole
 

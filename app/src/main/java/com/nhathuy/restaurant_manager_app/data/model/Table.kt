@@ -19,5 +19,7 @@ data class Table(
     /** List of order IDs associated with the table */
     var orderIds: List<String>,
     /** List of reservation IDs associated with the table */
-    var reservationIds: List<String>
+    var reservationIds: List<String>,
+    /** Floor ID where the table is located */
+    val floorId: String
 )
