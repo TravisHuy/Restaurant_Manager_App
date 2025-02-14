@@ -2,6 +2,7 @@ package com.nhathuy.restaurant_manager_app.data.api
 
 import com.nhathuy.restaurant_manager_app.data.dto.TableDto
 import com.nhathuy.restaurant_manager_app.data.model.Table
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
@@ -19,7 +20,7 @@ interface TableService {
      *
      * @return List of tables
      */
-    @GET("/api/tables/alls")
+    @GET("api/tables/alls")
     suspend fun getAllTables(): List<Table>
 
     /**
@@ -28,6 +29,6 @@ interface TableService {
      * @param tableDto The table data
      * @return The added table
      */
-    @POST("/api/tables/add")
-    suspend fun addTable(tableDto: TableDto): Table
+    @POST("api/tables/add")
+    suspend fun addTable(@Body tableDto: TableDto): Table
 }

@@ -1,9 +1,12 @@
 package com.nhathuy.restaurant_manager_app.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nhathuy.restaurant_manager_app.data.local.SessionManager
+import com.nhathuy.restaurant_manager_app.data.local.TokenManager
 import com.nhathuy.restaurant_manager_app.data.repository.AuthRepository
 import com.nhathuy.restaurant_manager_app.oauth2.request.LoginRequest
 import com.nhathuy.restaurant_manager_app.oauth2.request.SignUpRequest
@@ -18,7 +21,11 @@ import javax.inject.Inject
  * @return 07-02-2025
  * @author TravisHuy
  */
-class AuthViewModel @Inject constructor(private val repository: AuthRepository):ViewModel() {
+class AuthViewModel @Inject constructor(
+    private val repository: AuthRepository,
+    private val tokenManager: TokenManager,
+    private val sessionManger: SessionManager
+):ViewModel() {
     /**
      * The loginResult LiveData.
      * This LiveData is used to store the result of the login operation.
@@ -40,6 +47,13 @@ class AuthViewModel @Inject constructor(private val repository: AuthRepository):
     val oauthResult : LiveData<Resource<AuthResponse>> = _oauthResult
 
     /**
+     * The logoutResult LiveData.
+     * This LiveData is used to store the result of the logout operation.
+     */
+    private val _logoutResult = MutableLiveData<Resource<Unit>>()
+    val logoutResult : LiveData<Resource<Unit>> = _logoutResult
+
+    /**
      * The login function.
      * This function is used to perform the login operation.
      * @param email The email of the user.
@@ -51,7 +65,23 @@ class AuthViewModel @Inject constructor(private val repository: AuthRepository):
             try {
                 val response = repository.login(LoginRequest(email, password))
                 if(response.isSuccessful){
-                    _loginResult.value = Resource.Success(response.body()!!)
+                    response.body()?.let {
+                        authResponse ->
+
+                        tokenManager.saveTokens(
+                            accessToken = authResponse.token,
+                            refreshToken = authResponse.refreshToken,
+                            userId = authResponse.id,
+                            userRole = authResponse.role)
+
+
+                        Log.d("AuthViewModel","login: ${authResponse.token}")
+
+                        sessionManger.updateLoginState(true)
+                        sessionManger.updateUserRole(authResponse.role)
+
+                        _loginResult.value = Resource.Success(authResponse)
+                    }
                 }
                 else{
                     _loginResult.value = Resource.Error("Login failed: ${response.message()}")
@@ -72,7 +102,17 @@ class AuthViewModel @Inject constructor(private val repository: AuthRepository):
                 val request = SignUpRequest(name, email, password, phoneNumber, address, avatar)
                 val response = repository.register(request)
                 if(response.isSuccessful){
-                    _registerResult.value = Resource.Success(response.body()!!)
+                    response.body()?.let {
+                        authResponse ->
+
+                        tokenManager.saveTokens(
+                            accessToken = authResponse.token,
+                            refreshToken = authResponse.refreshToken,
+                            userId = authResponse.id,
+                            userRole = authResponse.role)
+
+                        _registerResult.value = Resource.Success(response.body()!!)
+                    }
                 }
                 else{
                     _registerResult.value = Resource.Error("Registration failed: ${response.message()}")
@@ -95,7 +135,21 @@ class AuthViewModel @Inject constructor(private val repository: AuthRepository):
             try {
                 val response = repository.oauthCallback(provider, code)
                 if (response.isSuccessful) {
-                    _oauthResult.value = Resource.Success(response.body()!!)
+                    response.body()?.let { authResponse ->
+
+                        tokenManager.saveTokens(
+                            accessToken = authResponse.token,
+                            refreshToken = authResponse.refreshToken,
+                            userId = authResponse.id,
+                            userRole = authResponse.role
+                        )
+
+                        sessionManger.updateLoginState(true)
+                        sessionManger.updateUserRole(authResponse.role)
+
+                        _oauthResult.value = Resource.Success(response.body()!!)
+                    }
+
                 } else {
                     _oauthResult.value = Resource.Error("OAuth login failed: ${response.message()}")
                 }
@@ -103,5 +157,32 @@ class AuthViewModel @Inject constructor(private val repository: AuthRepository):
                 _oauthResult.value = Resource.Error("OAuth error: ${e.message}")
             }
         }
+    }
+
+    /**
+     * The logout function.
+     * This function is used to perform the logout operation.
+     */
+    fun logout(){
+        viewModelScope.launch {
+            _logoutResult.value = Resource.Loading()
+            try {
+                tokenManager.clearTokens()
+                sessionManger.logout()
+                _logoutResult.value = Resource.Success(Unit)
+            }
+            catch (e:Exception){
+                _logoutResult.value = Resource.Error("Logout error: ${e.message}")
+            }
+        }
+    }
+
+    /**
+     * The isLoggedIn function.
+     * This function is used to check if the user is logged in.
+     * @return True if the user is logged in, false otherwise.
+     */
+    fun isLoggedIn():Boolean{
+        return tokenManager.getAccessToken() != null
     }
 }

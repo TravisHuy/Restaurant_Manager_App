@@ -1,5 +1,6 @@
 package com.nhathuy.restaurant_manager_app.di.component
 
+import com.nhathuy.restaurant_manager_app.admin.add.AddTableActivity
 import com.nhathuy.restaurant_manager_app.data.api.RetrofitClient
 import com.nhathuy.restaurant_manager_app.di.module.RepositoryModule
 import com.nhathuy.restaurant_manager_app.di.module.RestaurantManagerModule
@@ -28,4 +29,5 @@ interface RestaurantMangerComponent {
     fun inject(loginActivity: LoginActivity)
     fun inject(registerActivity: RegisterActivity)
     fun inject(mainActivity: MainActivity)
+    fun inject(addTableActivity: AddTableActivity)
 }

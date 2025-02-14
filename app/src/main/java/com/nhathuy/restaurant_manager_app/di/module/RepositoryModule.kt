@@ -1,7 +1,9 @@
 package com.nhathuy.restaurant_manager_app.di.module
 
 import com.nhathuy.restaurant_manager_app.data.api.AuthService
+import com.nhathuy.restaurant_manager_app.data.api.TableService
 import com.nhathuy.restaurant_manager_app.data.repository.AuthRepository
+import com.nhathuy.restaurant_manager_app.data.repository.TableRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -26,5 +28,16 @@ class RepositoryModule {
     @Singleton
     fun provideAuthRepository(authService: AuthService):AuthRepository {
         return AuthRepository(authService)
+    }
+    /**
+     * Provides the table repository for the application.
+     *
+     * @param tableService The table service
+     * @return The table repository
+     */
+    @Provides
+    @Singleton
+    fun provideTableRepository(tableService: TableService):TableRepository {
+        return TableRepository(tableService)
     }
 }

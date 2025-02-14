@@ -2,6 +2,9 @@ package com.nhathuy.restaurant_manager_app.di.module
 
 import android.app.Application
 import android.content.Context
+import com.nhathuy.restaurant_manager_app.data.local.SessionManager
+import com.nhathuy.restaurant_manager_app.data.local.TokenManager
+import com.nhathuy.restaurant_manager_app.data.remote.AuthInterceptor
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -25,5 +28,23 @@ class RestaurantManagerModule(private val application: Application) {
     @Singleton
     fun provideContext() : Context{
         return application.applicationContext
+    }
+
+    @Provides
+    @Singleton
+    fun provideTokenManager(context: Context): TokenManager {
+        return TokenManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthInterceptor(tokenManager: TokenManager): AuthInterceptor {
+        return AuthInterceptor(tokenManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSessionManger(tokenManager: TokenManager): SessionManager {
+        return SessionManager(tokenManager)
     }
 }

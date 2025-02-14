@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nhathuy.restaurant_manager_app.di.key.ViewModelKey
 import com.nhathuy.restaurant_manager_app.viewmodel.AuthViewModel
+import com.nhathuy.restaurant_manager_app.viewmodel.TableViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
 import dagger.Binds
 import dagger.Module
@@ -38,4 +39,15 @@ abstract class ViewModelModule {
      */
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
+
+    /**
+     * Binds the TableViewModel class to the ViewModel class.
+     *
+     * @param tableViewModel The table view model
+     * @return The view model
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(TableViewModel::class)
+    abstract fun bindTableViewModel(tableViewModel: TableViewModel): ViewModel
 }

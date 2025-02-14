@@ -1,8 +1,10 @@
 package com.nhathuy.restaurant_manager_app.data.api
 
+import com.nhathuy.restaurant_manager_app.data.local.TokenManager
 import com.nhathuy.restaurant_manager_app.util.Constants
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -25,8 +27,9 @@ object RetrofitClient {
     @AuthRetrofit
     @Provides
     @Singleton
-    fun provideRetrofit() : Retrofit{
+    fun provideRetrofit(okHttpClient: OkHttpClient) : Retrofit{
         return Retrofit.Builder().baseUrl(Constants.AUTH_URL)
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
     }
@@ -38,7 +41,7 @@ object RetrofitClient {
      */
     @Provides
     @Singleton
-    fun provideAuthApi(retrofit: Retrofit): AuthService{
+    fun provideAuthApi(@AuthRetrofit retrofit: Retrofit): AuthService{
         return retrofit.create(AuthService::class.java);
     }
 
@@ -50,8 +53,9 @@ object RetrofitClient {
     @TableRetrofit
     @Provides
     @Singleton
-    fun provideTableRetrofit() : Retrofit{
+    fun provideTableRetrofit(okHttpClient: OkHttpClient) : Retrofit{
         return Retrofit.Builder().baseUrl(Constants.AUTH_URL)
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
     }
@@ -64,7 +68,31 @@ object RetrofitClient {
      */
     @Provides
     @Singleton
-    fun provideTableApi(retrofit: Retrofit): TableService{
+    fun provideTableApi(@TableRetrofit retrofit: Retrofit): TableService{
         return retrofit.create(TableService::class.java);
+    }
+
+    /**
+     * Provides OKHttpClient with auth interceptor.
+     */
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(tokenManager: TokenManager): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor {
+                chain ->
+                val original = chain.request()
+                val token = tokenManager.getAccessToken()
+
+                val request = if(token != null){
+                    original.newBuilder()
+                        .header("Authorization","Bearer $token")
+                        .build()
+                }
+                else {
+                    original
+                }
+                chain.proceed(request)
+            }.build()
     }
 }

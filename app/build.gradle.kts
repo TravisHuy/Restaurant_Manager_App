@@ -151,4 +151,6 @@ dependencies {
     // https://mvnrepository.com/artifact/androidx.browser/browser
     implementation("androidx.browser:browser:1.5.0")
 
+    // security-crypto
+    implementation("androidx.security:security-crypto:1.1.0-alpha03")
 }

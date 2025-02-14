@@ -23,7 +23,7 @@ data class User(
     // The avatar of the user
     val avatar:String,
     // The role of the user
-    val role:String,
+    val role:Set<Role>,
     // The provider of the user
     val provider: AuthProvider,
     // User's provider id
