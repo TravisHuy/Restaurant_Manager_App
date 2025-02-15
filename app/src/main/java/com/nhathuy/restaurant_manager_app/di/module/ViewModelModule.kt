@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nhathuy.restaurant_manager_app.di.key.ViewModelKey
 import com.nhathuy.restaurant_manager_app.viewmodel.AuthViewModel
+import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.TableViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
 import dagger.Binds
@@ -50,4 +51,15 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(TableViewModel::class)
     abstract fun bindTableViewModel(tableViewModel: TableViewModel): ViewModel
+
+    /**
+     * Binds the FloorViewModel class to the ViewModel class.
+     *
+     * @param floorViewModel The floor view model
+     * @return The view model
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(FloorViewModel::class)
+    abstract fun bindFloorViewModel(floorViewModel: FloorViewModel): ViewModel
 }

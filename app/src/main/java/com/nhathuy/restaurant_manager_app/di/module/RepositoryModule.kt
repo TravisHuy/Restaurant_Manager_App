@@ -1,8 +1,10 @@
 package com.nhathuy.restaurant_manager_app.di.module
 
 import com.nhathuy.restaurant_manager_app.data.api.AuthService
+import com.nhathuy.restaurant_manager_app.data.api.FloorService
 import com.nhathuy.restaurant_manager_app.data.api.TableService
 import com.nhathuy.restaurant_manager_app.data.repository.AuthRepository
+import com.nhathuy.restaurant_manager_app.data.repository.FloorRepository
 import com.nhathuy.restaurant_manager_app.data.repository.TableRepository
 import dagger.Module
 import dagger.Provides
@@ -39,5 +41,16 @@ class RepositoryModule {
     @Singleton
     fun provideTableRepository(tableService: TableService):TableRepository {
         return TableRepository(tableService)
+    }
+    /**
+     * Provides the floor repository for the application.
+     *
+     * @param floorService The floor service
+     * @return The floor repository
+     */
+    @Provides
+    @Singleton
+    fun provideFloorRepository(floorService: FloorService): FloorRepository {
+        return FloorRepository(floorService)
     }
 }

@@ -16,11 +16,11 @@ import retrofit2.http.Path
 interface FloorService {
 
     @GET("api/floors/all")
-    fun getAllFloors(): List<Floor>
+    suspend fun getAllFloors(): List<Floor>
 
     @GET("api/floors/{id}")
-    fun getFloorById(@Path("id") id: String): Floor
+    suspend fun getFloorById(@Path("id") id: String): Floor
 
     @POST("api/floors/add")
-    fun addFloor(@Body floor: Floor): Floor
+    suspend fun addFloor(@Body floor: Floor): Floor
 }

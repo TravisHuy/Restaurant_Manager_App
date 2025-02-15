@@ -11,4 +11,6 @@ data class Floor(
     val id: String,
     val name: String,
     val tables: List<Table>
-)
+){
+    constructor(name:String):this("",name, emptyList())
+}

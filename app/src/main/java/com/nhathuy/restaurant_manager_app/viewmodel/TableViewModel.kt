@@ -53,11 +53,11 @@ class TableViewModel @Inject constructor(private val tableRepository: TableRepos
      *
      * @param tableDto The data transfer object for the table
      */
-    fun addTable(tableDto:TableDto){
+    fun addTable(tableDto:TableDto,floorId:String){
         viewModelScope.launch {
             _addTableResult.value = Resource.Loading()
             try {
-                val response = tableRepository.addTable(tableDto)
+                val response = tableRepository.addTable(tableDto, floorId)
                 _addTableResult.value = Resource.Success(response)
                 // refresh the tables list after successfully addtion
                 getAllTables()

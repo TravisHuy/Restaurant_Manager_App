@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_nav_more_to_nav_order"
             app:destination="@id/nav_order" />
+        <action
+            android:id="@+id/action_nav_more_to_addFloorActivity"
+            app:destination="@id/addFloorActivity" />
     </fragment>
     <fragment
         android:id="@+id/nav_order"
@@ -59,4 +62,9 @@
             android:id="@+id/action_nav_subtotal_to_nav_order"
             app:destination="@id/nav_order" />
     </fragment>
+    <activity
+        android:id="@+id/addFloorActivity"
+        android:name="com.nhathuy.restaurant_manager_app.admin.add.AddFloorActivity"
+        android:label="activity_add_floor"
+        tools:layout="@layout/activity_add_floor" />
 </navigation>

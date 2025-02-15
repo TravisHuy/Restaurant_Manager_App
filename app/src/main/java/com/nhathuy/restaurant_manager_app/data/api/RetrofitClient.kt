@@ -95,4 +95,32 @@ object RetrofitClient {
                 chain.proceed(request)
             }.build()
     }
+
+
+    /**
+     * Provides a singleton instance of Retrofit for floor-related requests.
+     *
+     * @return A configured [Retrofit] instance for handling floor operations.
+     */
+    @FloorRetrofit
+    @Provides
+    @Singleton
+    fun provideFloorRetrofit(okHttpClient: OkHttpClient) : Retrofit{
+        return Retrofit.Builder().baseUrl(Constants.AUTH_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+    }
+
+    /**
+     * Provides a singleton instance of [FloorService] for handling floor-related requests.
+     *
+     * @param retrofit The [Retrofit] instance used to create the service.
+     * @return An implementation of [FloorService].
+     */
+    @Provides
+    @Singleton
+    fun provideFloorApi(@FloorRetrofit retrofit: Retrofit): FloorService{
+        return retrofit.create(FloorService::class.java);
+    }
 }
