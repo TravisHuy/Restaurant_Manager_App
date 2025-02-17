@@ -6,11 +6,11 @@ import android.os.Bundle
 import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.admin.add.AddFloorActivity
+import com.nhathuy.restaurant_manager_app.admin.all.AllFloorActivity
 import com.nhathuy.restaurant_manager_app.databinding.ActivityMain2Binding
 
 class MainActivity2 : AppCompatActivity() {
     private lateinit var binding: ActivityMain2Binding
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,6 +20,9 @@ class MainActivity2 : AppCompatActivity() {
 
         binding.btnAddFloors.setOnClickListener {
             startActivity(Intent(this, AddFloorActivity::class.java))
+        }
+        binding.btnAllFloor.setOnClickListener {
+            startActivity(Intent(this, AllFloorActivity::class.java))
         }
     }
 }

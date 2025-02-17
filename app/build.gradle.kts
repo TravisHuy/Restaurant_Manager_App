@@ -153,4 +153,7 @@ dependencies {
 
     // security-crypto
     implementation("androidx.security:security-crypto:1.1.0-alpha03")
+
+    //circleRecyclerview
+    implementation("com.github.TravisHuy:CircleRecyclerview:0.1")
 }
