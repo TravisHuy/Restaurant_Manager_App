@@ -23,4 +23,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.nhathuy.circlerecyclerview.TravisHuyButton
+        android:id="@+id/btn_floors"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:text="Add Floors"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- RecyclerView hình tròn -->
+    <com.nhathuy.circlerecyclerview.CircleRecyclerView
+        android:id="@+id/circle_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_floors"
+        app:layout_constraintEnd_toEndOf="@+id/btn_floors"
+        app:layout_constraintStart_toStartOf="@+id/btn_floors"
+        app:layout_constraintTop_toTopOf="@+id/btn_floors" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

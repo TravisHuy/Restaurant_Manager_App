@@ -10,7 +10,6 @@ import com.nhathuy.restaurant_manager_app.databinding.ItemFloorBinding
 class FloorAdapter(private val onFloorClick: (Floor) -> Unit): RecyclerView.Adapter<FloorAdapter.FloorViewHolder>() {
 
     private var floors = mutableListOf<Floor>()
-    private var isMenuOpen = false
 
     inner class FloorViewHolder(val binding:ItemFloorBinding):RecyclerView.ViewHolder(binding.root) {
         fun bind(floor: Floor, position: Int) {

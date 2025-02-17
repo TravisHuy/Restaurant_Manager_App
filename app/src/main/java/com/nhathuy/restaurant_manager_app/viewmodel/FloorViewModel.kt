@@ -62,4 +62,20 @@ class FloorViewModel @Inject constructor(private val floorRepository: FloorRepos
             }
         }
     }
+
+    fun getFloorById(floorId:String) {
+        viewModelScope.launch {
+            _floors.value = Resource.Loading()
+            try {
+                val response = floorRepository.getFloorById(floorId)
+                if (response != null) {
+                    _floors.value = Resource.Success(listOf(response))
+                } else {
+                    _floors.value = Resource.Error("No floor found")
+                }
+            } catch (e: Exception) {
+                _floors.value = Resource.Error("Error: ${e.message}")
+            }
+        }
+    }
 }

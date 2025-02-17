@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".admin.all.AllFloorActivity">
+
     <TextView
         android:id="@+id/tvAllFloors"
         android:layout_width="wrap_content"
@@ -21,7 +22,7 @@
         android:id="@+id/btn_floors"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:text="Floors"
+        android:text="Add Floors"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
