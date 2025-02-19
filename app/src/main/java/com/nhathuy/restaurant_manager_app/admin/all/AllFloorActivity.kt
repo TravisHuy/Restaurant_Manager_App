@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -114,6 +115,7 @@ class AllFloorActivity : AppCompatActivity() {
         val layoutTableNumber = dialog.findViewById<TextInputLayout>(R.id.layout_add_table_number)
         val layoutTableCapacity = dialog.findViewById<TextInputLayout>(R.id.layout_add_table_capacity)
         val btnAddTable = dialog.findViewById<MaterialButton>(R.id.btn_add_table)
+        val btnClose = dialog.findViewById<ImageView>(R.id.ic_close)
 
         btnAddTable.setOnClickListener {
             val tableNumber = table_number.text.toString()
@@ -142,6 +144,9 @@ class AllFloorActivity : AppCompatActivity() {
                 }
             }
 
+        }
+        btnClose.setOnClickListener {
+            dialog.dismiss()
         }
 
         dialog.show()

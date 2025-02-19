@@ -21,9 +21,6 @@
             android:name=".admin.all.AllFloorActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.all.FloorActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.MainActivity2"
             android:exported="false" />
         <activity

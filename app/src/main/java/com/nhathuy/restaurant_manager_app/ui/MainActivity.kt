@@ -48,9 +48,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.floatingActionButton.setOnClickListener {
-            startActivity(Intent(this, AddFloorActivity::class.java))
-        }
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         navController = navHostFragment.navController

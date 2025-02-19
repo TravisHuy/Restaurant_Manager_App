@@ -25,6 +25,8 @@ class FloorViewModel @Inject constructor(private val floorRepository: FloorRepos
     private val _addFloorResult = MutableLiveData<Resource<Floor>>()
     val addFloorResult: LiveData<Resource<Floor>> = _addFloorResult
 
+    private val _floorById = MutableLiveData<Resource<Floor>>()
+    val floorById: LiveData<Resource<Floor>> = _floorById
     /**
      * Fetches all floors from the repository.
      * Updates the floors LiveData with the result.
@@ -65,16 +67,16 @@ class FloorViewModel @Inject constructor(private val floorRepository: FloorRepos
 
     fun getFloorById(floorId:String) {
         viewModelScope.launch {
-            _floors.value = Resource.Loading()
+            _floorById.value = Resource.Loading()
             try {
                 val response = floorRepository.getFloorById(floorId)
                 if (response != null) {
-                    _floors.value = Resource.Success(listOf(response))
+                    _floorById.value = Resource.Success(response)
                 } else {
-                    _floors.value = Resource.Error("No floor found")
+                    _floorById.value = Resource.Error("No floor found")
                 }
             } catch (e: Exception) {
-                _floors.value = Resource.Error("Error: ${e.message}")
+                _floorById.value = Resource.Error("Error: ${e.message}")
             }
         }
     }
