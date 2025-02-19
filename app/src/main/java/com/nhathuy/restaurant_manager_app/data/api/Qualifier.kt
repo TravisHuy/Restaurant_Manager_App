@@ -22,3 +22,10 @@ annotation class TableRetrofit
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class FloorRetrofit
+
+/**
+ * Qualifier for the category Retrofit client
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class CategoryRetrofit

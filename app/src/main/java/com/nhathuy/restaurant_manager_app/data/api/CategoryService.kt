@@ -13,6 +13,6 @@ import retrofit2.http.POST
  */
 interface CategoryService {
 
-    @POST("api/categories/add")
+    @POST("api/category/add")
     suspend fun addCategory(@Body category: Category): Category
 }

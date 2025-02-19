@@ -123,4 +123,31 @@ object RetrofitClient {
     fun provideFloorApi(@FloorRetrofit retrofit: Retrofit): FloorService{
         return retrofit.create(FloorService::class.java);
     }
+
+    /**
+     * Provides a singleton instance of Retrofit for category-related requests.
+     *
+     * @return A configured [Retrofit] instance for handling floor operations.
+     */
+    @CategoryRetrofit
+    @Provides
+    @Singleton
+    fun provideCategoryRetrofit(okHttpClient: OkHttpClient) : Retrofit{
+        return Retrofit.Builder().baseUrl(Constants.AUTH_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+    }
+
+    /**
+     * Provides a singleton instance of [CategoryService] for handling category-related requests.
+     *
+     * @param retrofit The [Retrofit] instance used to create the service.
+     * @return An implementation of [CategoryService].
+     */
+    @Provides
+    @Singleton
+    fun provideCategoryApi(@CategoryRetrofit retrofit: Retrofit): CategoryService{
+        return retrofit.create(CategoryService::class.java);
+    }
 }

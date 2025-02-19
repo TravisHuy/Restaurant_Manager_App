@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nhathuy.restaurant_manager_app.di.key.ViewModelKey
 import com.nhathuy.restaurant_manager_app.viewmodel.AuthViewModel
+import com.nhathuy.restaurant_manager_app.viewmodel.CategoryViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.TableViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
@@ -62,4 +63,16 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(FloorViewModel::class)
     abstract fun bindFloorViewModel(floorViewModel: FloorViewModel): ViewModel
+
+
+    /**
+     * Binds the CategoryViewModel class to the ViewModel class.
+     *
+     * @param categoryViewModel The category view model
+     * @return The view model
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(CategoryViewModel::class)
+    abstract fun bindCategoryViewModel(categoryViewModel: CategoryViewModel): ViewModel
 }

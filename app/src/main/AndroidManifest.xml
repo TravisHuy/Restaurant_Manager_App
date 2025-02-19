@@ -18,6 +18,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".admin.add.AddMenuItemActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin.add.AddCategoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".admin.all.AllFloorActivity"
             android:exported="false" />
         <activity

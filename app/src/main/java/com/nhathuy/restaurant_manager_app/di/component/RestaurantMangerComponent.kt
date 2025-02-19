@@ -1,5 +1,6 @@
 package com.nhathuy.restaurant_manager_app.di.component
 
+import com.nhathuy.restaurant_manager_app.admin.add.AddCategoryActivity
 import com.nhathuy.restaurant_manager_app.admin.add.AddFloorActivity
 import com.nhathuy.restaurant_manager_app.admin.add.AddTableActivity
 import com.nhathuy.restaurant_manager_app.admin.all.AllFloorActivity
@@ -45,4 +46,5 @@ interface RestaurantMangerComponent {
 
     fun inject(mainActivity2: MainActivity2)
     fun inject(allFloorActivity: AllFloorActivity)
+    fun inject(addCategoryActivity: AddCategoryActivity)
 }
