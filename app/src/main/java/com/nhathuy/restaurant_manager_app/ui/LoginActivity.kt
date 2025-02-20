@@ -1,6 +1,7 @@
 package com.nhathuy.restaurant_manager_app.ui
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -20,6 +21,9 @@ import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.databinding.ActivityLoginBinding
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import com.nhathuy.restaurant_manager_app.util.Constants
+import com.nhathuy.restaurant_manager_app.util.Constants.KEY_EMAIL
+import com.nhathuy.restaurant_manager_app.util.Constants.KEY_PASSWORD
+import com.nhathuy.restaurant_manager_app.util.Constants.KEY_REMEMBER_ME
 import com.nhathuy.restaurant_manager_app.viewmodel.AuthViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
 import javax.inject.Inject
@@ -34,9 +38,12 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var authWebView:WebView
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-
     private val viewModel: AuthViewModel by viewModels { viewModelFactory }
 
+
+    private lateinit var sharedPreferences: SharedPreferences
+    private var currentEmail:String = ""
+    private var currentPassword:String = ""
     private val googleSignInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         result ->
         val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
@@ -58,11 +65,29 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         (application as RestaurantMangerApp).getRestaurantComponent().inject(this)
 
+        sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE)
+        loadSaveCredentials()
+
+
         setupGoogleSignIn()
         setupClickListeners()
         observeViewModel()
         setupWebView()
     }
+
+    /**
+     * Load saved email and password from shared preferences
+     */
+    private fun loadSaveCredentials(){
+        val email = sharedPreferences.getString(Constants.KEY_EMAIL,"")
+        val password = sharedPreferences.getString(Constants.KEY_PASSWORD,"")
+        val rememberMe = sharedPreferences.getBoolean(Constants.KEY_REMEMBER_ME,false)
+
+        binding.textfieldEmail.setText(email)
+        binding.textfieldPassword.setText(password)
+        binding.checkBoxRememberMe.isChecked = rememberMe
+    }
+
     private fun setupGoogleSignIn(){
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestServerAuthCode(getString(R.string.google_client_id))
@@ -73,11 +98,11 @@ class LoginActivity : AppCompatActivity() {
     private fun setupClickListeners() {
         binding.apply {
             btnLogin.setOnClickListener {
-                val email = textfieldEmail.text.toString()
-                val password = textfieldPassword.text.toString()
+                currentEmail= textfieldEmail.text.toString()
+                currentPassword = textfieldPassword.text.toString()
 
-                if(validateInput(email,password)){
-                    viewModel.login(email, password)
+                if(validateInput(currentEmail,currentPassword)){
+                    viewModel.login(currentEmail,currentPassword)
                 }
             }
 
@@ -150,6 +175,12 @@ class LoginActivity : AppCompatActivity() {
             result ->
             when(result){
                 is Resource.Success -> {
+                    if(binding.checkBoxRememberMe.isChecked){
+                        saveCredentials(currentEmail,currentPassword)
+                    }
+                    else{
+                        clearCredentials()
+                    }
                     startActivity(Intent(this,MainActivity::class.java))
                     binding.progressBar.visibility= View.GONE
                 }
@@ -179,6 +210,24 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
 
+        }
+    }
+
+    private fun saveCredentials(email: String, password: String) {
+        with(sharedPreferences.edit()) {
+            putString(KEY_EMAIL, email)
+            putString(KEY_PASSWORD, password)
+            putBoolean(KEY_REMEMBER_ME, true)
+            apply()
+        }
+    }
+
+    private fun clearCredentials() {
+        with(sharedPreferences.edit()) {
+            remove(KEY_EMAIL)
+            remove(KEY_PASSWORD)
+            putBoolean(KEY_REMEMBER_ME, false)
+            apply()
         }
     }
 

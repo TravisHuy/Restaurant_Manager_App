@@ -16,4 +16,10 @@ object Constants {
     const val GITHUB_AUTH_URL = "https://github.com/login/oauth/authorize"
     const val GITHUB_SCOPE = "user:email"
     const val GITHUB_REDIRECT_URI = "http://localhost:8080/api/auth/oauth2/callback/github"
+
+    const val PREFS_NAME = "LoginPrefs"
+    const val KEY_EMAIL = "email"
+    const val KEY_PASSWORD = "password"
+    const val KEY_REMEMBER_ME = "remember_me"
+
 }
