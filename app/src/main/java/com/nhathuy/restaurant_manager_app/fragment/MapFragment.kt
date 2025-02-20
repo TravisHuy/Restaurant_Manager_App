@@ -1,6 +1,7 @@
 package com.nhathuy.restaurant_manager_app.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import com.nhathuy.restaurant_manager_app.adapter.FloorAdapter
 import com.nhathuy.restaurant_manager_app.adapter.TableAdapter
 import com.nhathuy.restaurant_manager_app.databinding.FragmentMapBinding
 import com.nhathuy.restaurant_manager_app.resource.Resource
+import com.nhathuy.restaurant_manager_app.ui.CreateOderActivity
 import com.nhathuy.restaurant_manager_app.viewmodel.AuthViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.TableViewModel
@@ -63,7 +65,14 @@ class MapFragment : Fragment() {
     }
 
     private fun setupTableRecyclerView(){
-        tableAdapter= TableAdapter(listOf())
+        tableAdapter= TableAdapter(listOf()){
+            table ->
+            val intent = Intent(requireContext(), CreateOderActivity::class.java).apply {
+                putExtra("TABLE_ID", table.id)
+                putExtra("TABLE_NUMBER", table.number)
+            }
+            startActivity(intent)
+        }
         binding.recTable.layoutManager = GridLayoutManager(requireContext(),3)
         binding.recTable.adapter = tableAdapter
     }

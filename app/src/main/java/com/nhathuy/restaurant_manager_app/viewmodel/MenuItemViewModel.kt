@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nhathuy.restaurant_manager_app.data.api.MenuItemService
 import com.nhathuy.restaurant_manager_app.data.dto.MenuItemDTO
+import com.nhathuy.restaurant_manager_app.data.model.MenuItem
 import com.nhathuy.restaurant_manager_app.data.repository.MenuItemRepository
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,6 +43,9 @@ class MenuItemViewModel @Inject constructor(private val menuItemRepository: Menu
         ByteArray(0)
     ))
     val menuItemImageState: StateFlow<Resource<ByteArray>> = _menuItemImageState
+
+    private val _allMenuItems = MutableStateFlow<Resource<List<MenuItem>>>(Resource.Success(emptyList()))
+    val allMenuItems: StateFlow<Resource<List<MenuItem>>> = _allMenuItems
 
     /**
      * Adds a new menu item to the system.
@@ -80,6 +84,16 @@ class MenuItemViewModel @Inject constructor(private val menuItemRepository: Menu
     /** reset the state of the get menu item image operation */
     fun resetMenuItemImageState(){
         _menuItemImageState.value = Resource.Success(ByteArray(0))
+    }
+
+
+    fun getAllMenuItems() {
+        viewModelScope.launch {
+            _allMenuItems.value= Resource.Loading()
+            menuItemRepository.getAllMenuItems().let {
+                _allMenuItems.value = it
+            }
+        }
     }
 
 }

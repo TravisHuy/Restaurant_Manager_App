@@ -150,7 +150,7 @@ class LoginActivity : AppCompatActivity() {
             result ->
             when(result){
                 is Resource.Success -> {
-                    startActivity(Intent(this,MainActivity2::class.java))
+                    startActivity(Intent(this,MainActivity::class.java))
                     binding.progressBar.visibility= View.GONE
                 }
                 is Resource.Error ->{

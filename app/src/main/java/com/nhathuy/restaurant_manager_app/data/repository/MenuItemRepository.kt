@@ -1,6 +1,7 @@
 package com.nhathuy.restaurant_manager_app.data.repository
 
 import android.net.Uri
+import android.util.Log
 import com.nhathuy.restaurant_manager_app.data.api.MenuItemService
 import com.nhathuy.restaurant_manager_app.data.dto.MenuItemDTO
 import com.nhathuy.restaurant_manager_app.data.model.MenuItem
@@ -12,6 +13,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import java.io.File
 import javax.inject.Inject
 
@@ -54,7 +56,15 @@ class MenuItemRepository @Inject constructor(private val menuItemService: MenuIt
                 Resource.Success(Unit)
             }
             else{
-                Resource.Error("Failed to add menu item: ${response.message()}")
+                val errorBody = response.errorBody()?.string()
+                val errorMessage = try {
+                    val json = errorBody?.let { JSONObject(it) }
+                    json?.getString("message") ?:"Unknown error occurred"
+                }
+                catch (e:Exception) {
+                    "Failed to add menu item: ${response.message()}"
+                }
+                Resource.Error(errorMessage)
             }
         }
         catch (e:Exception){
@@ -87,6 +97,32 @@ class MenuItemRepository @Inject constructor(private val menuItemService: MenuIt
         }
         catch (e:Exception){
             Resource.Error("Error getting image: ${e.message}")
+        }
+    }
+
+    suspend fun getAllMenuItems(): Resource<List<MenuItem>> {
+        return try {
+            val response = menuItemService.getAllMenuItems()
+            if (response.isSuccessful) {
+                val menuItems = response.body()
+                if (menuItems != null) {
+                    Resource.Success(menuItems)
+                } else {
+                    Resource.Error("Server returned empty response")
+                }
+            } else {
+                // Get more detailed error message from response
+                val errorBody = response.errorBody()?.string()
+                val errorMessage = try {
+                    val json = errorBody?.let { JSONObject(it) }
+                    json?.getString("message") ?: "Server returned error: ${response.code()}"
+                } catch (e: Exception) {
+                    "Failed to get menu items: ${response.message() ?: "Unknown error"}"
+                }
+                Resource.Error(errorMessage)
+            }
+        } catch (e: Exception) {
+            Resource.Error("Network error: ${e.localizedMessage ?: e.message ?: "Unknown error occurred"}")
         }
     }
 }

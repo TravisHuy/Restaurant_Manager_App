@@ -1,6 +1,7 @@
 package com.nhathuy.restaurant_manager_app.data.api
 
 import com.nhathuy.restaurant_manager_app.data.dto.MenuItemDTO
+import com.nhathuy.restaurant_manager_app.data.model.MenuItem
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -12,6 +13,13 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
 
+/**
+ * Service for managing menu item-related operations.
+ *
+ * @return 0.1
+ * @since 20-02-2025
+ * @author TravisHuy
+ */
 interface MenuItemService {
 
     @Multipart
@@ -26,4 +34,8 @@ interface MenuItemService {
 
     @GET("api/menu-items/{id}/image")
     suspend fun getMenuItemImage(@Path("id") id: String): Response<ResponseBody>
+
+
+    @GET("api/menu-items/all")
+    suspend fun getAllMenuItems(): Response<List<MenuItem>>
 }

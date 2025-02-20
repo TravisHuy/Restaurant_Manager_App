@@ -27,7 +27,7 @@ data class MenuItem(
     /**
      * The imageId of the menuItem
      */
-    val imageId:String,
+    val imageId:Any,
     /**
      * The categoryId of the menuItem
      */

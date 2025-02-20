@@ -13,6 +13,7 @@ import com.nhathuy.restaurant_manager_app.fragment.MapFragment
 import com.nhathuy.restaurant_manager_app.fragment.MoreFragment
 import com.nhathuy.restaurant_manager_app.fragment.OrderFragment
 import com.nhathuy.restaurant_manager_app.fragment.SubTotalFragment
+import com.nhathuy.restaurant_manager_app.ui.CreateOderActivity
 import com.nhathuy.restaurant_manager_app.ui.LoginActivity
 import com.nhathuy.restaurant_manager_app.ui.MainActivity
 import com.nhathuy.restaurant_manager_app.ui.MainActivity2
@@ -49,4 +50,5 @@ interface RestaurantMangerComponent {
     fun inject(allFloorActivity: AllFloorActivity)
     fun inject(addCategoryActivity: AddCategoryActivity)
     fun inject(addMenuItemActivity: AddMenuItemActivity)
+    fun inject(createOderActivity: CreateOderActivity)
 }

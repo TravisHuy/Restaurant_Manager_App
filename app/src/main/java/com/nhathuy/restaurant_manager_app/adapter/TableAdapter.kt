@@ -14,7 +14,7 @@ import com.nhathuy.restaurant_manager_app.databinding.ItemTableBinding
  * @since 14-02-2025
  * @author TravisHuy
  */
-class TableAdapter(var tables:List<Table>) : RecyclerView.Adapter<TableAdapter.TableViewHolder>() {
+class TableAdapter(var tables:List<Table>,private val onTableClick: (Table) -> Unit) : RecyclerView.Adapter<TableAdapter.TableViewHolder>() {
 
     inner class TableViewHolder(val binding:ItemTableBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -30,6 +30,9 @@ class TableAdapter(var tables:List<Table>) : RecyclerView.Adapter<TableAdapter.T
         val table = tables[position]
         with(holder.binding) {
             tvTableNumber.text = table.number.toString()
+            root.setOnClickListener {
+                onTableClick(table)
+            }
         }
 
     }
