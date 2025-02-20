@@ -2,6 +2,7 @@ package com.nhathuy.restaurant_manager_app.di.component
 
 import com.nhathuy.restaurant_manager_app.admin.add.AddCategoryActivity
 import com.nhathuy.restaurant_manager_app.admin.add.AddFloorActivity
+import com.nhathuy.restaurant_manager_app.admin.add.AddMenuItemActivity
 import com.nhathuy.restaurant_manager_app.admin.add.AddTableActivity
 import com.nhathuy.restaurant_manager_app.admin.all.AllFloorActivity
 import com.nhathuy.restaurant_manager_app.data.api.RetrofitClient
@@ -47,4 +48,5 @@ interface RestaurantMangerComponent {
     fun inject(mainActivity2: MainActivity2)
     fun inject(allFloorActivity: AllFloorActivity)
     fun inject(addCategoryActivity: AddCategoryActivity)
+    fun inject(addMenuItemActivity: AddMenuItemActivity)
 }

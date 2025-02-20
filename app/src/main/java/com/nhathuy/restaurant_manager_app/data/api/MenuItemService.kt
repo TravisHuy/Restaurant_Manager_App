@@ -15,8 +15,11 @@ import retrofit2.http.Path
 interface MenuItemService {
 
     @Multipart
-    @POST("api/menu-items/add")
-    suspend fun addMenuItem(@Part("menuItem") menuItemDTO: MenuItemDTO,
+    @POST("api/menu-items/add/{categoryId}")
+    suspend fun addMenuItem(@Part("name") name: RequestBody,
+                            @Part("description") description: RequestBody,
+                            @Part("price") price: RequestBody,
+                            @Part("available") available: RequestBody,
                             @Part image: MultipartBody.Part?,
                             @Path("categoryId") categoryId: String
     ): Response<ResponseBody>

@@ -34,4 +34,14 @@
         app:layout_constraintEnd_toEndOf="@+id/btn_all_floor"
         app:layout_constraintStart_toStartOf="@+id/btn_all_floor"
         app:layout_constraintTop_toBottomOf="@+id/btn_all_floor" />
+
+    <Button
+        android:id="@+id/add_menu_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Add Menu Item"
+        app:layout_constraintEnd_toEndOf="@+id/btn_add_category"
+        app:layout_constraintStart_toStartOf="@+id/btn_add_category"
+        app:layout_constraintTop_toBottomOf="@+id/btn_add_category" />
 </androidx.constraintlayout.widget.ConstraintLayout>

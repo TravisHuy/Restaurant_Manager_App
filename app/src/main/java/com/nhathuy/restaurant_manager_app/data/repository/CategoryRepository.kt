@@ -13,4 +13,6 @@ import javax.inject.Inject
  */
 class CategoryRepository @Inject constructor(private val categoryService: CategoryService) {
     suspend fun addCategory(category: Category) = categoryService.addCategory(category)
+    suspend fun getAllCategories() = categoryService.getAllCategories()
+    suspend fun getCategoryById(id: String) = categoryService.getCategoryById(id)
 }

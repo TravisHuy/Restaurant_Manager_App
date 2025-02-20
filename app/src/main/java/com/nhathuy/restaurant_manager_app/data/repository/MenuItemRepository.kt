@@ -11,6 +11,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import javax.inject.Inject
 
@@ -30,9 +31,24 @@ class MenuItemRepository @Inject constructor(private val menuItemService: MenuIt
      * @param imageFile the image file of the menu item
      * @param categoryId the category ID of the menu item
      */
-    suspend fun addMenuItem(menuItemDTO: MenuItemDTO, imageFile: MultipartBody.Part?, categoryId: String) :Resource<Unit> {
+    suspend fun addMenuItem(menuItem: MenuItemDTO, imageFile: MultipartBody.Part?, categoryId: String) :Resource<Unit> {
         return try {
-            val response = menuItemService.addMenuItem(menuItemDTO, imageFile, categoryId)
+
+            // Convert DTO fields to RequestBody objects
+            val nameRequestBody = menuItem.name.toRequestBody("text/plain".toMediaTypeOrNull())
+            val descriptionRequestBody = menuItem.description.toRequestBody("text/plain".toMediaTypeOrNull())
+            val priceRequestBody = menuItem.price.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+            val availableRequestBody = menuItem.available.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+
+            val response = menuItemService.addMenuItem(
+                name = nameRequestBody,
+                description = descriptionRequestBody,
+                price = priceRequestBody,
+                available = availableRequestBody,
+                image = imageFile,
+                categoryId = categoryId
+            )
+
 
             if(response.isSuccessful){
                 Resource.Success(Unit)

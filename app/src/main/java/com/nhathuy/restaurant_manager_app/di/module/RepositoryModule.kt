@@ -3,10 +3,12 @@ package com.nhathuy.restaurant_manager_app.di.module
 import com.nhathuy.restaurant_manager_app.data.api.AuthService
 import com.nhathuy.restaurant_manager_app.data.api.CategoryService
 import com.nhathuy.restaurant_manager_app.data.api.FloorService
+import com.nhathuy.restaurant_manager_app.data.api.MenuItemService
 import com.nhathuy.restaurant_manager_app.data.api.TableService
 import com.nhathuy.restaurant_manager_app.data.repository.AuthRepository
 import com.nhathuy.restaurant_manager_app.data.repository.CategoryRepository
 import com.nhathuy.restaurant_manager_app.data.repository.FloorRepository
+import com.nhathuy.restaurant_manager_app.data.repository.MenuItemRepository
 import com.nhathuy.restaurant_manager_app.data.repository.TableRepository
 import dagger.Module
 import dagger.Provides
@@ -66,5 +68,16 @@ class RepositoryModule {
     @Singleton
     fun provideCategoryRepository(categoryService: CategoryService): CategoryRepository {
         return CategoryRepository(categoryService)
+    }
+    /**
+     * Provides the menu_item repository for the application.
+     *
+     * @param menuItemService The category service
+     * @return The category repository
+     */
+    @Provides
+    @Singleton
+    fun provideMenuItemRepository(menuItemService: MenuItemService): MenuItemRepository {
+        return MenuItemRepository(menuItemService)
     }
 }

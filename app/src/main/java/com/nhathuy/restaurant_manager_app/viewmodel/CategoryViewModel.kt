@@ -23,6 +23,12 @@ class CategoryViewModel @Inject constructor(private val categoryRepository: Cate
     private val _addCategory = MutableLiveData<Resource<Category>>()
     val addCategory : LiveData<Resource<Category>> = _addCategory
 
+    private val _allCategories = MutableLiveData<Resource<List<Category>>>()
+    val allCategories : LiveData<Resource<List<Category>>> = _allCategories
+
+    private val _categoryById = MutableLiveData<Resource<Category>>()
+    val categoryById : LiveData<Resource<Category>> = _categoryById
+
 
    fun addCategory(category: Category) {
         viewModelScope.launch {
@@ -36,4 +42,35 @@ class CategoryViewModel @Inject constructor(private val categoryRepository: Cate
         }
     }
 
+    fun getAllCategories() {
+        viewModelScope.launch {
+            _allCategories.value = Resource.Loading()
+            try {
+                val response = categoryRepository.getAllCategories()
+                if(response.isEmpty()){
+                    _allCategories.value = Resource.Error("No categories found")
+                } else {
+                    _allCategories.value = Resource.Success(response)
+                }
+            } catch (e: Exception) {
+                _allCategories.value = Resource.Error("Error: ${e.message}")
+            }
+        }
+    }
+
+    fun getCategoryById(id: String) {
+        viewModelScope.launch {
+            _categoryById.value = Resource.Loading()
+            try {
+                val response = categoryRepository.getCategoryById(id)
+                if (response  != null) {
+                    _categoryById.value = Resource.Success(response)
+                } else {
+                    _categoryById.value = Resource.Error("No floor found")
+                }
+            } catch (e: Exception) {
+                _categoryById.value = Resource.Error("Error: ${e.message}")
+            }
+        }
+    }
 }

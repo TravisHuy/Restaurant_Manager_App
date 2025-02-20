@@ -7,6 +7,7 @@ import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.admin.add.AddCategoryActivity
 import com.nhathuy.restaurant_manager_app.admin.add.AddFloorActivity
+import com.nhathuy.restaurant_manager_app.admin.add.AddMenuItemActivity
 import com.nhathuy.restaurant_manager_app.admin.all.AllFloorActivity
 import com.nhathuy.restaurant_manager_app.databinding.ActivityMain2Binding
 
@@ -27,6 +28,9 @@ class MainActivity2 : AppCompatActivity() {
         }
         binding.btnAddCategory.setOnClickListener {
             startActivity(Intent(this, AddCategoryActivity::class.java))
+        }
+        binding.addMenuItem.setOnClickListener {
+            startActivity(Intent(this, AddMenuItemActivity::class.java))
         }
     }
 }
