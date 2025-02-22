@@ -24,18 +24,18 @@ interface MenuItemService {
 
     @Multipart
     @POST("api/menu-items/add/{categoryId}")
-    suspend fun addMenuItem(@Part("name") name: RequestBody,
-                            @Part("description") description: RequestBody,
-                            @Part("price") price: RequestBody,
-                            @Part("available") available: RequestBody,
-                            @Part image: MultipartBody.Part?,
-                            @Path("categoryId") categoryId: String
-    ): Response<ResponseBody>
+    suspend fun createMenuItem(
+        @Part("menuItem") menuItemDTO: RequestBody,
+        @Part image: MultipartBody.Part?,
+        @Path("categoryId") categoryId: String
+    ): Response<MenuItem>
+
+    @GET("api/menu-items/all")
+    suspend fun getAllMenuItems(): Response<List<MenuItem>>
 
     @GET("api/menu-items/{id}/image")
     suspend fun getMenuItemImage(@Path("id") id: String): Response<ResponseBody>
 
 
-    @GET("api/menu-items/all")
-    suspend fun getAllMenuItems(): Response<List<MenuItem>>
+
 }

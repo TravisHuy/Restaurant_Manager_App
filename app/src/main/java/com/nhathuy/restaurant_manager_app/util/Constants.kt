@@ -22,4 +22,7 @@ object Constants {
     const val KEY_PASSWORD = "password"
     const val KEY_REMEMBER_ME = "remember_me"
 
+
+    const val IMAGE_URL = "${AUTH_URL}api/menu-items/%s/image"
+
 }

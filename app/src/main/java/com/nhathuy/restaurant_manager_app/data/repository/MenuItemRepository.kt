@@ -33,42 +33,47 @@ class MenuItemRepository @Inject constructor(private val menuItemService: MenuIt
      * @param imageFile the image file of the menu item
      * @param categoryId the category ID of the menu item
      */
-    suspend fun addMenuItem(menuItem: MenuItemDTO, imageFile: MultipartBody.Part?, categoryId: String) :Resource<Unit> {
-        return try {
-
-            // Convert DTO fields to RequestBody objects
-            val nameRequestBody = menuItem.name.toRequestBody("text/plain".toMediaTypeOrNull())
-            val descriptionRequestBody = menuItem.description.toRequestBody("text/plain".toMediaTypeOrNull())
-            val priceRequestBody = menuItem.price.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-            val availableRequestBody = menuItem.available.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-
-            val response = menuItemService.addMenuItem(
-                name = nameRequestBody,
-                description = descriptionRequestBody,
-                price = priceRequestBody,
-                available = availableRequestBody,
-                image = imageFile,
-                categoryId = categoryId
-            )
-
-
-            if(response.isSuccessful){
-                Resource.Success(Unit)
+    suspend fun addMenuItem(menuItemDTO: MenuItemDTO, imageFile: MultipartBody.Part?, categoryId: String): Flow<Resource<MenuItem>> = flow {
+        emit(Resource.Loading())
+        try {
+            // Convert menuItemDto to json
+            val menuItemJson = JSONObject().apply {
+                put("name", menuItemDTO.name)
+                put("description", menuItemDTO.description)
+                put("price", menuItemDTO.price)
+                put("categoryId", categoryId)
+                put("available", menuItemDTO.available)
             }
-            else{
-                val errorBody = response.errorBody()?.string()
-                val errorMessage = try {
-                    val json = errorBody?.let { JSONObject(it) }
-                    json?.getString("message") ?:"Unknown error occurred"
-                }
-                catch (e:Exception) {
-                    "Failed to add menu item: ${response.message()}"
-                }
-                Resource.Error(errorMessage)
+
+            // Create image body parts
+            val menuItemPart = menuItemJson.toString().toRequestBody("application/json".toMediaTypeOrNull())
+
+            // Create image part if image exists
+            val imagePart = imageFile?.let {
+                MultipartBody.Part.createFormData(
+                    "image",
+                    it.body.contentType()?.let { contentType ->
+                        "image.${contentType.subtype}" // Generate a filename based on content type
+                    } ?: "image.jpg", // Default filename if content type is null
+                    it.body
+                )
             }
-        }
-        catch (e:Exception){
-            Resource.Error("Error adding menu item: ${e.message}")
+
+            val response = menuItemService.createMenuItem(menuItemPart, imagePart, categoryId)
+
+            // Check if the response is successful and extract the body
+            if (response.isSuccessful) {
+                val menuItem = response.body()
+                if (menuItem != null) {
+                    emit(Resource.Success(menuItem))
+                } else {
+                    emit(Resource.Error("Response body is null"))
+                }
+            } else {
+                emit(Resource.Error("Error adding menu item: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            emit(Resource.Error("Error adding menu item: ${e.message}"))
         }
     }
 
@@ -78,51 +83,59 @@ class MenuItemRepository @Inject constructor(private val menuItemService: MenuIt
      * @param id the ID of the menu item
      * @return the image of the menu item
      */
-    suspend fun getMenuItemImage(id:String) : Resource<ByteArray> {
-        return try {
-            val response = menuItemService.getMenuItemImage(id)
 
-            if(response.isSuccessful){
-                val bytes = response.body()?.bytes()
-                if(bytes != null){
-                    Resource.Success(bytes)
+    suspend fun getMenuItemImage(id: String): Flow<Resource<Uri>> = flow {
+        emit(Resource.Loading())
+        try {
+            val response = menuItemService.getMenuItemImage(id)
+            if (response.isSuccessful) {
+                response.body()?.let { responseBody ->
+                    try {
+                        // Create temporary file
+                        val tempFile = File.createTempFile("menu_item_", ".jpg")
+                        tempFile.outputStream().use { outputStream ->
+                            responseBody.byteStream().use { inputStream ->
+                                inputStream.copyTo(outputStream)
+                            }
+                        }
+                        // Convert File to Uri
+                        val uri = Uri.fromFile(tempFile)
+                        emit(Resource.Success(uri))
+                    } catch (e: Exception) {
+                        emit(Resource.Error("Error processing image: ${e.message}"))
+                    }
+                } ?: emit(Resource.Error("Response body is null"))
+            } else {
+                val errorMessage = when (response.code()) {
+                    404 -> "Image not found"
+                    else -> "Error fetching image: ${response.message()}"
                 }
-                else{
-                    Resource.Error("Failed to get image")
-                }
+                emit(Resource.Error(errorMessage))
             }
-            else{
-                Resource.Error("Failed to get image: ${response.message()}")
-            }
-        }
-        catch (e:Exception){
-            Resource.Error("Error getting image: ${e.message}")
+        } catch (e: Exception) {
+            emit(Resource.Error("Network error: ${e.message}"))
         }
     }
 
-    suspend fun getAllMenuItems(): Resource<List<MenuItem>> {
-        return try {
+    suspend fun getAllMenuItems(): Flow<Resource<List<MenuItem>>> = flow {
+        emit(Resource.Loading())
+        try {
             val response = menuItemService.getAllMenuItems()
             if (response.isSuccessful) {
-                val menuItems = response.body()
-                if (menuItems != null) {
-                    Resource.Success(menuItems)
-                } else {
-                    Resource.Error("Server returned empty response")
-                }
+                response.body()?.let {
+                    emit(Resource.Success(it))
+                } ?: emit(Resource.Error("Empty response"))
             } else {
-                // Get more detailed error message from response
                 val errorBody = response.errorBody()?.string()
                 val errorMessage = try {
-                    val json = errorBody?.let { JSONObject(it) }
-                    json?.getString("message") ?: "Server returned error: ${response.code()}"
+                    JSONObject(errorBody ?: "").getString("message")
                 } catch (e: Exception) {
-                    "Failed to get menu items: ${response.message() ?: "Unknown error"}"
+                    response.message() ?: "Unknown error"
                 }
-                Resource.Error(errorMessage)
+                emit(Resource.Error(errorMessage))
             }
         } catch (e: Exception) {
-            Resource.Error("Network error: ${e.localizedMessage ?: e.message ?: "Unknown error occurred"}")
+            emit(Resource.Error("Network error: ${e.message}"))
         }
     }
 }

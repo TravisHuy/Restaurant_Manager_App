@@ -3,10 +3,13 @@ package com.nhathuy.restaurant_manager_app.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.imageLoader
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
@@ -58,7 +61,7 @@ class CreateOderActivity : AppCompatActivity() {
     }
     private fun observeViewModel(){
         lifecycleScope.launch {
-            menuItemViewModel.allMenuItems.collect { resource ->
+            menuItemViewModel.menuItemsState.collect { resource ->
                 when(resource){
                     is Resource.Loading -> {
 
@@ -97,6 +100,7 @@ class CreateOderActivity : AppCompatActivity() {
         binding.menuItemRec.adapter = adapter
     }
 
+
     private fun showItemDetails(menuItem: MenuItem){
         Toast.makeText(this, "Show item details", Toast.LENGTH_SHORT).show()
     }
@@ -112,7 +116,7 @@ class CreateOderActivity : AppCompatActivity() {
     private fun updateOrderSummary() {
         // Calculate total price and update UI
         val totalPrice = selectedItems.entries.sumOf { (itemId, quantity) ->
-            menuItemViewModel.allMenuItems.value.data?.find { it.id == itemId }?.price?.times(quantity) ?: 0.0
+            menuItemViewModel.menuItemsState.value.data?.find { it.id == itemId }?.price?.times(quantity) ?: 0.0
         }
 
         // Update UI with total price and selected items

@@ -12,6 +12,8 @@ import com.nhathuy.restaurant_manager_app.data.repository.MenuItemRepository
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -28,72 +30,48 @@ import javax.inject.Inject
  * @param menuItemRepository the repository for menu item-related operations
  *
  */
-class MenuItemViewModel @Inject constructor(private val menuItemRepository: MenuItemRepository):ViewModel(){
+class MenuItemViewModel @Inject constructor(private val repository: MenuItemRepository):ViewModel(){
 
-    /**
-     * The state of the add menu item operation
-     */
-    private val _addMenuItemState = MutableStateFlow<Resource<Unit>>(Resource.Success(Unit))
-    val addMenuItemState: StateFlow<Resource<Unit>> = _addMenuItemState
+    private val _menuItemsState = MutableStateFlow<Resource<List<MenuItem>>>(Resource.Success(emptyList()))
+    val menuItemsState: StateFlow<Resource<List<MenuItem>>> = _menuItemsState.asStateFlow()
 
-    /**
-     * The state of the get menu item image operation
-     */
-    private val _menuItemImageState = MutableStateFlow<Resource<ByteArray>>(Resource.Success(
-        ByteArray(0)
-    ))
-    val menuItemImageState: StateFlow<Resource<ByteArray>> = _menuItemImageState
+    private val _createMenuItemState = MutableStateFlow<Resource<MenuItem>?>(null)
+    val createMenuItemState: StateFlow<Resource<MenuItem>?> = _createMenuItemState.asStateFlow()
 
-    private val _allMenuItems = MutableStateFlow<Resource<List<MenuItem>>>(Resource.Success(emptyList()))
-    val allMenuItems: StateFlow<Resource<List<MenuItem>>> = _allMenuItems
-
-    /**
-     * Adds a new menu item to the system.
-     *
-     * @param menuItem the menu item to add
-     * @param imageFile the image file of the menu item
-     * @param categoryId the category ID of the menu item
-     */
-    fun addMenuItem(menuItem: MenuItemDTO, imageFile:MultipartBody.Part?, categoryId:String){
-        viewModelScope.launch {
-            _addMenuItemState.value = Resource.Loading()
-            menuItemRepository.addMenuItem(menuItem, imageFile, categoryId).let {
-                _addMenuItemState.value = it
-            }
-        }
-    }
-
-    /**
-     * Gets the image of a menu item.
-     *
-     * @param id the ID of the menu item
-     */
-    fun getMenuItemImage(id:String){
-        viewModelScope.launch {
-            _menuItemImageState.value = Resource.Loading()
-            menuItemRepository.getMenuItemImage(id).let {
-                _menuItemImageState.value = it
-            }
-        }
-    }
-
-    /** reset the state of the add menu item operation */
-    fun resetAddMenuItemState(){
-        _addMenuItemState.value = Resource.Success(Unit)
-    }
-    /** reset the state of the get menu item image operation */
-    fun resetMenuItemImageState(){
-        _menuItemImageState.value = Resource.Success(ByteArray(0))
-    }
-
+    private val _menuItemImageState = MutableStateFlow<Resource<Uri>?>(null)
+    val menuItemImageState: StateFlow<Resource<Uri>?> = _menuItemImageState.asStateFlow()
 
     fun getAllMenuItems() {
         viewModelScope.launch {
-            _allMenuItems.value= Resource.Loading()
-            menuItemRepository.getAllMenuItems().let {
-                _allMenuItems.value = it
-            }
+            repository.getAllMenuItems()
+                .catch { e -> _menuItemsState.value = Resource.Error(e.message ?: "Unknown error") }
+                .collect { _menuItemsState.value = it }
         }
     }
 
+    fun addMenuItem(menuItemDTO: MenuItemDTO, imageFile: MultipartBody.Part?, categoryId: String) {
+        viewModelScope.launch {
+            repository.addMenuItem(menuItemDTO, imageFile, categoryId)
+                .catch { e -> _createMenuItemState.value = Resource.Error(e.message ?: "Unknown error") }
+                .collect { _createMenuItemState.value = it }
+        }
+    }
+
+    fun getMenuItemImage(menuItemId: String) {
+        viewModelScope.launch {
+            repository.getMenuItemImage(menuItemId)
+                .catch { e -> _menuItemImageState.value = Resource.Error(e.message ?: "Unknown error") }
+                .collect { _menuItemImageState.value = it }
+        }
+    }
+
+    // Reset status flows
+    fun resetCreateStatus() {
+        _createMenuItemState.value = null
+        _menuItemImageState.value = null
+    }
+
+    fun resetUpdateStatus() {
+
+    }
 }

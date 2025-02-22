@@ -2,6 +2,7 @@ package com.nhathuy.restaurant_manager_app.admin.add
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -16,6 +17,7 @@ import com.nhathuy.restaurant_manager_app.resource.Resource
 import com.nhathuy.restaurant_manager_app.viewmodel.CategoryViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.MenuItemViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -34,6 +36,7 @@ import javax.inject.Inject
 
  */
 class AddMenuItemActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityAddMenuItemBinding
     private var selectImageUri: Uri? = null
     @Inject
@@ -63,8 +66,7 @@ class AddMenuItemActivity : AppCompatActivity() {
         observeViewModel()
         setupCategoryAdapter()
 
-        menuItemViewModel.resetAddMenuItemState()
-
+        menuItemViewModel.resetCreateStatus()
     }
 
 
@@ -91,9 +93,9 @@ class AddMenuItemActivity : AppCompatActivity() {
             name = name,
             description = description,
             price = price,
+            imageData="",
             categoryId = categoryId,
             available = true,
-            imageId = ""
         )
 
         val imageFile = selectImageUri?.let {
@@ -173,51 +175,40 @@ class AddMenuItemActivity : AppCompatActivity() {
      */
     private fun observeViewModel() {
 
-        var hasSubmitted = false
-
         lifecycleScope.launch {
-            menuItemViewModel.addMenuItemState.collect { state ->
+            menuItemViewModel.createMenuItemState.collectLatest { state ->
                 when (state) {
                     is Resource.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                        binding.btnAddMenuItem.isEnabled = false
-
-                        hasSubmitted = true
+                        showLoading(true)
                     }
-
                     is Resource.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.btnAddMenuItem.isEnabled = true
-                        if(hasSubmitted){
-                            Toast.makeText(
-                                this@AddMenuItemActivity,
-                                "Menu item added successfully",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            clearInput()
-                            selectImageUri = null
-                            binding.menuImage.setImageURI(null)
-                            binding.addProductTvCount.text = "Add Image"
-
-                            hasSubmitted = false
-                        }
+                        showLoading(false)
+                        clearInput()
+                        Toast.makeText(
+                            this@AddMenuItemActivity,
+                            "Menu item added successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-
                     is Resource.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.btnAddMenuItem.isEnabled = true
-                        if(hasSubmitted){
-                            Toast.makeText(
-                                this@AddMenuItemActivity,
-                                state.message,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            hasSubmitted = false
-                        }
+                        showLoading(false)
+                        Toast.makeText(
+                            this@AddMenuItemActivity,
+                            state.message ?: "An error occurred",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
+
+                    else -> {}
                 }
             }
         }
+    }
+
+
+    private fun showLoading(show: Boolean) {
+        binding.progressBar.visibility = if (show) View.VISIBLE else View.GONE
+        binding.btnAddMenuItem.isEnabled = !show
     }
     /**
      * Sets up the category adapter.

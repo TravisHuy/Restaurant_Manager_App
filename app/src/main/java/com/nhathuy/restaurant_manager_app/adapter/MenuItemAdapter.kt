@@ -1,13 +1,24 @@
 package com.nhathuy.restaurant_manager_app.adapter
 
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.data.model.MenuItem
 import com.nhathuy.restaurant_manager_app.databinding.ItemMenuBinding
+import com.nhathuy.restaurant_manager_app.util.Constants
 
 /**
  * Adapter class for the menu items recyclerview
@@ -34,10 +45,14 @@ class MenuItemAdapter(private val onMenuItemClick: (MenuItem) -> Unit,
                     menuItemName.text = it.name
                     menuItemPrice.text = String.format("%.2f", it.price)
 
-                    val imageUrl = it.imageId.toString()
-                    Glide.with(itemView)
-                        .load(it.imageId)
-                        .into(imageMenu)
+
+                    val imageData = it.imageData
+                    if(imageData != null){
+                        val imageByteArray = android.util.Base64.decode(imageData, android.util.Base64.DEFAULT)
+                        val bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.size)
+                        imageMenu.setImageBitmap(bitmap)
+                    }
+
 
                     val currentQuantity  = itemQuantities[it.id] ?: 0
                     updateControlsVisibility(currentQuantity)
