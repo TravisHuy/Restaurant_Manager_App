@@ -35,5 +35,9 @@ data class MenuItem(
     /**
      * The availability of the menuItem
      */
-    val available:Boolean
+    val available:Boolean,
+    /**
+     * Most note
+     */
+    val note:String
 )

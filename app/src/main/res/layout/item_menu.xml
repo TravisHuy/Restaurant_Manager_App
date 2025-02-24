@@ -1,101 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.slidingpanelayout.widget.SlidingPaneLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/sliding_pane_layout"
+<com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_reveal_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
+    app:dragEdge="right"
+    app:mode="same_level"
     >
-    <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_margin="8dp"
-            >
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/image_menu"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/table"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                >
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/menu_item_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Chả gốm"
-                    android:fontFamily="@font/noto_sans_bold"
-                    />
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/menu_item_price"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:text="5.0"
-                    android:fontFamily="@font/noto_sans_light"
-                    />
-            </LinearLayout>
-
-            <ImageButton
-                android:id="@+id/btn_minus_menu"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_minus"
-                android:layout_gravity="center"
-                android:background="@drawable/button_background_circle"
-                android:visibility="gone"
-                />
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/ed_number_menu"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_add"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginEnd="5dp"
-                android:layout_marginStart="5dp"
-                android:background="@drawable/edit_background_input"
-                android:visibility="gone"
-                />
-
-            <ImageButton
-                android:id="@+id/btn_menu_add"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_add"
-                android:layout_gravity="center"
-                android:background="@drawable/button_background_circle"
-                />
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- Menu phụ bên phải -->
-    <LinearLayout
-        android:layout_width="96dp"
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="70dp"
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/btn_note"
-            android:layout_width="48dp"
+            android:layout_width="70dp"
             android:layout_height="64dp"
             android:background="@color/green"
             android:src="@drawable/ic_note"/>
-    </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
-</androidx.slidingpanelayout.widget.SlidingPaneLayout>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_content_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/check_menu"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="8dp"
+                android:src="@drawable/ic_check"
+                android:visibility="gone"
+                android:background="@drawable/check_background"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/image_menu"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/table_2"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/menu_item_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/noto_sans_bold"
+                        android:text="Chả gốm" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/menu_item_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:fontFamily="@font/noto_sans_light"
+                        android:text="5.0" />
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btn_minus_menu"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/button_background_circle"
+                    android:src="@drawable/ic_minus"
+                    android:visibility="gone" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ed_number_menu"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/edit_background_input"
+                    android:gravity="center"
+                    android:src="@drawable/ic_add"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/btn_menu_add"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/button_background_circle"
+                    android:src="@drawable/ic_add"
+                    android:scaleType="centerInside"
+                    />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+</com.chauthai.swipereveallayout.SwipeRevealLayout>

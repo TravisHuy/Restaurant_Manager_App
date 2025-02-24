@@ -1,65 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.CreateOderActivity">
+    android:layout_height="wrap_content">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
-        app:title="Create Order"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSurface"
+        android:text="Most note"
+        android:textSize="18sp"
+        android:fontFamily="@font/noto_sans_bold"
+        android:textColor="@color/white"
+        android:background="@color/green"
+        android:paddingStart="15dp"
+        android:padding="5dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/ic_chevron_left"
-        />
-    <com.google.android.material.search.SearchBar
-        android:id="@+id/search_bar"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linear_ed_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search orders..."
-        android:background="?attr/colorSurface"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/tv_note"
+        android:background="@color/white"
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/menu_item_swipe_refresh_layout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_bar"
         >
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/menu_item_rec"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_number_menu"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-             />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:padding="35dp"
+            android:layout_gravity="center"
+            android:background="@drawable/edit_background_input"
+            android:gravity="center"
+            android:src="@drawable/ic_add"
+            android:visibility="visible"
+           />
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginBottom="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/menu_item_swipe_refresh_layout"
+        android:gravity="end"
+        android:background="@color/gray"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linear_ed_note"
+        >
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_cancel"
             style="@style/Widget.Material3.Button.ElevatedButton"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cancel"
             android:layout_marginStart="10dp"
-            android:layout_weight="1"
             android:textColor="@color/black"
             app:backgroundTint="@color/white"
             app:cornerRadius="4dp"
@@ -69,9 +69,8 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_confirm"
             style="@style/Widget.Material3.Button.ElevatedButton"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:text="Agree"

@@ -138,4 +138,30 @@ class MenuItemRepository @Inject constructor(private val menuItemService: MenuIt
             emit(Resource.Error("Network error: ${e.message}"))
         }
     }
+
+    suspend fun addNoteMenuItem(id:String , note:String) : Flow<Resource<MenuItem>> = flow {
+        emit(Resource.Loading())
+        try {
+            val notePart = note.toRequestBody("text/plain".toMediaTypeOrNull())
+            val response = menuItemService.addNoteToMenuItem(id,notePart)
+
+            if(response.isSuccessful){
+                response.body()?.let {
+                    emit(Resource.Success(it))
+                } ?: emit(Resource.Error("Empty response"))
+            }
+            else {
+                val errorBody  = response.errorBody()?.string()
+                val errorMessage = try{
+                    JSONObject(errorBody ?: "").getString("message")
+                } catch (e:Exception){
+                    response.message() ?: "Unknown error"
+                }
+                emit(Resource.Error(errorMessage))
+            }
+        }
+        catch (e:Exception){
+            emit(Resource.Error("Network error: ${e.message}"))
+        }
+    }
 }

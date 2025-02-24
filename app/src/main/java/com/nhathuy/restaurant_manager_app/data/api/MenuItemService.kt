@@ -10,6 +10,7 @@ import retrofit2.http.GET
 
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 
@@ -36,6 +37,7 @@ interface MenuItemService {
     @GET("api/menu-items/{id}/image")
     suspend fun getMenuItemImage(@Path("id") id: String): Response<ResponseBody>
 
-
+    @PUT("api/menu-items/addNote/{id}")
+    suspend fun addNoteToMenuItem(@Path("id") id: String, @Part("note") note: RequestBody): Response<MenuItem>
 
 }
