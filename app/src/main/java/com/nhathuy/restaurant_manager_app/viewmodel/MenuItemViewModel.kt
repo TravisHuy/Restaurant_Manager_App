@@ -27,7 +27,7 @@ import javax.inject.Inject
  * @version 19-02-2025
  * @author TravisHuy
  *
- * @param repository the repository for menu item-related operations
+ * @param menuItemRepository the repository for menu item-related operations
  *
  */
 class MenuItemViewModel @Inject constructor(private val repository: MenuItemRepository):ViewModel(){
@@ -68,7 +68,7 @@ class MenuItemViewModel @Inject constructor(private val repository: MenuItemRepo
         }
     }
 
-    fun addNoteMenuItem(id:String ,note:String){
+    fun addNoteMenuItem(id:String , note:String){
         viewModelScope.launch {
             repository.addNoteMenuItem(id,note)
                 .catch { e -> _addNoteMenuItemState.value = Resource.Error(e.message ?: "Unknown error") }

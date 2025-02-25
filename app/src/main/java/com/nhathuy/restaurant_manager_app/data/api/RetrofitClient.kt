@@ -178,4 +178,32 @@ object RetrofitClient {
     fun provideMenuItemApi(@MenuItemRetrofit retrofit: Retrofit): MenuItemService{
         return retrofit.create(MenuItemService::class.java);
     }
+
+
+    /**
+     * Provides a singleton instance of Retrofit for order-related requests.
+     *
+     * @return A configured [Retrofit] instance for handling order operations.
+     */
+    @MenuItemRetrofit
+    @Provides
+    @Singleton
+    fun provideOrderRetrofit(okHttpClient: OkHttpClient) : Retrofit{
+        return Retrofit.Builder().baseUrl(Constants.AUTH_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+    }
+
+    /**
+     * Provides a singleton instance of [OrderService] for handling order related requests.
+     *
+     * @param retrofit The [Retrofit] instance used to create the service.
+     * @return An implementation of [OrderService].
+     */
+    @Provides
+    @Singleton
+    fun provideOrderApi(@MenuItemRetrofit retrofit: Retrofit): OrderService{
+        return retrofit.create(OrderService::class.java);
+    }
 }

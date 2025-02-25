@@ -36,3 +36,12 @@ annotation class CategoryRetrofit
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class MenuItemRetrofit
+
+
+
+/**
+ * Qualifier for the order Retrofit client
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class OrderRetrofit
