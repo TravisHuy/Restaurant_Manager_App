@@ -1,7 +1,10 @@
 package com.nhathuy.restaurant_manager_app.data.api
 
 import com.nhathuy.restaurant_manager_app.data.model.Order
+import com.nhathuy.restaurant_manager_app.oauth2.request.OrderRequest
+import com.nhathuy.restaurant_manager_app.oauth2.response.OrderResponse
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -34,4 +37,8 @@ interface OrderService {
 
     @GET("api/orders/temp-items")
     suspend fun getTempItems(@Query("tableId") tableId:String):Response<List<Order>>
+
+    @POST("api/orders/add")
+    suspend fun createOrder(@Body orderRequest: OrderRequest):Response<OrderResponse>
+
 }

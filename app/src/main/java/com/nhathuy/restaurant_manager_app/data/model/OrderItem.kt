@@ -11,4 +11,11 @@ data class OrderItem(
     val menuItemId: List<String>,
     val quantity: Int,
     val price:Double
-)
+){
+    data class OrderItemDetail(
+        val menuItemId:String,
+        val menuItemName:String,
+        val quantity: Int,
+        val price:Double
+    )
+}

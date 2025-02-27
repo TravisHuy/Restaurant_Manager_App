@@ -24,5 +24,6 @@ object Constants {
 
 
     const val IMAGE_URL = "${AUTH_URL}api/menu-items/%s/image"
+    const val REQUEST_CODE_CREATE_ORDER = 1001
 
 }

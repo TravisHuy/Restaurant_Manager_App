@@ -95,8 +95,7 @@ class AddMenuItemActivity : AppCompatActivity() {
             price = price,
             imageData="",
             categoryId = categoryId,
-            available = true,
-            note =""
+            available = true
         )
 
         val imageFile = selectImageUri?.let {

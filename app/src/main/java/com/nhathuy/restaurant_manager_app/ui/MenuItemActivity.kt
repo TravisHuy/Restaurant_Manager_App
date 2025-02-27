@@ -1,6 +1,7 @@
 package com.nhathuy.restaurant_manager_app.ui
 
 import android.app.Dialog
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,24 +9,24 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import coil.imageLoader
-import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.adapter.MenuItemAdapter
 import com.nhathuy.restaurant_manager_app.data.model.MenuItem
-import com.nhathuy.restaurant_manager_app.databinding.ActivityCreateOderBinding
+import com.nhathuy.restaurant_manager_app.databinding.ActivityMenuItemBinding
 import com.nhathuy.restaurant_manager_app.databinding.AddMostNoteBinding
+import com.nhathuy.restaurant_manager_app.databinding.DialogAddCustomerNameBinding
+import com.nhathuy.restaurant_manager_app.oauth2.request.MenuItemRequest
+import com.nhathuy.restaurant_manager_app.oauth2.request.OrderItemRequest
+import com.nhathuy.restaurant_manager_app.oauth2.request.OrderRequest
 import com.nhathuy.restaurant_manager_app.resource.Resource
-import com.nhathuy.restaurant_manager_app.viewmodel.AuthViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.MenuItemViewModel
+import com.nhathuy.restaurant_manager_app.viewmodel.OrderViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,38 +38,90 @@ import javax.inject.Inject
  * @version 20-02-2025
  * @author TravisHuy
  */
-class CreateOderActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityCreateOderBinding
+class MenuItemActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMenuItemBinding
 
     private lateinit var adapter: MenuItemAdapter
 
     private val selectedItems = mutableMapOf<String, Int>()
+
+    private var tableId:String = ""
+    private var customerName:String = ""
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
     private val menuItemViewModel: MenuItemViewModel by viewModels { viewModelFactory }
+    private val orderViewModel: OrderViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCreateOderBinding.inflate(layoutInflater)
+        binding = ActivityMenuItemBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         (application as RestaurantMangerApp).getRestaurantComponent().inject(this)
+
+        tableId = intent.getStringExtra("TABLE_ID").toString()
+        customerName = intent.getStringExtra("CUSTOMER_NAME").toString()
 
         setupListeners()
         setupRecyclerview()
         observeViewModel()
 
         menuItemViewModel.getAllMenuItems()
-
     }
+
     private fun setupListeners(){
         binding.toolbar.setNavigationOnClickListener {
-            onBackPressed()
+            finish()
         }
         binding.menuItemSwipeRefreshLayout.setOnRefreshListener {
             menuItemViewModel.getAllMenuItems()
         }
+        binding.btnCancel.setOnClickListener {
+            finish()
+        }
+        binding.btnConfirm.setOnClickListener {
+            createOrderRequest()
+        }
     }
+
+    private fun createOrderRequest(){
+        if(selectedItems.isEmpty()){
+            showError("Please select at least one item")
+            return
+        }
+
+        // create list of order item requests
+        val orderItemRequests = mutableListOf<OrderItemRequest>()
+
+        //group selected items by menu item id
+        val menuItems =  menuItemViewModel.menuItemsState.value.data ?: return
+
+        val menuItemRequests = selectedItems.map {
+                (itemId,quantity) ->
+            val menuItem = menuItems.find { it.id == itemId } ?: return@map null
+            MenuItemRequest(menuItem.id, quantity)
+        }.filterNotNull()
+
+        if(menuItemRequests.isEmpty()){
+            showError("No menu items selected")
+            return
+        }
+
+        val orderItemRequest = OrderItemRequest(menuItems=menuItemRequests, note = "")
+
+        orderItemRequests.add(orderItemRequest)
+
+        val orderRequest = OrderRequest(tableId = tableId, customerName = customerName, items = orderItemRequests)
+
+        submitOrder(orderRequest)
+        observeOrderCreation()
+    }
+
+    private fun submitOrder(orderRequest: OrderRequest){
+        orderViewModel.createOrder(orderRequest)
+    }
+
     private fun observeViewModel(){
         lifecycleScope.launch {
             menuItemViewModel.menuItemsState.collect { resource ->
@@ -78,7 +131,7 @@ class CreateOderActivity : AppCompatActivity() {
                     }
                     is Resource.Success -> {
                         resource.data?.let {
-                            menuItems ->
+                                menuItems ->
                             adapter.updateMenuItems(menuItems)
                             showLoading(false)
                         }
@@ -90,55 +143,72 @@ class CreateOderActivity : AppCompatActivity() {
                     }
                 }
             }
-            menuItemViewModel.addNoteMenuItemState.collect{
-                resource ->
+
+
+        }
+    }
+    private fun observeOrderCreation(){
+        lifecycleScope.launch {
+            // Collect order state flow
+            orderViewModel.orderState.collect { resource ->
+                Log.d("MenuItemActivity", "Order state: $resource)")
                 when (resource) {
                     is Resource.Loading -> {
-                        // Có thể hiển thị loading nếu cần
+                        showLoading(true)
                     }
                     is Resource.Success -> {
-                        Toast.makeText(
-                            this@CreateOderActivity,
-                            "Đã thêm note thành công",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        showLoading(false)
+                        Log.d("MenuItemActivity", "Order created: ${resource.data}")
+                        resource.data?.let { orderResponse ->
+                            Toast.makeText(
+                                this@MenuItemActivity,
+                                "Order created: ID ${orderResponse.id}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            // Make sure to set result properly before finishing
+                            val resultIntent = Intent()
+                            resultIntent.putExtra("ORDER_ID", orderResponse.id)
+                            setResult(RESULT_OK, resultIntent)
+                            finish()
+                        }
                     }
                     is Resource.Error -> {
-                        showError(resource.message ?: "Không thể thêm note")
+                        showLoading(false)
+                        showError(resource.message ?: "An error occurred")
                     }
-                    null -> {
-                        // Trạng thái ban đầu, không làm gì
+                    else -> {
+                        // Do nothing for initial state
                     }
                 }
             }
         }
     }
-
     private fun showLoading(loading: Boolean) {
-        binding.menuItemSwipeRefreshLayout.isRefreshing  = loading
+        binding.menuItemSwipeRefreshLayout.isRefreshing = loading
     }
 
     private fun setupRecyclerview(){
         adapter = MenuItemAdapter(
             onMenuItemClick = {
-                menuItem ->
+                    menuItem ->
                 handleItemClick(menuItem)
             },
             onAddClick = {
-                menuItem -> updateItemQuantity(menuItem,adapter.getQuantity(menuItem.id))
+                    menuItem -> updateItemQuantity(menuItem, adapter.getQuantity(menuItem.id))
             },
             onMinusClick = {
-                menuItem -> updateItemQuantity(menuItem, adapter.getQuantity(menuItem.id))
+                    menuItem -> updateItemQuantity(menuItem, adapter.getQuantity(menuItem.id))
             },
             onQuantityChanged = {
-                menuItem, newQuantity ->
+                    menuItem, newQuantity ->
                 updateItemQuantity(menuItem, newQuantity)
             },
             onLongPress = {
-                menuItem -> handleLongPress(menuItem)
+                    menuItem -> handleLongPress(menuItem)
             },
             onNoteButtonClick = {
-                menuItem -> showNoteDialog(menuItem)
+                    menuItem -> showNoteDialog(menuItem)
             }
         )
         binding.menuItemRec.layoutManager = LinearLayoutManager(this)
@@ -191,8 +261,9 @@ class CreateOderActivity : AppCompatActivity() {
             menuItemViewModel.menuItemsState.value.data?.find { it.id == itemId }?.price?.times(quantity) ?: 0.0
         }
 
-        // Update UI with total price and selected items
-        // This would be implemented based on your UI requirements
+        // Update UI with total price and selected items count
+//        binding.tvTotalItems.text = "Items: ${selectedItems.values.sum()}"
+//        binding.tvTotalPrice.text = "Total: $${String.format("%.2f", totalPrice)}"
     }
 
     private fun showError(message: String){
@@ -220,12 +291,12 @@ class CreateOderActivity : AppCompatActivity() {
                 dialog.dismiss() // Đóng dialog sau khi xác nhận
             }
             else{
-                Toast.makeText(this, "Noted note empty: $note", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Note cannot be empty", Toast.LENGTH_SHORT).show()
             }
         }
         dialog.show()
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        dialog.window?.attributes?.windowAnimations=R.style.DialogAnimation;
+        dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
         dialog.window?.setGravity(Gravity.CENTER)
     }
 }

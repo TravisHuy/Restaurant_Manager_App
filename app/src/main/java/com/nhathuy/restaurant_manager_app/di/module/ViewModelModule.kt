@@ -7,6 +7,7 @@ import com.nhathuy.restaurant_manager_app.viewmodel.AuthViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.CategoryViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.MenuItemViewModel
+import com.nhathuy.restaurant_manager_app.viewmodel.OrderViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.TableViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
 import dagger.Binds
@@ -88,5 +89,18 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MenuItemViewModel::class)
     abstract fun bindMenuItemViewModel(menuItemViewModel: MenuItemViewModel): ViewModel
+
+
+
+    /**
+     * Binds the OrderViewModel class to the ViewModel class.
+     *
+     * @param orderViewModel The floor view model
+     * @return The view model
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(OrderViewModel::class)
+    abstract fun bindOrderViewModel(orderViewModel: OrderViewModel): ViewModel
 
 }

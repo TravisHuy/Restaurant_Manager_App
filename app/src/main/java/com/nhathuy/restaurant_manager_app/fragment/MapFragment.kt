@@ -1,28 +1,30 @@
 package com.nhathuy.restaurant_manager_app.fragment
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Toast
-import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.adapter.FloorAdapter
 import com.nhathuy.restaurant_manager_app.adapter.TableAdapter
+import com.nhathuy.restaurant_manager_app.databinding.DialogAddCustomerNameBinding
 import com.nhathuy.restaurant_manager_app.databinding.FragmentMapBinding
 import com.nhathuy.restaurant_manager_app.resource.Resource
-import com.nhathuy.restaurant_manager_app.ui.CreateOderActivity
-import com.nhathuy.restaurant_manager_app.viewmodel.AuthViewModel
+import com.nhathuy.restaurant_manager_app.ui.MenuItemActivity
+import com.nhathuy.restaurant_manager_app.util.Constants
 import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
-import com.nhathuy.restaurant_manager_app.viewmodel.TableViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
 import javax.inject.Inject
 
@@ -67,14 +69,51 @@ class MapFragment : Fragment() {
     private fun setupTableRecyclerView(){
         tableAdapter= TableAdapter(listOf()){
             table ->
-            val intent = Intent(requireContext(), CreateOderActivity::class.java).apply {
-                putExtra("TABLE_ID", table.id)
-                putExtra("TABLE_NUMBER", table.number)
-            }
-            startActivity(intent)
+            showEnterCustomerName(table.id)
         }
         binding.recTable.layoutManager = GridLayoutManager(requireContext(),3)
         binding.recTable.adapter = tableAdapter
+    }
+
+    private fun showEnterCustomerName(tableId:String) {
+        val dialog = Dialog(requireContext())
+        val dialogBinding = DialogAddCustomerNameBinding.inflate(LayoutInflater.from(requireContext()))
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(dialogBinding.root)
+
+        dialogBinding.btnCancelCustomer.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogBinding.btnConfirmCustomer.setOnClickListener {
+            val customerName = dialogBinding.etCustomerName.text.toString().trim()
+            if(customerName.isEmpty()){
+                dialogBinding.layoutCustomerName.error = "Please enter customer name"
+            }
+            else{
+                val intent = Intent(requireContext(), MenuItemActivity::class.java).apply {
+                    putExtra("CUSTOMER_NAME", customerName)
+                    putExtra("TABLE_ID", tableId)
+                }
+                startActivityForResult(intent,Constants.REQUEST_CODE_CREATE_ORDER)
+                dialog.dismiss()
+            }
+        }
+
+        dialog.show()
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
+        dialog.window?.setGravity(Gravity.CENTER)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == Constants.REQUEST_CODE_CREATE_ORDER && resultCode == AppCompatActivity.RESULT_OK){
+            floorId?.let {
+                viewModel.getFloorById(it)
+            }
+        }
     }
     private fun setupFloorRecyclerView(){
         floorAdapter = FloorAdapter { floor ->

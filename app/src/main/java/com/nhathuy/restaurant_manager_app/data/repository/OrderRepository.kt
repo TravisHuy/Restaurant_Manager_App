@@ -1,7 +1,10 @@
 package com.nhathuy.restaurant_manager_app.data.repository
 
+import android.util.Log
 import com.nhathuy.restaurant_manager_app.data.api.OrderService
 import com.nhathuy.restaurant_manager_app.data.model.Order
+import com.nhathuy.restaurant_manager_app.oauth2.request.OrderRequest
+import com.nhathuy.restaurant_manager_app.oauth2.response.OrderResponse
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -85,6 +88,26 @@ class OrderRepository @Inject constructor(private val orderService: OrderService
         }
         catch (e:Exception){
             emit(Resource.Error("Network error: ${e.message}"))
+
+        }
+    }
+
+    suspend fun createOrder(orderRequest: OrderRequest) : Flow<Resource<OrderResponse>> = flow {
+        emit(Resource.Loading())
+        try {
+            val response = orderService.createOrder(orderRequest)
+            if(response.isSuccessful){
+                response.body()?.let {
+                    emit(Resource.Success(it))
+                } ?: emit(Resource.Error("empty response body server"))
+            }
+            else{
+                emit(Resource.Error("Failed to create order: ${response.message()}"))
+            }
+        }
+        catch (e:Exception){
+            emit(Resource.Error("Network error: ${e.message}"))
+            Log.d("OrderRepository", "error: ${e.message}")
         }
     }
 }

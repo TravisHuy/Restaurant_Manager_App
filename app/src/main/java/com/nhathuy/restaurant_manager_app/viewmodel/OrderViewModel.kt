@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nhathuy.restaurant_manager_app.data.model.Order
 import com.nhathuy.restaurant_manager_app.data.repository.OrderRepository
+import com.nhathuy.restaurant_manager_app.oauth2.request.OrderRequest
+import com.nhathuy.restaurant_manager_app.oauth2.response.OrderResponse
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,6 +41,23 @@ class OrderViewModel @Inject constructor(private val repository: OrderRepository
     // stateflow for getting temp items
     private val _tempOrderResult = MutableStateFlow<Resource<List<Order>>>(Resource.Loading())
     val tempOrderResult: StateFlow<Resource<List<Order>>> = _tempOrderResult.asStateFlow()
+
+
+    // StateFlow for create order
+    private val _orderState = MutableStateFlow<Resource<OrderResponse>?>(null)
+    val orderState: StateFlow<Resource<OrderResponse>?> = _orderState.asStateFlow()
+
+
+    /**
+     * Creates an order.
+     *
+     * @param orderRequest the order request
+     */
+    fun createOrder(orderRequest: OrderRequest) = viewModelScope.launch {
+        repository.createOrder(orderRequest).collect { resource ->
+            _orderState.value = resource
+        }
+    }
 
     /**
      * Adds an item to the order.

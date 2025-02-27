@@ -14,6 +14,7 @@ data class Order(
     val tableId:String,
     val invoiceId:String,
     val orderItemIds:List<String>,
-    val orderTime: LocalDateTime,
-    val status:Status
+    val orderTime: String,
+    val status:Status,
+    val totalAmount:Double
 )

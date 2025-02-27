@@ -7,5 +7,4 @@ data class MenuItemDTO(
     val imageData:String,
     val categoryId:String,
     val available:Boolean=true,
-    val note:String
 )

@@ -185,7 +185,7 @@ object RetrofitClient {
      *
      * @return A configured [Retrofit] instance for handling order operations.
      */
-    @MenuItemRetrofit
+    @OrderRetrofit
     @Provides
     @Singleton
     fun provideOrderRetrofit(okHttpClient: OkHttpClient) : Retrofit{
@@ -203,7 +203,7 @@ object RetrofitClient {
      */
     @Provides
     @Singleton
-    fun provideOrderApi(@MenuItemRetrofit retrofit: Retrofit): OrderService{
+    fun provideOrderApi(@OrderRetrofit retrofit: Retrofit): OrderService{
         return retrofit.create(OrderService::class.java);
     }
 }
