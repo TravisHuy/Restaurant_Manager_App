@@ -47,7 +47,9 @@ class OrderViewModel @Inject constructor(private val repository: OrderRepository
     private val _orderState = MutableStateFlow<Resource<OrderResponse>?>(null)
     val orderState: StateFlow<Resource<OrderResponse>?> = _orderState.asStateFlow()
 
-
+    //stateflow for getting customer name
+    private val _customerName = MutableStateFlow<Resource<String>>(Resource.Loading())
+    val customerName: StateFlow<Resource<String>> = _customerName.asStateFlow()
     /**
      * Creates an order.
      *
@@ -59,6 +61,16 @@ class OrderViewModel @Inject constructor(private val repository: OrderRepository
         }
     }
 
+    /**
+     * Gets the customer name.
+     *
+     * @param tableId the id of the table
+     */
+    fun getCustomerName(tableId: String) = viewModelScope.launch {
+        repository.getCustomerName(tableId).collect {
+            _customerName.value = it
+        }
+    }
     /**
      * Adds an item to the order.
      *

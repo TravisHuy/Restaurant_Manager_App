@@ -12,5 +12,5 @@ data class TableDto(
     /** Table capacity */
     val capacity: Int,
     /** Availability status of the table */
-    val available: Boolean = true,
+    val available: Boolean,
 )

@@ -41,4 +41,7 @@ interface OrderService {
     @POST("api/orders/add")
     suspend fun createOrder(@Body orderRequest: OrderRequest):Response<OrderResponse>
 
+    @GET("/api/orders/customerName/{tableId}")
+    suspend fun getCustomerName(@Part("tableId") tableId:String):Response<String>
+
 }

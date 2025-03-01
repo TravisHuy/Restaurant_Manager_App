@@ -206,4 +206,32 @@ object RetrofitClient {
     fun provideOrderApi(@OrderRetrofit retrofit: Retrofit): OrderService{
         return retrofit.create(OrderService::class.java);
     }
+
+
+    /**
+     * Provides a singleton instance of Retrofit for order-related requests.
+     *
+     * @return A configured [Retrofit] instance for handling order operations.
+     */
+    @ReservationRetrofit
+    @Provides
+    @Singleton
+    fun provideReservationRetrofit(okHttpClient: OkHttpClient) : Retrofit{
+        return Retrofit.Builder().baseUrl(Constants.AUTH_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+    }
+
+    /**
+     * Provides a singleton instance of [OrderService] for handling order related requests.
+     *
+     * @param retrofit The [Retrofit] instance used to create the service.
+     * @return An implementation of [OrderService].
+     */
+    @Provides
+    @Singleton
+    fun provideReservationApi(@ReservationRetrofit retrofit: Retrofit): ReservationService{
+        return retrofit.create(ReservationService::class.java);
+    }
 }

@@ -8,7 +8,7 @@
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enter Customer Name"
+        android:text="Enter Reservation Details"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginBottom="16dp"/>
@@ -28,7 +28,21 @@
             android:inputType="textPersonName"
             />
     </com.google.android.material.textfield.TextInputLayout>
-
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_customer_number_person"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:hintEnabled="false"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_customer_number_person"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Number Person"
+            android:inputType="number"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

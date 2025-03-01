@@ -110,4 +110,21 @@ class OrderRepository @Inject constructor(private val orderService: OrderService
             Log.d("OrderRepository", "error: ${e.message}")
         }
     }
+    suspend fun getCustomerName(tableId:String) : Flow<Resource<String>> = flow {
+        emit(Resource.Loading())
+        try {
+            val response = orderService.getCustomerName(tableId)
+            if(response.isSuccessful){
+                response.body()?.let {
+                    emit(Resource.Success(it))
+                } ?: emit(Resource.Error("empty response body server"))
+            }
+            else{
+                emit(Resource.Error("Failed to get customer name: ${response.message()}"))
+            }
+        }
+        catch (e:Exception){
+            emit(Resource.Error("Network error: ${e.message}"))
+        }
+    }
 }

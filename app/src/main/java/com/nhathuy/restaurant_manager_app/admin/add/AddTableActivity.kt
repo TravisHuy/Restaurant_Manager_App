@@ -47,7 +47,7 @@ class AddTableActivity : AppCompatActivity() {
                 val tableCapacity = edAddTableCapacity.text.toString()
 
                 if(validateInput(tableNumber,tableCapacity)){
-                    viewModel.addTable(TableDto(tableNumber.toInt(),tableCapacity.toInt()),"1")
+                    viewModel.addTable(TableDto(tableNumber.toInt(),tableCapacity.toInt(),available = true),"1")
                 }
             }
         }

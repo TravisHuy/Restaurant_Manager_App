@@ -19,12 +19,14 @@ import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.adapter.FloorAdapter
 import com.nhathuy.restaurant_manager_app.adapter.TableAdapter
+import com.nhathuy.restaurant_manager_app.data.dto.ReservationDTO
 import com.nhathuy.restaurant_manager_app.databinding.DialogAddCustomerNameBinding
 import com.nhathuy.restaurant_manager_app.databinding.FragmentMapBinding
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import com.nhathuy.restaurant_manager_app.ui.MenuItemActivity
 import com.nhathuy.restaurant_manager_app.util.Constants
 import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
+import com.nhathuy.restaurant_manager_app.viewmodel.ReservationViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
 import javax.inject.Inject
 
@@ -40,9 +42,12 @@ class MapFragment : Fragment() {
     private lateinit var tableAdapter : TableAdapter
     private lateinit var floorAdapter: FloorAdapter
     private var floorId : String? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModel: FloorViewModel by viewModels { viewModelFactory }
+    private val reservationViewModel: ReservationViewModel by viewModels { viewModelFactory }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -88,16 +93,47 @@ class MapFragment : Fragment() {
 
         dialogBinding.btnConfirmCustomer.setOnClickListener {
             val customerName = dialogBinding.etCustomerName.text.toString().trim()
-            if(customerName.isEmpty()){
-                dialogBinding.layoutCustomerName.error = "Please enter customer name"
+            val numberOfPeople = dialogBinding.etCustomerNumberPerson.text.toString().trim()
+            var isValid = true
+
+            if (numberOfPeople.isEmpty()) {
+                dialogBinding.layoutCustomerNumberPerson.error = "Please enter number of people"
+                isValid = false
+            } else {
+                dialogBinding.layoutCustomerNumberPerson.error = null // Xóa lỗi nếu nhập đúng
             }
-            else{
-                val intent = Intent(requireContext(), MenuItemActivity::class.java).apply {
-                    putExtra("CUSTOMER_NAME", customerName)
-                    putExtra("TABLE_ID", tableId)
+
+            if (customerName.isEmpty()) {
+                dialogBinding.layoutCustomerName.error = "Please enter customer name"
+                isValid = false
+            } else {
+                dialogBinding.layoutCustomerName.error = null
+            }
+
+            if (!isValid) return@setOnClickListener
+
+            reservationViewModel.addReservation(tableId, ReservationDTO(numberOfPeople.toInt(), customerName))
+
+            reservationViewModel.addReservationResult.observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        Toast.makeText(requireContext(), "Reservation successful!", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+
+                        // Chuyển màn hình sau khi reservation đã được tạo xong
+                        val intent = Intent(requireContext(), MenuItemActivity::class.java).apply {
+                            putExtra("CUSTOMER_NAME", customerName)
+                            putExtra("TABLE_ID", tableId)
+                        }
+                        startActivityForResult(intent, Constants.REQUEST_CODE_CREATE_ORDER)
+                    }
+                    is Resource.Error -> {
+                        Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                    }
+                    is Resource.Loading -> {
+                        // Có thể hiển thị ProgressBar nếu muốn
+                    }
                 }
-                startActivityForResult(intent,Constants.REQUEST_CODE_CREATE_ORDER)
-                dialog.dismiss()
             }
         }
 

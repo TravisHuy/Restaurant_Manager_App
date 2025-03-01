@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.HttpException
 import javax.inject.Inject
 
 /**
@@ -55,7 +56,12 @@ class MenuItemViewModel @Inject constructor(private val repository: MenuItemRepo
     fun addMenuItem(menuItemDTO: MenuItemDTO, imageFile: MultipartBody.Part?, categoryId: String) {
         viewModelScope.launch {
             repository.addMenuItem(menuItemDTO, imageFile, categoryId)
-                .catch { e -> _createMenuItemState.value = Resource.Error(e.message ?: "Unknown error") }
+                .catch { e ->
+                    val errorMessage = when(e) {
+                        is HttpException -> "Error: ${e.response()?.errorBody()?.string()}"
+                        else -> "Error: ${e.message}"
+                    }
+                    _createMenuItemState.value = Resource.Error(errorMessage) }
                 .collect { _createMenuItemState.value = it }
         }
     }
@@ -81,9 +87,5 @@ class MenuItemViewModel @Inject constructor(private val repository: MenuItemRepo
     fun resetCreateStatus() {
         _createMenuItemState.value = null
         _menuItemImageState.value = null
-    }
-
-    fun resetUpdateStatus() {
-
     }
 }

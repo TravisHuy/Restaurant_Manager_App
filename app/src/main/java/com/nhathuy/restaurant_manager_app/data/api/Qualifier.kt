@@ -45,3 +45,10 @@ annotation class MenuItemRetrofit
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class OrderRetrofit
+
+/**
+ * Qualifier for the reservation Retrofit client
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ReservationRetrofit

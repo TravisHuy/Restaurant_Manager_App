@@ -17,9 +17,9 @@ data class Table(
     /** Availability status of the table */
     var available: Boolean,
     /** List of order IDs associated with the table */
-    var orderIds: List<String>,
+    var orderId: String,
     /** List of reservation IDs associated with the table */
-    var reservationIds: List<String>,
+    var reservationId: String,
     /** Floor ID where the table is located */
     val floorId: String
 )

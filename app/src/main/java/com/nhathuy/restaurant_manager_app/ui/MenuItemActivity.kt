@@ -97,20 +97,28 @@ class MenuItemActivity : AppCompatActivity() {
         //group selected items by menu item id
         val menuItems =  menuItemViewModel.menuItemsState.value.data ?: return
 
-        val menuItemRequests = selectedItems.map {
-                (itemId,quantity) ->
-            val menuItem = menuItems.find { it.id == itemId } ?: return@map null
-            MenuItemRequest(menuItem.id, quantity)
-        }.filterNotNull()
+        // Use adapter.getQuantity instead of relying only on selectedItems map
+        val menuItemRequests = menuItems
+            .filter { adapter.getQuantity(it.id) > 0 } // Chỉ lấy items có số lượng > 0
+            .map { menuItem ->
+                MenuItemRequest(
+                    menuItemId = menuItem.id,
+                    quantity = adapter.getQuantity(menuItem.id) // Lấy số lượng từ Adapter
+                )
+            }
 
         if(menuItemRequests.isEmpty()){
             showError("No menu items selected")
             return
         }
 
-        val orderItemRequest = OrderItemRequest(menuItems=menuItemRequests, note = "")
-
-        orderItemRequests.add(orderItemRequest)
+        menuItemRequests.forEach { menuItemRequest ->
+            val orderItemRequest = OrderItemRequest(
+                menuItems = listOf(menuItemRequest), // Each OrderItemRequest contains only ONE menu item
+                note = ""
+            )
+            orderItemRequests.add(orderItemRequest)
+        }
 
         val orderRequest = OrderRequest(tableId = tableId, customerName = customerName, items = orderItemRequests)
 
@@ -216,6 +224,11 @@ class MenuItemActivity : AppCompatActivity() {
     }
 
     private fun handleItemClick(menuItem: MenuItem) {
+
+        val quantity = adapter.getQuantity(menuItem.id)
+
+        updateItemQuantity(menuItem,quantity)
+
         // if there are items selected, switch to selection mode
         if (adapter.getSelectItems().isNotEmpty()) {
             // No need to call toggleSelection here as it is already handled in the adapter
@@ -252,6 +265,9 @@ class MenuItemActivity : AppCompatActivity() {
         } else {
             selectedItems.remove(menuItem.id)
         }
+
+        Log.d("MenuItemActivity", "Selected items: ${selectedItems.size}, IDs: ${selectedItems.keys}")
+
         updateOrderSummary()
     }
 
@@ -287,7 +303,7 @@ class MenuItemActivity : AppCompatActivity() {
 
             if(note.isNotEmpty()){
                 menuItemViewModel.addNoteMenuItem(menuItem.id, note)
-                Toast.makeText(this, "Đã thêm note: $note", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Added note: $note", Toast.LENGTH_SHORT).show()
                 dialog.dismiss() // Đóng dialog sau khi xác nhận
             }
             else{

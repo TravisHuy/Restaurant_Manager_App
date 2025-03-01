@@ -122,7 +122,7 @@ class AllFloorActivity : AppCompatActivity() {
             val tableCapacity = table_capacity.text.toString()
 
             if(validateInput(tableNumber,tableCapacity,layoutTableNumber, layoutTableCapacity)){
-                tableViewModel.addTable(TableDto(tableNumber.toInt(),tableCapacity.toInt()),floorId)
+                tableViewModel.addTable(TableDto(tableNumber.toInt(),tableCapacity.toInt(),true),floorId)
 
 
                 tableViewModel.addTableResult.observe(this) {
@@ -133,9 +133,10 @@ class AllFloorActivity : AppCompatActivity() {
                         is Resource.Success -> {
                             Toast.makeText(this, "Table added successfully", Toast.LENGTH_SHORT).show()
                             cleanInput(dialog)
-                            currentFloorId?.let {
-                                showDialogAddTable(it)
-                            }
+//                            currentFloorId?.let {
+//                                showDialogAddTable(it)
+//                            }
+                            dialog.dismiss()
                         }
                         is Resource.Error -> {
                             Toast.makeText(this,result.message, Toast.LENGTH_SHORT).show()

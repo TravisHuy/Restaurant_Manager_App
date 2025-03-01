@@ -1,26 +1,19 @@
 package com.nhathuy.restaurant_manager_app.adapter
 
 import android.graphics.BitmapFactory
-import android.graphics.drawable.Drawable
-import android.util.Log
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.datepicker.MaterialCalendar
 import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.data.model.MenuItem
 import com.nhathuy.restaurant_manager_app.databinding.ItemMenuBinding
-import com.nhathuy.restaurant_manager_app.util.Constants
 
 /**
  * Adapter class for the menu items recyclerview
@@ -41,7 +34,7 @@ class MenuItemAdapter(
     private var menuItems: List<MenuItem> = listOf()
     private var itemQuantities = mutableMapOf<String, Int>()
     private var selectedItems = mutableSetOf<String>()
-
+    private var textWatcher : TextWatcher? = null
     inner class MenuItemViewHolder(val binding: ItemMenuBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(menuItem: MenuItem, position: Int) {
             binding.apply {
@@ -83,6 +76,13 @@ class MenuItemAdapter(
                         val currentValue = currentText.toIntOrNull() ?: 0
                         val newQuantity = currentValue + 1
 
+                        // If it's the first add, also select the item
+                        if (currentValue == 0 && !selectedItems.contains(menuItem.id)) {
+                            selectedItems.add(menuItem.id)
+                            checkMenu.visibility = View.VISIBLE
+                            imageMenu.alpha = 0.2f
+                        }
+
                         itemQuantities[menuItem.id] = newQuantity
                         updateControlsVisibility(newQuantity)
                         edNumberMenu.setText(newQuantity.toString())
@@ -99,8 +99,17 @@ class MenuItemAdapter(
                             updateControlsVisibility(newQuantity)
                             edNumberMenu.setText(newQuantity.toString())
                             onMinusClick(menuItem)
+
+                            // If quantity becomes zero, deselect the item
+                            if (newQuantity == 0 && selectedItems.contains(menuItem.id)) {
+                                selectedItems.remove(menuItem.id)
+                                checkMenu.visibility = View.GONE
+                                imageMenu.alpha = 1.0f
+                            }
                         }
                     }
+
+                    edNumberMenu.setOnEditorActionListener(null)
 
                     edNumberMenu.setOnEditorActionListener { _, actionId, _ ->
                         if(actionId == EditorInfo.IME_ACTION_DONE) {
@@ -114,6 +123,15 @@ class MenuItemAdapter(
                             false
                         }
                     }
+                    edNumberMenu.setOnFocusChangeListener { _, hasFocus ->
+                        if (!hasFocus) {
+                            val newQuantity = edNumberMenu.text.toString().toIntOrNull() ?: 0
+                            itemQuantities[menuItem.id] = newQuantity
+                            updateControlsVisibility(newQuantity)
+                            onQuantityChanged(menuItem, newQuantity)
+                        }
+                    }
+
                     btnNote.setOnClickListener {
                         onNoteButtonClick(menuItem)
                         swipeRevealLayout.close(true)
@@ -136,12 +154,16 @@ class MenuItemAdapter(
     }
 
     fun toggleSelection(menuItem: MenuItem) {
+
         if(selectedItems.contains(menuItem.id)) {
             selectedItems.remove(menuItem.id)
         } else {
             selectedItems.add(menuItem.id)
         }
-        // Notify the specific item change to update UI
+        if(!itemQuantities.containsKey(menuItem.id)) {
+            itemQuantities[menuItem.id] = 1
+        }
+
         notifyItemChanged(menuItems.indexOfFirst { it.id == menuItem.id })
     }
 

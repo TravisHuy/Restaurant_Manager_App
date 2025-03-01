@@ -9,6 +9,7 @@ import com.nhathuy.restaurant_manager_app.data.model.Table
 import com.nhathuy.restaurant_manager_app.data.repository.TableRepository
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import javax.inject.Inject
 
 /**
@@ -61,7 +62,12 @@ class TableViewModel @Inject constructor(private val tableRepository: TableRepos
                 _addTableResult.value = Resource.Success(response)
                 // refresh the tables list after successfully addtion
                 getAllTables()
-            } catch (e: Exception) {
+            }
+            catch(e:HttpException){
+                val errorBody = e.response()?.errorBody()?.string() ?: "Unknown error"
+                _addTableResult.value = Resource.Error("Error: $errorBody")
+            }
+            catch (e: Exception) {
                 _addTableResult.value = Resource.Error("Error: ${e.message}")
             }
         }
