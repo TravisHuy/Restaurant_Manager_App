@@ -20,7 +20,6 @@ import com.nhathuy.restaurant_manager_app.adapter.MenuItemAdapter
 import com.nhathuy.restaurant_manager_app.data.model.MenuItem
 import com.nhathuy.restaurant_manager_app.databinding.ActivityMenuItemBinding
 import com.nhathuy.restaurant_manager_app.databinding.AddMostNoteBinding
-import com.nhathuy.restaurant_manager_app.databinding.DialogAddCustomerNameBinding
 import com.nhathuy.restaurant_manager_app.oauth2.request.MenuItemRequest
 import com.nhathuy.restaurant_manager_app.oauth2.request.OrderItemRequest
 import com.nhathuy.restaurant_manager_app.oauth2.request.OrderRequest
@@ -30,6 +29,7 @@ import com.nhathuy.restaurant_manager_app.viewmodel.OrderViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 /**
  * Activity for creating a new order.
  * This activity allows the user to create a new order by selecting menu items.
@@ -45,8 +45,10 @@ class MenuItemActivity : AppCompatActivity() {
 
     private val selectedItems = mutableMapOf<String, Int>()
 
-    private var tableId:String = ""
-    private var customerName:String = ""
+    private var tableId: String = ""
+    private var customerName: String = ""
+    private var orderId: String = ""
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -60,8 +62,13 @@ class MenuItemActivity : AppCompatActivity() {
 
         (application as RestaurantMangerApp).getRestaurantComponent().inject(this)
 
-        tableId = intent.getStringExtra("TABLE_ID").toString()
-        customerName = intent.getStringExtra("CUSTOMER_NAME").toString()
+        tableId = intent.getStringExtra("TABLE_ID") ?: ""
+        customerName = intent.getStringExtra("CUSTOMER_NAME") ?: ""
+        orderId = intent.getStringExtra("ORDER_ID") ?: ""
+
+        Log.d("MenuItemActivity", "tableId: $tableId")
+        Log.d("MenuItemActivity", "customerName: $customerName")
+        Log.d("MenuItemActivity", "orderId: $orderId")
 
         setupListeners()
         setupRecyclerview()
@@ -70,7 +77,7 @@ class MenuItemActivity : AppCompatActivity() {
         menuItemViewModel.getAllMenuItems()
     }
 
-    private fun setupListeners(){
+    private fun setupListeners() {
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }
@@ -81,100 +88,125 @@ class MenuItemActivity : AppCompatActivity() {
             finish()
         }
         binding.btnConfirm.setOnClickListener {
-            createOrderRequest()
+            if (orderId.isNotBlank()) {
+                addItemToOrders(orderId)
+            } else {
+                createOrderRequest()
+            }
         }
     }
 
-    private fun createOrderRequest(){
-        if(selectedItems.isEmpty()){
+    private fun createOrderRequest() {
+        val menuItems = menuItemViewModel.menuItemsState.value.data ?: return
+
+        // Only get items with quantity > 0
+        val selectedMenuItems = menuItems.filter { adapter.getQuantity(it.id) > 0 }
+
+        if (selectedMenuItems.isEmpty()) {
             showError("Please select at least one item")
             return
         }
 
-        // create list of order item requests
-        val orderItemRequests = mutableListOf<OrderItemRequest>()
-
-        //group selected items by menu item id
-        val menuItems =  menuItemViewModel.menuItemsState.value.data ?: return
-
-        // Use adapter.getQuantity instead of relying only on selectedItems map
-        val menuItemRequests = menuItems
-            .filter { adapter.getQuantity(it.id) > 0 } // Chỉ lấy items có số lượng > 0
-            .map { menuItem ->
-                MenuItemRequest(
-                    menuItemId = menuItem.id,
-                    quantity = adapter.getQuantity(menuItem.id) // Lấy số lượng từ Adapter
-                )
-            }
-
-        if(menuItemRequests.isEmpty()){
-            showError("No menu items selected")
-            return
-        }
-
-        menuItemRequests.forEach { menuItemRequest ->
-            val orderItemRequest = OrderItemRequest(
-                menuItems = listOf(menuItemRequest), // Each OrderItemRequest contains only ONE menu item
-                note = ""
+        // Create a list of MenuItemRequest objects
+        val menuItemRequests = selectedMenuItems.map { menuItem ->
+            MenuItemRequest(
+                menuItemId = menuItem.id,
+                quantity = adapter.getQuantity(menuItem.id)
             )
-            orderItemRequests.add(orderItemRequest)
         }
 
-        val orderRequest = OrderRequest(tableId = tableId, customerName = customerName, items = orderItemRequests)
+        // Create a single OrderItemRequest that contains all menu items
+        // This matches the server's expectation based on OrderServiceImpl.createOrder
+        val orderItemRequest = OrderItemRequest(
+            menuItems = menuItemRequests,
+            note = ""
+        )
 
-        submitOrder(orderRequest)
+        // Create the order request with a list containing the single OrderItemRequest
+        val orderRequest = OrderRequest(
+            tableId = tableId,
+            customerName = customerName,
+            items = listOf(orderItemRequest)
+        )
+
+        // Submit the order
+        Log.d("MenuItemActivity", "Creating order with: $orderRequest")
+        orderViewModel.createOrder(orderRequest)
         observeOrderCreation()
     }
 
-    private fun submitOrder(orderRequest: OrderRequest){
-        orderViewModel.createOrder(orderRequest)
+    private fun addItemToOrders(orderId: String) {
+        val menuItems = menuItemViewModel.menuItemsState.value.data ?: return
+
+        // Only get items with quantity > 0
+        val selectedMenuItems = menuItems.filter { adapter.getQuantity(it.id) > 0 }
+
+        if (selectedMenuItems.isEmpty()) {
+            showError("Please select at least one item")
+            return
+        }
+
+        // Create a list of MenuItemRequest objects
+        val menuItemRequests = selectedMenuItems.map { menuItem ->
+            MenuItemRequest(
+                menuItemId = menuItem.id,
+                quantity = adapter.getQuantity(menuItem.id)
+            )
+        }
+
+        // Create a single OrderItemRequest that contains all selected menu items
+        val orderItemRequest = OrderItemRequest(
+            menuItems = menuItemRequests,
+            note = ""
+        )
+
+        // Add items to the order
+        Log.d("MenuItemActivity", "Adding items to order $orderId: $orderItemRequest")
+        orderViewModel.addItemsOrder(orderId, listOf(orderItemRequest))
+        observeOrderItemCreation()
     }
 
-    private fun observeViewModel(){
+    private fun observeViewModel() {
         lifecycleScope.launch {
             menuItemViewModel.menuItemsState.collect { resource ->
-                when(resource){
+                when (resource) {
                     is Resource.Loading -> {
                         showLoading(true)
                     }
                     is Resource.Success -> {
-                        resource.data?.let {
-                                menuItems ->
+                        resource.data?.let { menuItems ->
                             adapter.updateMenuItems(menuItems)
                             showLoading(false)
                         }
                     }
                     is Resource.Error -> {
                         showError(resource.message ?: "An unknown error occurred")
-                        Log.d("CreateOrderActivity", "Error: ${resource.message}")
+                        Log.d("MenuItemActivity", "Error loading menu items: ${resource.message}")
                         showLoading(false)
                     }
                 }
             }
-
-
         }
     }
-    private fun observeOrderCreation(){
+
+    private fun observeOrderCreation() {
         lifecycleScope.launch {
-            // Collect order state flow
             orderViewModel.orderState.collect { resource ->
-                Log.d("MenuItemActivity", "Order state: $resource)")
+                Log.d("MenuItemActivity", "Order state: $resource")
                 when (resource) {
                     is Resource.Loading -> {
                         showLoading(true)
                     }
                     is Resource.Success -> {
                         showLoading(false)
-                        Log.d("MenuItemActivity", "Order created: ${resource.data}")
                         resource.data?.let { orderResponse ->
+                            Log.d("MenuItemActivity", "Order created successfully: ${orderResponse.id}")
                             Toast.makeText(
                                 this@MenuItemActivity,
                                 "Order created: ID ${orderResponse.id}",
                                 Toast.LENGTH_SHORT
                             ).show()
 
-                            // Make sure to set result properly before finishing
                             val resultIntent = Intent()
                             resultIntent.putExtra("ORDER_ID", orderResponse.id)
                             setResult(RESULT_OK, resultIntent)
@@ -183,7 +215,9 @@ class MenuItemActivity : AppCompatActivity() {
                     }
                     is Resource.Error -> {
                         showLoading(false)
-                        showError(resource.message ?: "An error occurred")
+                        val errorMsg = resource.message ?: "An error occurred"
+                        Log.e("MenuItemActivity", "Error creating order: $errorMsg")
+                        showError(errorMsg)
                     }
                     else -> {
                         // Do nothing for initial state
@@ -192,31 +226,76 @@ class MenuItemActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun observeOrderItemCreation() {
+        lifecycleScope.launch {
+            orderViewModel.addOrderItemResult.collect { resource ->
+                Log.d("MenuItemActivity", "Add order item state: $resource")
+                when (resource) {
+                    is Resource.Loading -> {
+                        showLoading(true)
+                    }
+                    is Resource.Success -> {
+                        showLoading(false)
+                        resource.data?.let { orderResponse ->
+                            Log.d("MenuItemActivity", "Items added to order: ${orderResponse.id}")
+                            // Create an intent with the order ID
+                            val resultIntent = Intent().apply {
+                                putExtra("ORDER_ID", orderResponse.id)
+                                putExtra("TABLE_ID", tableId)
+                            }
+
+                            // Set the result as OK and attach the intent
+                            setResult(RESULT_OK, resultIntent)
+
+                            // Show a toast to confirm items were added
+                            Toast.makeText(
+                                this@MenuItemActivity,
+                                "Items added to order: ID ${orderResponse.id}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            // Close the current activity and return to the previous screen
+                            finish()
+                        }
+                    }
+                    is Resource.Error -> {
+                        showLoading(false)
+                        val errorMsg = resource.message ?: "An error occurred"
+                        Log.e("MenuItemActivity", "Error adding items to order: $errorMsg")
+                        showError(errorMsg)
+                    }
+                    else -> {
+                        // Do nothing for initial state
+                    }
+                }
+            }
+        }
+    }
+
     private fun showLoading(loading: Boolean) {
         binding.menuItemSwipeRefreshLayout.isRefreshing = loading
     }
 
-    private fun setupRecyclerview(){
+    private fun setupRecyclerview() {
         adapter = MenuItemAdapter(
-            onMenuItemClick = {
-                    menuItem ->
+            onMenuItemClick = { menuItem ->
                 handleItemClick(menuItem)
             },
-            onAddClick = {
-                    menuItem -> updateItemQuantity(menuItem, adapter.getQuantity(menuItem.id))
+            onAddClick = { menuItem ->
+                updateItemQuantity(menuItem, adapter.getQuantity(menuItem.id))
             },
-            onMinusClick = {
-                    menuItem -> updateItemQuantity(menuItem, adapter.getQuantity(menuItem.id))
+            onMinusClick = { menuItem ->
+                updateItemQuantity(menuItem, adapter.getQuantity(menuItem.id))
             },
-            onQuantityChanged = {
-                    menuItem, newQuantity ->
+            onQuantityChanged = { menuItem, newQuantity ->
                 updateItemQuantity(menuItem, newQuantity)
             },
-            onLongPress = {
-                    menuItem -> handleLongPress(menuItem)
+            onLongPress = { menuItem ->
+                handleLongPress(menuItem)
             },
-            onNoteButtonClick = {
-                    menuItem -> showNoteDialog(menuItem)
+            onNoteButtonClick = { menuItem ->
+                showNoteDialog(menuItem)
             }
         )
         binding.menuItemRec.layoutManager = LinearLayoutManager(this)
@@ -224,14 +303,10 @@ class MenuItemActivity : AppCompatActivity() {
     }
 
     private fun handleItemClick(menuItem: MenuItem) {
-
         val quantity = adapter.getQuantity(menuItem.id)
+        updateItemQuantity(menuItem, quantity)
 
-        updateItemQuantity(menuItem,quantity)
-
-        // if there are items selected, switch to selection mode
         if (adapter.getSelectItems().isNotEmpty()) {
-            // No need to call toggleSelection here as it is already handled in the adapter
             updateSelectionUI()
         } else {
             showItemDetails(menuItem)
@@ -243,14 +318,10 @@ class MenuItemActivity : AppCompatActivity() {
     }
 
     private fun updateSelectionUI() {
-        // Update UI based on the current selection state
         val selectedCount = adapter.getSelectItems().size
         if (selectedCount > 0) {
-            // Show controls for selection mode
             binding.toolbar.title = "$selectedCount selected"
-            // Other UI elements can be added to the selection mode
         } else {
-            // Back to normal UI
             binding.toolbar.title = "Create Order"
         }
     }
@@ -267,26 +338,22 @@ class MenuItemActivity : AppCompatActivity() {
         }
 
         Log.d("MenuItemActivity", "Selected items: ${selectedItems.size}, IDs: ${selectedItems.keys}")
-
         updateOrderSummary()
     }
 
     private fun updateOrderSummary() {
-        // Calculate total price and update UI
         val totalPrice = selectedItems.entries.sumOf { (itemId, quantity) ->
             menuItemViewModel.menuItemsState.value.data?.find { it.id == itemId }?.price?.times(quantity) ?: 0.0
         }
 
-        // Update UI with total price and selected items count
-//        binding.tvTotalItems.text = "Items: ${selectedItems.values.sum()}"
-//        binding.tvTotalPrice.text = "Total: $${String.format("%.2f", totalPrice)}"
+        // You can update UI elements with the total price info if needed
     }
 
-    private fun showError(message: String){
+    private fun showError(message: String) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
     }
 
-    private fun showNoteDialog(menuItem: MenuItem){
+    private fun showNoteDialog(menuItem: MenuItem) {
         val dialog = Dialog(this)
         val dialogBinding = AddMostNoteBinding.inflate(LayoutInflater.from(this))
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -301,15 +368,15 @@ class MenuItemActivity : AppCompatActivity() {
         dialogBinding.btnConfirm.setOnClickListener {
             val note = dialogBinding.edNumberMenu.text.toString()
 
-            if(note.isNotEmpty()){
+            if (note.isNotEmpty()) {
                 menuItemViewModel.addNoteMenuItem(menuItem.id, note)
                 Toast.makeText(this, "Added note: $note", Toast.LENGTH_SHORT).show()
-                dialog.dismiss() // Đóng dialog sau khi xác nhận
-            }
-            else{
+                dialog.dismiss()
+            } else {
                 Toast.makeText(this, "Note cannot be empty", Toast.LENGTH_SHORT).show()
             }
         }
+
         dialog.show()
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation

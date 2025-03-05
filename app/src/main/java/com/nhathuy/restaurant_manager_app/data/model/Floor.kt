@@ -10,7 +10,7 @@ package com.nhathuy.restaurant_manager_app.data.model
 data class Floor(
     val id: String,
     val name: String,
-    val tables: List<Table>
+    val tableIds: List<String>
 ){
     constructor(name:String):this("",name, emptyList())
 }

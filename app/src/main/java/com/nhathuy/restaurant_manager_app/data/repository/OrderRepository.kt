@@ -3,6 +3,7 @@ package com.nhathuy.restaurant_manager_app.data.repository
 import android.util.Log
 import com.nhathuy.restaurant_manager_app.data.api.OrderService
 import com.nhathuy.restaurant_manager_app.data.model.Order
+import com.nhathuy.restaurant_manager_app.oauth2.request.OrderItemRequest
 import com.nhathuy.restaurant_manager_app.oauth2.request.OrderRequest
 import com.nhathuy.restaurant_manager_app.oauth2.response.OrderResponse
 import com.nhathuy.restaurant_manager_app.resource.Resource
@@ -121,6 +122,24 @@ class OrderRepository @Inject constructor(private val orderService: OrderService
             }
             else{
                 emit(Resource.Error("Failed to get customer name: ${response.message()}"))
+            }
+        }
+        catch (e:Exception){
+            emit(Resource.Error("Network error: ${e.message}"))
+        }
+    }
+
+    suspend fun addItemToOrder(orderId:String, newItems:List<OrderItemRequest>) : Flow<Resource<OrderResponse>> = flow {
+        emit(Resource.Loading())
+        try {
+            val response = orderService.addItemToOrder(orderId, newItems)
+            if(response.isSuccessful){
+                response.body()?.let {
+                    emit(Resource.Success(it))
+                } ?: emit(Resource.Error("empty response body server"))
+            }
+            else{
+                emit(Resource.Error("Failed to add items to order: ${response.message()}"))
             }
         }
         catch (e:Exception){

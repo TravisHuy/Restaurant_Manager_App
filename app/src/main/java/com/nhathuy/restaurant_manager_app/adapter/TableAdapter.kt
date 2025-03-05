@@ -1,5 +1,6 @@
 package com.nhathuy.restaurant_manager_app.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -30,16 +31,26 @@ class TableAdapter(var tables:List<Table>,private val onTableClick: (Table) -> U
         val table = tables[position]
         with(holder.binding) {
             tvTableNumber.text = table.number.toString()
+
+            val alphaValue = if (table.available == false) 0.3f else 1.0f
+
+            ivTableImage.alpha = alphaValue
+            Log.d("TableAdapter", "Table ${table.number} available: ${table.available}, Setting alpha to $alphaValue")
+
+
             root.setOnClickListener {
                 onTableClick(table)
+                Log.d("TableAdapter", "Table ${table.reservationId} clicked")
+                Log.d("TableAdapter", "Table ${table.orderId} clicked")
+                Log.d("TableAdapter", "Table ${table.floorId} clicked")
             }
         }
 
     }
     override fun getItemCount(): Int  = tables.size
 
-    fun updateTables(tables: List<Table>){
-        this.tables = tables
+    fun updateTables(newTables: List<Table>){
+        this.tables = newTables
         notifyDataSetChanged()
     }
 }

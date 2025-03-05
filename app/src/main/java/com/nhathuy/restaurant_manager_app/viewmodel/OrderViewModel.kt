@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nhathuy.restaurant_manager_app.data.model.Order
 import com.nhathuy.restaurant_manager_app.data.repository.OrderRepository
+import com.nhathuy.restaurant_manager_app.oauth2.request.OrderItemRequest
 import com.nhathuy.restaurant_manager_app.oauth2.request.OrderRequest
 import com.nhathuy.restaurant_manager_app.oauth2.response.OrderResponse
 import com.nhathuy.restaurant_manager_app.resource.Resource
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody.Companion.toResponseBody
+import retrofit2.HttpException
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -50,6 +52,12 @@ class OrderViewModel @Inject constructor(private val repository: OrderRepository
     //stateflow for getting customer name
     private val _customerName = MutableStateFlow<Resource<String>>(Resource.Loading())
     val customerName: StateFlow<Resource<String>> = _customerName.asStateFlow()
+
+    private val _addOrderItemResult = MutableStateFlow<Resource<OrderResponse>?>(null)
+    val addOrderItemResult: StateFlow<Resource<OrderResponse>?> = _addOrderItemResult.asStateFlow()
+
+
+
     /**
      * Creates an order.
      *
@@ -61,6 +69,26 @@ class OrderViewModel @Inject constructor(private val repository: OrderRepository
         }
     }
 
+    /**
+     * Adds an item to the order.
+     * @param orderId the id of the order
+     * @param newItems the list of new items
+     */
+
+    fun addItemsOrder(orderId:String,newItems:List<OrderItemRequest>) = viewModelScope.launch {
+        try{
+            repository.addItemToOrder(orderId,newItems).collect { resource ->
+                _addOrderItemResult.value = resource
+            }
+        }
+        catch(e: HttpException){
+            val errorBody = e.response()?.errorBody()?.string() ?: "Unknown error"
+            _addOrderItemResult.value = Resource.Error("Error: $errorBody")
+        }
+        catch (e:Exception){
+            _addOrderItemResult.value = Resource.Error("Network error: ${e.message}")
+        }
+    }
     /**
      * Gets the customer name.
      *

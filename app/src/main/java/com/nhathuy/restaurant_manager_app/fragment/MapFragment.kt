@@ -20,6 +20,7 @@ import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.adapter.FloorAdapter
 import com.nhathuy.restaurant_manager_app.adapter.TableAdapter
 import com.nhathuy.restaurant_manager_app.data.dto.ReservationDTO
+import com.nhathuy.restaurant_manager_app.data.model.Table
 import com.nhathuy.restaurant_manager_app.databinding.DialogAddCustomerNameBinding
 import com.nhathuy.restaurant_manager_app.databinding.FragmentMapBinding
 import com.nhathuy.restaurant_manager_app.resource.Resource
@@ -27,6 +28,7 @@ import com.nhathuy.restaurant_manager_app.ui.MenuItemActivity
 import com.nhathuy.restaurant_manager_app.util.Constants
 import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ReservationViewModel
+import com.nhathuy.restaurant_manager_app.viewmodel.TableViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
 import javax.inject.Inject
 
@@ -47,7 +49,7 @@ class MapFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModel: FloorViewModel by viewModels { viewModelFactory }
     private val reservationViewModel: ReservationViewModel by viewModels { viewModelFactory }
-
+    private val tableViewModel : TableViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,10 +76,49 @@ class MapFragment : Fragment() {
     private fun setupTableRecyclerView(){
         tableAdapter= TableAdapter(listOf()){
             table ->
-            showEnterCustomerName(table.id)
+            handleTableSelection(table)
+            Log.d("MapFragment", "Table clicked: ${table.orderId}")
         }
         binding.recTable.layoutManager = GridLayoutManager(requireContext(),3)
         binding.recTable.adapter = tableAdapter
+    }
+    private fun handleTableSelection(table:Table){
+        // Launch a coroutine to check table status
+        tableViewModel.checkTableReservation(table.id)
+
+        // Observe the result from the ViewModel
+        tableViewModel.checkTableReservationResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Resource.Success -> {
+                    val isTableAvailable = result.data == false
+                    if (isTableAvailable) {
+                        showEnterCustomerName(table.id)
+                    } else {
+                        if (table.orderId.isNotBlank()) {
+                            navigateExistingOrder(table.id, table.orderId)
+                        } else {
+                            // Xử lý trường hợp bàn đã đặt nhưng không có orderId
+                            Toast.makeText(requireContext(), "Table booked but order not found", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    tableViewModel.checkTableReservationResult.removeObservers(viewLifecycleOwner)
+                }
+                is Resource.Error -> {
+                    Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                    tableViewModel.checkTableReservationResult.removeObservers(viewLifecycleOwner)
+                }
+                is Resource.Loading -> {
+
+                }
+            }
+        }
+    }
+    private fun navigateExistingOrder(tableId: String, orderId: String) {
+        val intent = Intent(requireContext(), MenuItemActivity::class.java).apply {
+            putExtra("TABLE_ID", tableId)
+            putExtra("ORDER_ID", orderId)
+        }
+        startActivityForResult(intent, Constants.REQUEST_CODE_CREATE_ORDER_ITEM)
     }
 
     private fun showEnterCustomerName(tableId:String) {
@@ -120,6 +161,7 @@ class MapFragment : Fragment() {
                         Toast.makeText(requireContext(), "Reservation successful!", Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
 
+
                         // Chuyển màn hình sau khi reservation đã được tạo xong
                         val intent = Intent(requireContext(), MenuItemActivity::class.java).apply {
                             putExtra("CUSTOMER_NAME", customerName)
@@ -131,7 +173,7 @@ class MapFragment : Fragment() {
                         Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
                     }
                     is Resource.Loading -> {
-                        // Có thể hiển thị ProgressBar nếu muốn
+
                     }
                 }
             }
@@ -204,8 +246,7 @@ class MapFragment : Fragment() {
                     showLoading(false)
                     result.data?.let {
                             floor ->
-                        tableAdapter.updateTables(floor.tables)
-                        Log.d("MapFragment", "showListTable: ${floor.tables.size}")
+                       tableViewModel.getTablesByFloorId(floor.id)
                     }
                 }
                 is Resource.Error -> {
@@ -213,6 +254,40 @@ class MapFragment : Fragment() {
                     Toast.makeText(requireContext(),result.message,Toast.LENGTH_SHORT).show()
                 }
                 is Resource.Loading ->{
+                    showLoading(true)
+                }
+            }
+        }
+        tableViewModel.tables.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Resource.Success -> {
+                    showLoading(false)
+                    result.data?.let { tables ->
+                        tableAdapter.updateTables(tables)
+                    }
+                }
+                is Resource.Error -> {
+                    showLoading(false)
+                    Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                }
+                is Resource.Loading -> {
+                    showLoading(true)
+                }
+            }
+        }
+        tableViewModel.tablesByFloor.observe(requireActivity()) { result ->
+            when (result) {
+                is Resource.Success -> {
+                    showLoading(false)
+                    result.data?.let { tables ->
+                        tableAdapter.updateTables(tables)
+                    }
+                }
+                is Resource.Error -> {
+                    showLoading(false)
+                    Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                }
+                is Resource.Loading -> {
                     showLoading(true)
                 }
             }

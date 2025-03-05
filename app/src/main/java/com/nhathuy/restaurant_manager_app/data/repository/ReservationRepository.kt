@@ -6,4 +6,5 @@ import javax.inject.Inject
 
 class ReservationRepository @Inject constructor(private val reservationService: ReservationService) {
     suspend fun addReservation(tableId: String, reservation: ReservationDTO) = reservationService.addReservation(tableId, reservation)
+    suspend fun checkTableReservation(tableId: String) = reservationService.checkTableReservation(tableId)
 }
