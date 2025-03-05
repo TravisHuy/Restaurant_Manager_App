@@ -48,7 +48,7 @@ class MenuItemActivity : AppCompatActivity() {
     private var tableId: String = ""
     private var customerName: String = ""
     private var orderId: String = ""
-
+    private var note:String = ""
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -119,7 +119,7 @@ class MenuItemActivity : AppCompatActivity() {
         // This matches the server's expectation based on OrderServiceImpl.createOrder
         val orderItemRequest = OrderItemRequest(
             menuItems = menuItemRequests,
-            note = ""
+            note = note
         )
 
         // Create the order request with a list containing the single OrderItemRequest
@@ -157,7 +157,7 @@ class MenuItemActivity : AppCompatActivity() {
         // Create a single OrderItemRequest that contains all selected menu items
         val orderItemRequest = OrderItemRequest(
             menuItems = menuItemRequests,
-            note = ""
+            note = note
         )
 
         // Add items to the order
@@ -366,10 +366,10 @@ class MenuItemActivity : AppCompatActivity() {
         }
 
         dialogBinding.btnConfirm.setOnClickListener {
-            val note = dialogBinding.edNumberMenu.text.toString()
+            val noteString = dialogBinding.edNumberMenu.text.toString()
 
-            if (note.isNotEmpty()) {
-                menuItemViewModel.addNoteMenuItem(menuItem.id, note)
+            if (noteString.isNotEmpty()) {
+                note = noteString
                 Toast.makeText(this, "Added note: $note", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             } else {
