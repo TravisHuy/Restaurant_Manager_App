@@ -36,9 +36,7 @@ class MoreFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val binding = FragmentMoreBinding.inflate(inflater, container, false)
-        binding.btnAddFloor.setOnClickListener {
-            findNavController().navigate(R.id.action_nav_more_to_addFloorActivity)
-        }
+
         return binding.root
     }
 

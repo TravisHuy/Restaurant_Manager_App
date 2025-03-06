@@ -52,3 +52,10 @@ annotation class OrderRetrofit
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class ReservationRetrofit
+
+/**
+ * Qualifier for the reservation Retrofit client
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class OrderItemRetrofit

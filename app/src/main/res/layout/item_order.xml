@@ -15,18 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/check_menu"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="8dp"
-                android:src="@drawable/ic_check"
-                android:visibility="gone"
-                android:background="@drawable/check_background"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -39,7 +27,7 @@
                     android:id="@+id/image_menu"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/table_2"
+                    android:src="@drawable/ic_order_board"
                     />
 
                 <LinearLayout
@@ -51,22 +39,22 @@
                     android:orientation="vertical">
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/menu_item_name"
+                        android:id="@+id/order_customer_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/noto_sans_bold"
-                        android:text="Chả gốm" />
+                        android:text="Huy" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/menu_item_price_quantity"
+                        android:id="@+id/order_price_quantity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
                         android:fontFamily="@font/noto_sans_light"
-                        android:text="5.0" />
+                        android:text="@string/quantity_order" />
                 </LinearLayout>
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/menu_item_total_price"
+                    android:id="@+id/order_total_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

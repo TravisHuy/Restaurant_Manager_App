@@ -7,6 +7,7 @@ import com.nhathuy.restaurant_manager_app.viewmodel.AuthViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.CategoryViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.MenuItemViewModel
+import com.nhathuy.restaurant_manager_app.viewmodel.OrderItemViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.OrderViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ReservationViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.TableViewModel
@@ -115,4 +116,15 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ReservationViewModel::class)
     abstract fun bindReservationViewModel(reservationViewModel: ReservationViewModel): ViewModel
+
+    /**
+     * Binds the OrderItemViewModel class to the ViewModel class.
+     *
+     * @param orderItemViewModel The reservation view model
+     * @return The view model
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(OrderItemViewModel::class)
+    abstract fun bindOrderItemViewModel(orderItemViewModel: OrderItemViewModel): ViewModel
 }

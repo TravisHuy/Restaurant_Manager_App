@@ -8,7 +8,7 @@ package com.nhathuy.restaurant_manager_app.data.model
  */
 data class OrderItem(
     val id:String,
-    val menuItemId: List<String>,
+    val menuItemIds: List<OrderItemDetail>,
     val quantity: Int,
     val price:Double
 ){

@@ -23,9 +23,9 @@ import retrofit2.http.Query
 interface OrderService {
 
     @GET("api/orders/all")
-    suspend fun getAllOrders():Response<List<OrderResponse>>
+    suspend fun getAllOrders():Response<List<Order>>
     @GET("api/orders/{orderId}")
-    suspend fun getOrderById(@Path("orderId") orderId:String):Response<OrderResponse>
+    suspend fun getOrderById(@Path("orderId") orderId:String):Response<Order>
 
     @POST("api/orders/add-item")
     suspend fun addOrder(@Query("tableId") tableId:String ,

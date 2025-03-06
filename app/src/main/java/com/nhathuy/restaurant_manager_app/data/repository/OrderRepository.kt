@@ -41,7 +41,7 @@ class OrderRepository @Inject constructor(private val orderService: OrderService
         }
     }
 
-    suspend fun getAllOrders() : Flow<Resource<List<OrderResponse>> > = flow {
+    suspend fun getAllOrders() : Flow<Resource<List<Order>> > = flow {
         emit(Resource.Loading())
         try {
             val response = orderService.getAllOrders()
@@ -58,7 +58,7 @@ class OrderRepository @Inject constructor(private val orderService: OrderService
             emit(Resource.Error("Network error: ${e.message}"))
         }
     }
-    suspend fun getOrderById(orderId:String) : Flow<Resource<OrderResponse>> = flow {
+    suspend fun getOrderById(orderId:String) : Flow<Resource<Order>> = flow {
         emit(Resource.Loading())
         try {
             val response = orderService.getOrderById(orderId)

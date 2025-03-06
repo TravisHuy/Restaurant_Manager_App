@@ -17,7 +17,9 @@
         android:theme="@style/Theme.Restaurant_Manager_App"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        
+        <activity
+            android:name=".ui.OrderItemActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.ShowImageActivity"
             android:exported="false" />

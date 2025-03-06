@@ -4,6 +4,7 @@ import com.nhathuy.restaurant_manager_app.data.api.AuthService
 import com.nhathuy.restaurant_manager_app.data.api.CategoryService
 import com.nhathuy.restaurant_manager_app.data.api.FloorService
 import com.nhathuy.restaurant_manager_app.data.api.MenuItemService
+import com.nhathuy.restaurant_manager_app.data.api.OrderItemService
 import com.nhathuy.restaurant_manager_app.data.api.OrderService
 import com.nhathuy.restaurant_manager_app.data.api.ReservationService
 import com.nhathuy.restaurant_manager_app.data.api.TableService
@@ -11,6 +12,7 @@ import com.nhathuy.restaurant_manager_app.data.repository.AuthRepository
 import com.nhathuy.restaurant_manager_app.data.repository.CategoryRepository
 import com.nhathuy.restaurant_manager_app.data.repository.FloorRepository
 import com.nhathuy.restaurant_manager_app.data.repository.MenuItemRepository
+import com.nhathuy.restaurant_manager_app.data.repository.OrderItemRepository
 import com.nhathuy.restaurant_manager_app.data.repository.OrderRepository
 import com.nhathuy.restaurant_manager_app.data.repository.ReservationRepository
 import com.nhathuy.restaurant_manager_app.data.repository.TableRepository
@@ -108,5 +110,17 @@ class RepositoryModule {
     @Singleton
     fun provideReservationRepository(reservationService: ReservationService): ReservationRepository {
         return ReservationRepository(reservationService)
+    }
+
+    /**
+     * Provides the orderItem repository for the application.
+     *
+     * @param orderItemService The category service
+     * @return The order repository
+     */
+    @Provides
+    @Singleton
+    fun provideOrderItemRepository(orderItemService: OrderItemService): OrderItemRepository {
+        return OrderItemRepository(orderItemService)
     }
 }

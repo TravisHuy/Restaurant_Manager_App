@@ -56,11 +56,11 @@ class OrderViewModel @Inject constructor(private val repository: OrderRepository
     private val _addOrderItemResult = MutableStateFlow<Resource<OrderResponse>?>(null)
     val addOrderItemResult: StateFlow<Resource<OrderResponse>?> = _addOrderItemResult.asStateFlow()
 
-    private val _orderItems = MutableLiveData<Resource<List<OrderResponse>>>()
-    val orderItems: LiveData<Resource<List<OrderResponse>>> = _orderItems
+    private val _orderItems = MutableLiveData<Resource<List<Order>>>()
+    val orderItems: LiveData<Resource<List<Order>>> = _orderItems
 
-    private val _orderId = MutableLiveData<Resource<OrderResponse>>()
-    val orderId: LiveData<Resource<OrderResponse>> = _orderId
+    private val _orderId = MutableLiveData<Resource<Order>>()
+    val orderId: LiveData<Resource<Order>> = _orderId
 
     /**
      * Creates an order.

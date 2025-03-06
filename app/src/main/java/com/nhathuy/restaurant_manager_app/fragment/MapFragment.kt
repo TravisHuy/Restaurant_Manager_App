@@ -130,6 +130,7 @@ class MapFragment : Fragment() {
 
         dialogBinding.btnCancelCustomer.setOnClickListener {
             dialog.dismiss()
+            reservationViewModel.addReservationResult.removeObservers(viewLifecycleOwner)
         }
 
         dialogBinding.btnConfirmCustomer.setOnClickListener {
@@ -153,6 +154,8 @@ class MapFragment : Fragment() {
 
             if (!isValid) return@setOnClickListener
 
+            reservationViewModel.addReservationResult.removeObservers(viewLifecycleOwner)
+
             reservationViewModel.addReservation(tableId, ReservationDTO(numberOfPeople.toInt(), customerName))
 
             reservationViewModel.addReservationResult.observe(viewLifecycleOwner) { result ->
@@ -168,6 +171,8 @@ class MapFragment : Fragment() {
                             putExtra("TABLE_ID", tableId)
                         }
                         startActivityForResult(intent, Constants.REQUEST_CODE_CREATE_ORDER)
+
+                        reservationViewModel.addReservationResult.removeObservers(viewLifecycleOwner)
                     }
                     is Resource.Error -> {
                         Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
