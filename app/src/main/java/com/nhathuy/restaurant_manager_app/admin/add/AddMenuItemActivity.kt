@@ -244,5 +244,7 @@ class AddMenuItemActivity : AppCompatActivity() {
         binding.edAddMenuDescription.text?.clear()
         binding.edAddMenuPrice.text?.clear()
         binding.categoryAutoComplete.text?.clear()
+        binding.menuImage.setImageURI(null)
+        selectImageUri = null
     }
 }

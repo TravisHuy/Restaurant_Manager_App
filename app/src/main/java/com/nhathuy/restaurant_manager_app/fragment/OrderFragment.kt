@@ -1,6 +1,7 @@
 package com.nhathuy.restaurant_manager_app.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.adapter.OrderAdapter
 import com.nhathuy.restaurant_manager_app.databinding.FragmentOrderBinding
 import com.nhathuy.restaurant_manager_app.resource.Resource
+import com.nhathuy.restaurant_manager_app.ui.OrderItemActivity
 import com.nhathuy.restaurant_manager_app.viewmodel.OrderViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
 import javax.inject.Inject
@@ -58,12 +60,19 @@ class OrderFragment : Fragment() {
     private fun setupOrderRecyclerView() {
         orderAdapter = OrderAdapter {
             order ->
-            Toast.makeText(requireContext(),"${order.id}",Toast.LENGTH_SHORT).show()
+            navigateOrderItem(order.id)
         }
         binding.orderRec.layoutManager = LinearLayoutManager(requireContext())
         binding.orderRec.adapter = orderAdapter
 
     }
+
+    private fun navigateOrderItem(orderId: String) {
+        val intent = Intent(requireContext(),OrderItemActivity::class.java)
+        intent.putExtra("ORDER_ID",orderId)
+        startActivity(intent)
+    }
+
     private fun observeViewModel() {
         orderViewModel.orderItems.observe(requireActivity()) {
             result ->

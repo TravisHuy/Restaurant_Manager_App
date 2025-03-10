@@ -7,4 +7,5 @@
     <color name="gray">#BCCCDC</color>
     <color name="gray_dark">#D0DDD0</color>
     <color name="blue">#006BFF</color>
+    <color name="divider_color">#DDDDDD</color>
 </resources>
