@@ -3,7 +3,10 @@ package com.nhathuy.restaurant_manager_app.adapter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.data.model.Table
 import com.nhathuy.restaurant_manager_app.databinding.ItemTableBinding
 
@@ -35,6 +38,20 @@ class TableAdapter(var tables:List<Table>,private val onTableClick: (Table) -> U
             val alphaValue = if (table.available == false) 0.3f else 1.0f
 
             ivTableImage.alpha = alphaValue
+
+            val context = root.context
+            val color = if(table.available == false){
+                ContextCompat.getColor(context,R.color.red)
+            }
+            else{
+                ContextCompat.getColor(context,R.color.green)
+            }
+            val backgroundDrawable = ContextCompat.getDrawable(context, R.drawable.status_table)?.mutate()
+            if (backgroundDrawable != null) {
+                DrawableCompat.setTint(backgroundDrawable, color)
+                tableStatus.background = backgroundDrawable
+            }
+
             Log.d("TableAdapter", "Table ${table.number} available: ${table.available}, Setting alpha to $alphaValue")
 
 

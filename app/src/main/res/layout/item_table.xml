@@ -24,5 +24,13 @@
             android:textColor="@color/black"
             android:textSize="18sp"
             />
+        <ImageView
+            android:id="@+id/table_status"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/status_table"
+            />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

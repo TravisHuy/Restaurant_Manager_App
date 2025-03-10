@@ -22,9 +22,12 @@ import com.nhathuy.restaurant_manager_app.adapter.TableAdapter
 import com.nhathuy.restaurant_manager_app.data.dto.ReservationDTO
 import com.nhathuy.restaurant_manager_app.data.model.Table
 import com.nhathuy.restaurant_manager_app.databinding.DialogAddCustomerNameBinding
+import com.nhathuy.restaurant_manager_app.databinding.DialogAddTableBinding
+import com.nhathuy.restaurant_manager_app.databinding.DialogTableOptionBinding
 import com.nhathuy.restaurant_manager_app.databinding.FragmentMapBinding
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import com.nhathuy.restaurant_manager_app.ui.MenuItemActivity
+import com.nhathuy.restaurant_manager_app.ui.OrderPaymentActivity
 import com.nhathuy.restaurant_manager_app.util.Constants
 import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ReservationViewModel
@@ -95,7 +98,7 @@ class MapFragment : Fragment() {
                         showEnterCustomerName(table.id)
                     } else {
                         if (table.orderId.isNotBlank()) {
-                            navigateExistingOrder(table.id, table.orderId)
+                            showTableOptionDialog(table.id, table.orderId)
                         } else {
                             // Xử lý trường hợp bàn đã đặt nhưng không có orderId
                             Toast.makeText(requireContext(), "Table booked but order not found", Toast.LENGTH_SHORT).show()
@@ -113,13 +116,41 @@ class MapFragment : Fragment() {
             }
         }
     }
-    private fun navigateExistingOrder(tableId: String, orderId: String) {
+    private fun showTableOptionDialog(tableId: String, orderId: String) {
+        val dialog = Dialog(requireContext())
+        val dialogBinding = DialogTableOptionBinding.inflate(LayoutInflater.from(requireContext()))
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(dialogBinding.root)
+
+        dialogBinding.btnAddMoreItems.setOnClickListener {
+            dialog.dismiss()
+            navigateExistingOrder(tableId,orderId)
+        }
+        dialogBinding.btnPayment.setOnClickListener {
+            dialog.dismiss()
+            val intent = Intent(requireContext(),OrderPaymentActivity::class.java).apply {
+                putExtra("ORDER_ID",orderId)
+            }
+            startActivity(intent)
+        }
+        dialogBinding.icClose.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
+        dialog.window?.setGravity(Gravity.CENTER)
+    }
+    private fun  navigateExistingOrder(tableId:String,orderId:String){
         val intent = Intent(requireContext(), MenuItemActivity::class.java).apply {
             putExtra("TABLE_ID", tableId)
             putExtra("ORDER_ID", orderId)
         }
         startActivityForResult(intent, Constants.REQUEST_CODE_CREATE_ORDER_ITEM)
     }
+
 
     private fun showEnterCustomerName(tableId:String) {
         val dialog = Dialog(requireContext())
