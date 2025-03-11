@@ -34,6 +34,9 @@ interface OrderService {
                          @Query("price") price:Double
     ):Response<String>
 
+    @POST("api/updateStatus/{orderId}")
+    suspend fun updateOrderStatus(@Path("orderId") orderId:String) : Response<OrderResponse>
+
     @DELETE("api/orders/remove-item")
     suspend fun removeItem(@Query("tableId") tableId:String ,
                            @Query("menuItemId") menuItemId:String

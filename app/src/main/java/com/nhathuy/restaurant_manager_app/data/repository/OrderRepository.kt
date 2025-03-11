@@ -76,7 +76,23 @@ class OrderRepository @Inject constructor(private val orderService: OrderService
         }
     }
 
-
+    suspend fun updateOrderStatus(orderId: String) : Flow<Resource<OrderResponse>> = flow {
+        emit(Resource.Loading())
+        try {
+            val response = orderService.updateOrderStatus(orderId)
+            if(response.isSuccessful){
+                response.body()?.let {
+                    emit(Resource.Success(it))
+                }?: emit(Resource.Error("empty response body server"))
+            }
+            else{
+                emit(Resource.Error("Failed to update status order by id: ${response.message()}"))
+            }
+        }
+        catch (e:Exception){
+            emit(Resource.Error("Network error: ${e.message}"))
+        }
+    }
     suspend fun removeItem(tableId:String , menuItemId:String) : Flow<Resource<String>> = flow {
         emit(Resource.Loading())
         try {

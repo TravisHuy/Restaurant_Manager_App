@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.HttpException
@@ -61,6 +62,10 @@ class OrderViewModel @Inject constructor(private val repository: OrderRepository
 
     private val _orderId = MutableLiveData<Resource<Order>>()
     val orderId: LiveData<Resource<Order>> = _orderId
+
+    private val _updateOrderStatus = MutableStateFlow<Resource<OrderResponse>?>(null)
+    val updateOrderStatus : StateFlow<Resource<OrderResponse>?> = _updateOrderStatus.asStateFlow()
+
 
     /**
      * Creates an order.
@@ -120,6 +125,22 @@ class OrderViewModel @Inject constructor(private val repository: OrderRepository
         }
         catch (e:Exception){
             _orderId.value = Resource.Error("Network error: ${e.message}")
+        }
+    }
+
+    fun updateStatusOrder(orderId:String)  = viewModelScope.launch {
+        try {
+            repository.updateOrderStatus(orderId).collect {
+                resource ->
+                _updateOrderStatus.value  = resource
+            }
+        }
+        catch(e: HttpException){
+            val errorBody = e.response()?.errorBody()?.string() ?: "Unknown error"
+            _updateOrderStatus.value = Resource.Error("Error: $errorBody")
+        }
+        catch (e:Exception){
+            _updateOrderStatus.value = Resource.Error("Network error: ${e.message}")
         }
     }
     /**
