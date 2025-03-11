@@ -10,6 +10,7 @@ import com.nhathuy.restaurant_manager_app.oauth2.request.InvoiceRequest
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class InvoiceViewModel @Inject constructor(private val invoiceRepository: InvoiceRepository):ViewModel() {
@@ -19,9 +20,15 @@ class InvoiceViewModel @Inject constructor(private val invoiceRepository: Invoic
 
     fun addInvoice(invoiceRequest: InvoiceRequest){
         viewModelScope.launch {
-            invoiceRepository.addInvoice(invoiceRequest).collect {
-                result ->
-                _addInvoice.value = result
+            try {
+                invoiceRepository.addInvoice(invoiceRequest).collect {
+                        result ->
+                    _addInvoice.value = result
+                }
+            }
+            catch(e: HttpException){
+                val errorBody = e.response()?.errorBody()?.string() ?: "Unknown error"
+                _addInvoice.value = Resource.Error("Error: $errorBody")
             }
         }
     }

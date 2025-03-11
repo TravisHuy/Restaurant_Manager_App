@@ -22,7 +22,7 @@ class InvoiceRepository @Inject constructor(private val invoiceService: InvoiceS
                     emit(Resource.Success(invoice))
                 } ?: emit(Resource.Error("Response body is null"))
             } else {
-                emit(Resource.Error("Failed to create invoice: ${response.message()}"))
+                emit(Resource.Error("Failed : ${response.message()}"))
             }
         } catch (e: HttpException) {
             emit(Resource.Error("Network error: ${e.localizedMessage ?: "Unknown error"}"))

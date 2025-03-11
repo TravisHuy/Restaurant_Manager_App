@@ -12,6 +12,6 @@ data class Invoice(
     val id:String ,
     val orderId:String,
     val totalAmount:Double,
-    val paymentTime: LocalDateTime,
+    val paymentTime: String,
     val paymentMethod:PaymentMethod,
 )

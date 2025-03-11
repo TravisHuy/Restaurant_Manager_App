@@ -134,7 +134,7 @@ class MapFragment : Fragment() {
                 putExtra("ORDER_ID",orderId)
                 putExtra("TABLE_NUMBER",tableName)
             }
-            startActivity(intent)
+            startActivityForResult(intent,Constants.REQUEST_CODE_ORDER_PAYMENT)
         }
         dialogBinding.icClose.setOnClickListener {
             dialog.dismiss()
@@ -225,7 +225,11 @@ class MapFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == Constants.REQUEST_CODE_CREATE_ORDER && resultCode == AppCompatActivity.RESULT_OK){
+        if ((requestCode == Constants.REQUEST_CODE_CREATE_ORDER ||
+                    requestCode == Constants.REQUEST_CODE_ORDER_PAYMENT ||
+                    requestCode == Constants.REQUEST_CODE_CREATE_ORDER_ITEM)
+            && resultCode == AppCompatActivity.RESULT_OK) {
+
             floorId?.let {
                 viewModel.getFloorById(it)
             }

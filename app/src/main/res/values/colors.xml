@@ -9,4 +9,6 @@
     <color name="blue">#006BFF</color>
     <color name="divider_color">#DDDDDD</color>
     <color name="red">#ff0000</color>
+    <color name="blue_500">#2196F3</color>
+    <color name="grey_300">#E0E0E0</color>
 </resources>

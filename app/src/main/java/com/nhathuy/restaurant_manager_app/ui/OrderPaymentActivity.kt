@@ -3,16 +3,22 @@ package com.nhathuy.restaurant_manager_app.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.adapter.OrderMenuItemAdapter
 import com.nhathuy.restaurant_manager_app.data.dto.OrderItemDTO
 import com.nhathuy.restaurant_manager_app.data.model.Order
+import com.nhathuy.restaurant_manager_app.data.model.PaymentMethod
 import com.nhathuy.restaurant_manager_app.databinding.ActivityOrderPaymentBinding
+import com.nhathuy.restaurant_manager_app.oauth2.request.InvoiceRequest
 import com.nhathuy.restaurant_manager_app.resource.Resource
+import com.nhathuy.restaurant_manager_app.viewmodel.InvoiceViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.OrderItemViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.OrderViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
@@ -26,10 +32,13 @@ class OrderPaymentActivity : AppCompatActivity() {
     lateinit var viewModelFactory: ViewModelFactory
     private val orderViewModel: OrderViewModel by viewModels { viewModelFactory }
     private val orderItemViewModel : OrderItemViewModel by viewModels { viewModelFactory }
+    private val invoiceViewModel : InvoiceViewModel by viewModels { viewModelFactory }
 
     private lateinit var adapter: OrderMenuItemAdapter
     private var orderItems = mutableListOf<OrderItemDTO>()
 
+    private var selectedPaymentMethod: PaymentMethod? = null
+    private var currentOrder: Order? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityOrderPaymentBinding.inflate(layoutInflater)
@@ -49,8 +58,60 @@ class OrderPaymentActivity : AppCompatActivity() {
     }
 
     private fun setupListeners(){
+        binding.apply {
+            cardCash.setOnClickListener { selectPaymentMethod(PaymentMethod.CASH, cardCash, cardCredit, cardOnline) }
+            cardCredit.setOnClickListener { selectPaymentMethod(PaymentMethod.CARD, cardCredit, cardCash, cardOnline) }
+            cardOnline.setOnClickListener { selectPaymentMethod(PaymentMethod.ONLINE, cardOnline, cardCash, cardCredit) }
 
+            btnPay.setOnClickListener {
+                if (selectedPaymentMethod == null) {
+                    Toast.makeText(this@OrderPaymentActivity, "Please select a payment method", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                showConfirmationDialog()
+            }
+
+            // Setup toolbar back button
+            toolbar.setNavigationOnClickListener {
+                onBackPressed()
+            }
+        }
     }
+    private fun selectPaymentMethod(method: PaymentMethod, selectedCard: MaterialCardView, vararg otherCards: MaterialCardView) {
+        selectedPaymentMethod = method
+        selectedCard.isChecked = true
+        selectedCard.strokeColor = getColor(R.color.blue_500)
+        binding.btnPay.isEnabled = true
+
+        otherCards.forEach { card ->
+            card.isChecked = false
+            card.strokeColor = getColor(R.color.grey_300)
+        }
+    }
+    private fun showConfirmationDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Confirm Payment")
+            .setMessage("Are you sure you want to complete this payment?")
+            .setPositiveButton("Confirm") { _, _ ->
+                processPayment()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun processPayment(){
+        currentOrder?.let { order ->
+            selectedPaymentMethod?.let { paymentMethod ->
+                val invoiceRequest = InvoiceRequest(
+                    orderId = order.id,
+                    totalAmount = order.totalAmount,
+                    paymentMethod = paymentMethod
+                )
+                invoiceViewModel.addInvoice(invoiceRequest)
+            }
+        }
+    }
+
     private fun setupRecyclerview(){
         adapter = OrderMenuItemAdapter()
         binding.recOrderMenuItem.layoutManager = LinearLayoutManager(this)
@@ -66,6 +127,7 @@ class OrderPaymentActivity : AppCompatActivity() {
                 is Resource.Success -> {
                     result.data?.let {
                             order ->
+                        currentOrder = order
                         showInformation(order)
                         orderItems.clear()
                         Log.d("OrderItem","order item ${order.orderItemIds}")
@@ -101,6 +163,30 @@ class OrderPaymentActivity : AppCompatActivity() {
                 }
             }
         }
+        invoiceViewModel.addInvoice.observe(this) {
+            result ->
+            when(result) {
+                is Resource.Loading -> {
+                    showLoading(true)
+                    binding.btnPay.isEnabled = false
+                }
+                is Resource.Success -> {
+                    showLoading(false)
+                    Toast.makeText(this, "Payment completed successfully", Toast.LENGTH_SHORT).show()
+                    setResult(RESULT_OK)
+                    finish()
+                }
+                is Resource.Error -> {
+                    showLoading(false)
+                    binding.btnPay.isEnabled = true
+                    Log.d("OrderPaymentActivity","${result.message}")
+                    Toast.makeText(this, "Payment failed: ${result.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+    private fun showLoading(show: Boolean) {
+        binding.progressBar?.visibility = if (show) View.VISIBLE else View.GONE
     }
     private fun showInformation(order: Order){
         binding.apply {
@@ -108,6 +194,7 @@ class OrderPaymentActivity : AppCompatActivity() {
             tvOrderCustomerName.text = order.customerName
             tvOrderCreateTime.text= formatDateTime(order.orderTime)
             tvOrderTotalAmount.text = getString(R.string.price,order.totalAmount)
+            btnPay.isEnabled = false
         }
     }
     private fun formatDateTime(dateTimeStr:String):String{
