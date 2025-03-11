@@ -47,7 +47,7 @@ class MapFragment : Fragment() {
     private lateinit var tableAdapter : TableAdapter
     private lateinit var floorAdapter: FloorAdapter
     private var floorId : String? = null
-
+    private var tableName:String? = null
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModel: FloorViewModel by viewModels { viewModelFactory }
@@ -99,6 +99,7 @@ class MapFragment : Fragment() {
                     } else {
                         if (table.orderId.isNotBlank()) {
                             showTableOptionDialog(table.id, table.orderId)
+                            tableName = table.number.toString()
                         } else {
                             // Xử lý trường hợp bàn đã đặt nhưng không có orderId
                             Toast.makeText(requireContext(), "Table booked but order not found", Toast.LENGTH_SHORT).show()
@@ -131,6 +132,7 @@ class MapFragment : Fragment() {
             dialog.dismiss()
             val intent = Intent(requireContext(),OrderPaymentActivity::class.java).apply {
                 putExtra("ORDER_ID",orderId)
+                putExtra("TABLE_NUMBER",tableName)
             }
             startActivity(intent)
         }

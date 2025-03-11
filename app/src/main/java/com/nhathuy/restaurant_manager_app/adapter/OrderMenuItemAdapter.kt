@@ -21,7 +21,7 @@ class OrderMenuItemAdapter : RecyclerView.Adapter<OrderMenuItemAdapter.OrderMenu
                 binding.apply {
                     // Chỉ thiết lập adapter khi menuItems không null
                     item.menuItems?.let { menuItems ->
-                        val adapter = MenuOrderItemAdapter(menuItems)
+                        val adapter = OrderMenuPaymentItemAdapter(menuItems)
                         recMenuItem.layoutManager = LinearLayoutManager(itemView.context)
                         recMenuItem.adapter = adapter
                     }

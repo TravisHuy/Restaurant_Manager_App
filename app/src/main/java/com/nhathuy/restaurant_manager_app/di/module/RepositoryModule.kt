@@ -3,14 +3,17 @@ package com.nhathuy.restaurant_manager_app.di.module
 import com.nhathuy.restaurant_manager_app.data.api.AuthService
 import com.nhathuy.restaurant_manager_app.data.api.CategoryService
 import com.nhathuy.restaurant_manager_app.data.api.FloorService
+import com.nhathuy.restaurant_manager_app.data.api.InvoiceService
 import com.nhathuy.restaurant_manager_app.data.api.MenuItemService
 import com.nhathuy.restaurant_manager_app.data.api.OrderItemService
 import com.nhathuy.restaurant_manager_app.data.api.OrderService
 import com.nhathuy.restaurant_manager_app.data.api.ReservationService
 import com.nhathuy.restaurant_manager_app.data.api.TableService
+import com.nhathuy.restaurant_manager_app.data.model.Invoice
 import com.nhathuy.restaurant_manager_app.data.repository.AuthRepository
 import com.nhathuy.restaurant_manager_app.data.repository.CategoryRepository
 import com.nhathuy.restaurant_manager_app.data.repository.FloorRepository
+import com.nhathuy.restaurant_manager_app.data.repository.InvoiceRepository
 import com.nhathuy.restaurant_manager_app.data.repository.MenuItemRepository
 import com.nhathuy.restaurant_manager_app.data.repository.OrderItemRepository
 import com.nhathuy.restaurant_manager_app.data.repository.OrderRepository
@@ -79,7 +82,7 @@ class RepositoryModule {
      * Provides the menu_item repository for the application.
      *
      * @param menuItemService The category service
-     * @return The category repository
+     * @return The menuItem repository
      */
     @Provides
     @Singleton
@@ -104,7 +107,7 @@ class RepositoryModule {
      * Provides the reservation repository for the application.
      *
      * @param reservationService The category service
-     * @return The order repository
+     * @return The reservation repository
      */
     @Provides
     @Singleton
@@ -116,11 +119,24 @@ class RepositoryModule {
      * Provides the orderItem repository for the application.
      *
      * @param orderItemService The category service
-     * @return The order repository
+     * @return The order item repository
      */
     @Provides
     @Singleton
     fun provideOrderItemRepository(orderItemService: OrderItemService): OrderItemRepository {
         return OrderItemRepository(orderItemService)
+    }
+
+
+    /**
+     * Provides the orderItem repository for the application.
+     *
+     * @param invoiceService The category service
+     * @return The invoice repository
+     */
+    @Provides
+    @Singleton
+    fun provideInvoiceRepository(invoiceService: InvoiceService): InvoiceRepository {
+        return InvoiceRepository(invoiceService)
     }
 }

@@ -17,6 +17,7 @@ import com.nhathuy.restaurant_manager_app.ui.LoginActivity
 import com.nhathuy.restaurant_manager_app.ui.MainActivity
 import com.nhathuy.restaurant_manager_app.ui.MainActivity2
 import com.nhathuy.restaurant_manager_app.ui.OrderItemActivity
+import com.nhathuy.restaurant_manager_app.ui.OrderPaymentActivity
 import com.nhathuy.restaurant_manager_app.ui.RegisterActivity
 import dagger.Component
 import javax.inject.Singleton
@@ -53,4 +54,5 @@ interface RestaurantMangerComponent {
     fun inject(menuItemActivity: MenuItemActivity)
     fun inject(orderFragment: OrderFragment)
     fun inject(orderItemActivity: OrderItemActivity)
+    fun inject(orderPaymentActivity: OrderPaymentActivity)
 }
