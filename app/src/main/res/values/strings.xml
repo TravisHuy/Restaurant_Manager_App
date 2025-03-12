@@ -6,4 +6,11 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="quantity_order">%s order item</string>
     <string name="price">$%,.2f</string>
+    <string name="table_not_order">Table Not Ordered</string>
+    <string name="not_order_message">Table not ordered yet. Please select a table that is already ordered.</string>
+
+    <string name="update_order_status">Cập nhật trạng thái đơn hàng</string>
+    <string name="confirm_update_order_status">Bạn có muốn cập nhật trạng thái đơn hàng này không?</string>
+    <string name="yes">Có</string>
+    <string name="no">Không</string>
 </resources>

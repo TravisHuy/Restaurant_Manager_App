@@ -9,6 +9,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -34,7 +35,7 @@ interface OrderService {
                          @Query("price") price:Double
     ):Response<String>
 
-    @POST("api/updateStatus/{orderId}")
+    @PUT("api/orders/updateStatus/{orderId}")
     suspend fun updateOrderStatus(@Path("orderId") orderId:String) : Response<OrderResponse>
 
     @DELETE("api/orders/remove-item")
