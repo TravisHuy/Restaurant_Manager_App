@@ -12,7 +12,9 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.nhathuy.restaurant_manager_app.R
@@ -25,6 +27,7 @@ import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.OrderViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.TableViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -118,48 +121,53 @@ class SubTotalFragment : Fragment() {
         // Show loading before the operation starts
         showLoading(true)
 
-        lifecycleScope.launch {
-            try {
-                // Call the update status endpoint
-                orderViewModel.updateStatusOrder(orderId)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                try {
+                    orderViewModel.updateStatusOrder(orderId)
 
-                // Wait for and observe the result
-                orderViewModel.updateOrderStatus.collectLatest { resource ->
-                    when (resource) {
-                        is Resource.Loading -> {
-                            // Loading is already shown
-                        }
-                        is Resource.Success -> {
-                            showLoading(false)
-                            resource.data?.let { order ->
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Order status updated successfully: ${order.id}",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                    orderViewModel.updateOrderStatus
+                        .collect { resource ->
+                            when (resource) {
+                                is Resource.Loading -> {
+                                    // Loading is already shown
+                                }
+                                is Resource.Success -> {
+                                    showLoading(false)
+                                    resource.data?.let { order ->
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "Order status updated successfully: ${order.id}",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
 
-                                // Refresh the table data after successful update
-                                floorId?.let {
-                                    // Refresh floor data to update table status
-                                    viewModel.getFloorById(it)
+                                        // Refresh the table data after successful update
+                                        floorId?.let {
+                                            viewModel.getFloorById(it)
+                                        }
+                                    }
+                                }
+                                is Resource.Error -> {
+                                    showLoading(false)
+                                    val errorMsg = resource.message ?: "An error occurred"
+                                    showError(errorMsg)
+                                    Log.e("SubTotalFragment", "Error updating order status: $errorMsg")
+                                }
+                                else -> {
+                                    showLoading(false)
                                 }
                             }
                         }
-                        is Resource.Error -> {
-                            showLoading(false)
-                            val errorMsg = resource.message ?: "An error occurred"
-                            showError(errorMsg)
-                            Log.e("SubTotalFragment", "Error updating order status: $errorMsg")
-                        }
-                        else -> {
-                            showLoading(false)
-                        }
+                } catch (e: Exception) {
+                    if (e is CancellationException) {
+                        // Coroutine was cancelled normally, don't show error
+                        Log.d("SubTotalFragment", "Update operation was cancelled")
+                    } else {
+                        showLoading(false)
+                        showError("Error: ${e.message}")
+                        Log.e("SubTotalFragment", "Exception during update: ${e.message}", e)
                     }
                 }
-            } catch (e: Exception) {
-                showLoading(false)
-                showError("Error: ${e.message}")
-                Log.e("SubTotalFragment", "Exception during update: ${e.message}", e)
             }
         }
     }

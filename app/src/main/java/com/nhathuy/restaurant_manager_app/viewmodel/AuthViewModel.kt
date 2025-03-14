@@ -167,12 +167,25 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             _logoutResult.value = Resource.Loading()
             try {
-                tokenManager.clearTokens()
-                sessionManger.logout()
-                _logoutResult.value = Resource.Success(Unit)
+                val response  = repository.logoutUser()
+                if(response.isSuccessful){
+                    //clear local tokens regardless of the API response
+                    tokenManager.clearTokens()
+                    sessionManger.logout()
+                    _logoutResult.value = Resource.Success(Unit)
+                    Log.d("AuthViewModel","Login Successfully")
+                }
+                else{
+                    tokenManager.clearTokens()
+                    sessionManger.logout()
+                    _logoutResult.value = Resource.Error("Backend logout failed but local logout completed")
+                }
             }
             catch (e:Exception){
-                _logoutResult.value = Resource.Error("Logout error: ${e.message}")
+                tokenManager.clearTokens()
+                sessionManger.logout()
+                _logoutResult.value = Resource.Error("Logout error: ${e.message}, but tokens cleared locally")
+                Log.e("AuthViewModel", "Logout error: ${e.message}", e)
             }
         }
     }

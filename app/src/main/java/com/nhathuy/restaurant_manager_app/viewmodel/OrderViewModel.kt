@@ -10,6 +10,7 @@ import com.nhathuy.restaurant_manager_app.oauth2.request.OrderItemRequest
 import com.nhathuy.restaurant_manager_app.oauth2.request.OrderRequest
 import com.nhathuy.restaurant_manager_app.oauth2.response.OrderResponse
 import com.nhathuy.restaurant_manager_app.resource.Resource
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -128,18 +129,26 @@ class OrderViewModel @Inject constructor(private val repository: OrderRepository
         }
     }
 
-    fun updateStatusOrder(orderId:String)  = viewModelScope.launch {
+    fun updateStatusOrder(orderId: String) = viewModelScope.launch {
         try {
-            repository.updateOrderStatus(orderId).collect {
-                resource ->
-                _updateOrderStatus.value  = resource
-            }
-        }
-        catch(e: HttpException){
-            val errorBody = e.response()?.errorBody()?.string() ?: "Unknown error"
-            _updateOrderStatus.value = Resource.Error("Error: $errorBody")
-        }
-        catch (e:Exception){
+            repository.updateOrderStatus(orderId)
+                .catch { e ->
+                    when (e) {
+                        is CancellationException -> throw e // Propagate cancellation
+                        is HttpException -> {
+                            val errorBody = e.response()?.errorBody()?.string() ?: "Unknown error"
+                            _updateOrderStatus.value = Resource.Error("Error: $errorBody")
+                        }
+                        else -> _updateOrderStatus.value = Resource.Error("Network error: ${e.message}")
+                    }
+                }
+                .collect { resource ->
+                    _updateOrderStatus.value = resource
+                }
+        } catch (e: CancellationException) {
+            // Propagate cancellation
+            throw e
+        } catch (e: Exception) {
             _updateOrderStatus.value = Resource.Error("Network error: ${e.message}")
         }
     }

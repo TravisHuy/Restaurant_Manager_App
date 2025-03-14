@@ -57,5 +57,4 @@ interface RestaurantMangerComponent {
     fun inject(orderItemActivity: OrderItemActivity)
     fun inject(orderPaymentActivity: OrderPaymentActivity)
     fun inject(subTotalFragment: SubTotalFragment)
-
 }

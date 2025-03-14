@@ -7,8 +7,13 @@ import com.nhathuy.restaurant_manager_app.oauth2.request.OrderItemRequest
 import com.nhathuy.restaurant_manager_app.oauth2.request.OrderRequest
 import com.nhathuy.restaurant_manager_app.oauth2.response.OrderResponse
 import com.nhathuy.restaurant_manager_app.resource.Resource
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
@@ -76,23 +81,37 @@ class OrderRepository @Inject constructor(private val orderService: OrderService
         }
     }
 
-    suspend fun updateOrderStatus(orderId: String) : Flow<Resource<OrderResponse>> = flow {
-        emit(Resource.Loading())
+    suspend fun updateOrderStatus(orderId: String): Flow<Resource<OrderResponse>> = channelFlow {
+        send(Resource.Loading())
         try {
-            val response = orderService.updateOrderStatus(orderId)
-            if(response.isSuccessful){
-                response.body()?.let {
-                    emit(Resource.Success(it))
-                }?: emit(Resource.Error("empty response body server"))
+            val response = withContext(Dispatchers.IO) {
+                orderService.updateOrderStatus(orderId)
             }
-            else{
-                emit(Resource.Error("Failed to update status order by id: ${response.message()}"))
+
+            when {
+                response.isSuccessful -> {
+                    response.body()?.let {
+                        send(Resource.Success(it))
+                    } ?: send(Resource.Error("Empty response body from server"))
+                }
+                else -> {
+                    val errorBody = response.errorBody()?.string()
+                    val errorMessage = errorBody?.takeIf { it.isNotEmpty() }
+                        ?: "Failed to update status order by id: ${response.message()}"
+                    send(Resource.Error(errorMessage))
+                }
+            }
+        } catch (e: Exception) {
+            when (e) {
+                is CancellationException -> throw e
+                else -> {
+                    Log.e("OrderRepository", "Update order status failed", e)
+                    send(Resource.Error("Network error: ${e.message}"))
+                }
             }
         }
-        catch (e:Exception){
-            emit(Resource.Error("Network error: ${e.message}"))
-        }
-    }
+    }.flowOn(Dispatchers.IO)
+
     suspend fun removeItem(tableId:String , menuItemId:String) : Flow<Resource<String>> = flow {
         emit(Resource.Loading())
         try {

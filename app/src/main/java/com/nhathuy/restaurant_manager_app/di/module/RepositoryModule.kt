@@ -9,6 +9,7 @@ import com.nhathuy.restaurant_manager_app.data.api.OrderItemService
 import com.nhathuy.restaurant_manager_app.data.api.OrderService
 import com.nhathuy.restaurant_manager_app.data.api.ReservationService
 import com.nhathuy.restaurant_manager_app.data.api.TableService
+import com.nhathuy.restaurant_manager_app.data.local.TokenManager
 import com.nhathuy.restaurant_manager_app.data.model.Invoice
 import com.nhathuy.restaurant_manager_app.data.repository.AuthRepository
 import com.nhathuy.restaurant_manager_app.data.repository.CategoryRepository
@@ -41,8 +42,8 @@ class RepositoryModule {
      */
     @Provides
     @Singleton
-    fun provideAuthRepository(authService: AuthService):AuthRepository {
-        return AuthRepository(authService)
+    fun provideAuthRepository(authService: AuthService,tokenManager: TokenManager):AuthRepository {
+        return AuthRepository(authService,tokenManager)
     }
     /**
      * Provides the table repository for the application.
