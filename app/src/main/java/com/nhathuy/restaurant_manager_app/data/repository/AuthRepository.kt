@@ -24,4 +24,7 @@ class AuthRepository @Inject constructor(private val authService: AuthService,
         val token = tokenManager.getAccessToken()
         return authService.logoutUser("Bear $token")
     }
+
+    suspend fun loginAdmin(request: LoginRequest) = authService.loginAdmin(request)
+    suspend fun registerAdmin(request: SignUpRequest) = authService.registerAdmin(request)
 }

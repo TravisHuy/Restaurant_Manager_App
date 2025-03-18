@@ -54,6 +54,20 @@ class AuthViewModel @Inject constructor(
     val logoutResult : LiveData<Resource<Unit>> = _logoutResult
 
     /**
+     * The loginResult LiveData.
+     * This LiveData is used to store the result of the login operation.
+     */
+    private val _loginAdminResult = MutableLiveData<Resource<AuthResponse>>()
+    val loginAdminResult : LiveData<Resource<AuthResponse>> = _loginAdminResult
+
+    /**
+     * The registerResult LiveData.
+     * This LiveData is used to store the result of the registration operation.
+     */
+    private val _registerAdminResult= MutableLiveData<Resource<AuthResponse>>()
+    val registerAdminResult : LiveData<Resource<AuthResponse>> = _registerAdminResult
+
+    /**
      * The login function.
      * This function is used to perform the login operation.
      * @param email The email of the user.
@@ -197,5 +211,77 @@ class AuthViewModel @Inject constructor(
      */
     fun isLoggedIn():Boolean{
         return tokenManager.getAccessToken() != null
+    }
+
+
+    /**
+     * The login function.
+     * This function is used to perform the login operation.
+     * @param email The email of the user.
+     * @param password The password of the user.
+     */
+    fun loginAdmin(email:String, password:String){
+        viewModelScope.launch {
+            _loginResult.value = Resource.Loading()
+            try {
+                val response = repository.loginAdmin(LoginRequest(email, password))
+                if(response.isSuccessful){
+                    response.body()?.let {
+                            authResponse ->
+
+                        tokenManager.saveTokens(
+                            accessToken = authResponse.token,
+                            refreshToken = authResponse.refreshToken,
+                            userId = authResponse.id,
+                            userRole = authResponse.role)
+
+
+                        Log.d("AuthViewModel","login: ${authResponse.token}")
+
+                        sessionManger.updateLoginState(true)
+                        sessionManger.updateUserRole(authResponse.role)
+
+                        _loginResult.value = Resource.Success(authResponse)
+                    }
+                }
+                else{
+                    _loginResult.value = Resource.Error("Login failed: ${response.message()}")
+                }
+            }catch (e:Exception){
+                _loginResult.value = Resource.Error("Login error: ${e.message}")
+            }
+        }
+    }
+    /**
+     * The register function.
+     * This function is used to perform the registration operation.
+     */
+    fun registerAdmin(name:String,email:String,password:String,phoneNumber:String,address:String,avatar:String=""){
+        viewModelScope.launch {
+            _registerResult.value = Resource.Loading()
+            try {
+                val request = SignUpRequest(name, email, password, phoneNumber, address, avatar)
+                val response = repository.registerAdmin(request)
+                if(response.isSuccessful){
+                    response.body()?.let {
+                            authResponse ->
+
+                        tokenManager.saveTokens(
+                            accessToken = authResponse.token,
+                            refreshToken = authResponse.refreshToken,
+                            userId = authResponse.id,
+                            userRole = authResponse.role)
+
+                        _registerResult.value = Resource.Success(response.body()!!)
+                    }
+                }
+                else{
+                    _registerResult.value = Resource.Error("Registration failed: ${response.message()}")
+                }
+            }
+            catch (e:Exception){
+                _registerResult.value = Resource.Error("Registration error: ${e.message}")
+            }
+        }
     }
 }

@@ -54,4 +54,22 @@ interface AuthService {
      */
     @POST("api/auth/logout")
     suspend fun logoutUser(@Header("Authorization") token:String):Response<Void>
+
+    /**
+     * Registers a new user with the system with role admin.
+     *
+     * @param request The user registration request
+     * @return The response containing the authentication details
+     */
+    @POST("api/auth/admin/signup")
+    suspend fun registerAdmin(@Body request: SignUpRequest):Response<AuthResponse>
+
+    /**
+     * Logs in an existing user with role admin.
+     *
+     * @param loginRequest The login admin request
+     * @return The response containing the authentication details
+     */
+    @POST("api/auth/admin/login")
+    suspend fun loginAdmin(@Body loginRequest:LoginRequest): Response<AuthResponse>
 }
