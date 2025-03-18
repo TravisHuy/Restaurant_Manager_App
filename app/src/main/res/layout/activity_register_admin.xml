@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".admin.login.LoginAdminActivity">
+    tools:context=".admin.register.RegisterAdminActivity">
 
     <ImageView
         android:id="@+id/background_image"
@@ -53,7 +53,7 @@
                 android:id="@+id/subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Admin Login"
+                android:text="Admin Register"
                 android:textSize="16sp"
                 android:textColor="#666666"
                 android:textAlignment="center"
@@ -110,16 +110,51 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/check_box_remember_me"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_layout_phoneNumber_admin"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Remember me"
-                android:layout_marginTop="8dp"
-                android:buttonTint="#1CD54F"
-                android:fontFamily="@font/noto_sans"
+                android:hint="Phone Number"
+                android:layout_marginTop="16dp"
+                app:startIconDrawable="@drawable/ic_call"
+                app:startIconTint="#1CD54F"
+                app:boxStrokeColor="#1CD54F"
+                app:hintTextColor="#1CD54F"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_input_layout_password" />
+                app:layout_constraintTop_toBottomOf="@id/text_input_layout_password">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tf_phoneNumber_admin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_layout_address_admin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Address"
+                android:layout_marginTop="16dp"
+                app:startIconDrawable="@drawable/ic_home"
+                app:startIconTint="#1CD54F"
+                app:boxStrokeColor="#1CD54F"
+                app:hintTextColor="#1CD54F"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_input_layout_phoneNumber_admin">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tf_address_admin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_login"
@@ -134,7 +169,7 @@
                 android:stateListAnimator="@drawable/button_press_animation"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/check_box_remember_me" />
+                app:layout_constraintTop_toBottomOf="@+id/text_input_layout_address_admin" />
 
             <TextView
                 android:layout_width="wrap_content"

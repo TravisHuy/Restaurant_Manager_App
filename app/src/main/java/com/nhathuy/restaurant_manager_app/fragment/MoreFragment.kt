@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.admin.add.AddFloorActivity
+import com.nhathuy.restaurant_manager_app.admin.login.LoginAdminActivity
 import com.nhathuy.restaurant_manager_app.databinding.FragmentMoreBinding
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import com.nhathuy.restaurant_manager_app.ui.LoginActivity
@@ -59,6 +60,10 @@ class MoreFragment : Fragment() {
     private fun setupListeners() {
         binding.linearLogout.setOnClickListener {
             authViewModel.logout()
+        }
+        binding.linearLayoutAdmin.setOnClickListener {
+            val intent = Intent(requireActivity(),LoginAdminActivity::class.java)
+            startActivity(intent)
         }
     }
     private fun observeViewModel(){
