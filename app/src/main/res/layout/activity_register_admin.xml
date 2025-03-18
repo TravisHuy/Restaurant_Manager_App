@@ -27,7 +27,7 @@
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
         android:alpha="0.85"
-        android:translationY="100dp"
+        android:translationY="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -79,7 +79,7 @@
                 app:layout_constraintTop_toBottomOf="@id/subtitle">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textfield_email"
+                    android:id="@+id/tf_email_admin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress" />
@@ -103,10 +103,33 @@
                 app:layout_constraintTop_toBottomOf="@id/text_input_layout_email">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textfield_password"
+                    android:id="@+id/tf_password_admin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_layout_name_admin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Name"
+                android:layout_marginTop="16dp"
+                app:startIconDrawable="@drawable/ic_name"
+                app:startIconTint="#1CD54F"
+                app:boxStrokeColor="#1CD54F"
+                app:hintTextColor="#1CD54F"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_input_layout_password">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tf_name_admin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -123,7 +146,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_input_layout_password">
+                app:layout_constraintTop_toBottomOf="@id/text_input_layout_name_admin">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tf_phoneNumber_admin"
@@ -157,10 +180,10 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_login"
+                android:id="@+id/btn_sign"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Login"
+                android:text="Register"
                 android:textColor="@color/white"
                 app:backgroundTint="#1CD54F"
                 android:padding="15dp"
@@ -177,20 +200,20 @@
                 android:text="Don't have an account?"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="5dp"
-                app:layout_constraintEnd_toStartOf="@+id/tv_register_admin"
-                app:layout_constraintTop_toBottomOf="@+id/btn_login" />
+                app:layout_constraintEnd_toStartOf="@+id/tv_login_admin"
+                app:layout_constraintTop_toBottomOf="@+id/btn_sign" />
 
             <TextView
-                android:id="@+id/tv_register_admin"
+                android:id="@+id/tv_login_admin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sign Up"
+                android:text="Login"
                 android:textColor="@color/green"
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/btn_login"
-                app:layout_constraintTop_toBottomOf="@+id/btn_login" />
+                app:layout_constraintEnd_toEndOf="@+id/btn_sign"
+                app:layout_constraintTop_toBottomOf="@+id/btn_sign" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.admin.add.AddFloorActivity
@@ -39,6 +40,9 @@ class MoreFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private val authViewModel: AuthViewModel by viewModels { viewModelFactory }
 
+    //
+    private var navigatingToAdmin = false
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -62,8 +66,7 @@ class MoreFragment : Fragment() {
             authViewModel.logout()
         }
         binding.linearLayoutAdmin.setOnClickListener {
-            val intent = Intent(requireActivity(),LoginAdminActivity::class.java)
-            startActivity(intent)
+            navigateAdminDialog()
         }
     }
     private fun observeViewModel(){
@@ -75,9 +78,18 @@ class MoreFragment : Fragment() {
                 }
                 is Resource.Success -> {
                     showLoading(false)
-                    val intent = Intent(requireContext(),LoginActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
+
+                    if (navigatingToAdmin) {
+                        val intent = Intent(requireContext(), LoginAdminActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                    } else {
+                        val intent = Intent(requireContext(), LoginActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                    }
+
+                    navigatingToAdmin = false
                 }
                 is Resource.Error -> {
                     showLoading(false)
@@ -85,6 +97,7 @@ class MoreFragment : Fragment() {
                     val intent = Intent(requireContext(), LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
+                    navigatingToAdmin = false
                 }
             }
         }
@@ -96,5 +109,18 @@ class MoreFragment : Fragment() {
         else{
             binding.progressBar.visibility = View.GONE
         }
+    }
+    private fun navigateAdminDialog(){
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Logout first when visit admin UI")
+            .setMessage("Logout now")
+            .setNegativeButton("Cancel") { dialog, which ->
+                dialog.dismiss()
+            }
+            .setPositiveButton("Logout") { dialog, which ->
+                navigatingToAdmin = true
+                authViewModel.logout()
+            }
+            .show()
     }
 }

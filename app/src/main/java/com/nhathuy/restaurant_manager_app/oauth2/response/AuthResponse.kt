@@ -15,5 +15,6 @@ data class AuthResponse(
     val email:String,
     val role:String,
     val name:String,
-    val id:String
+    val id:String,
+    val isAdmin:Boolean
 )

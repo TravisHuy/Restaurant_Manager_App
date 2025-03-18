@@ -13,6 +13,7 @@ import com.nhathuy.restaurant_manager_app.oauth2.request.SignUpRequest
 import com.nhathuy.restaurant_manager_app.oauth2.response.AuthResponse
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import javax.inject.Inject
 /**
  * AuthViewModel for interacting with [User] documents.
@@ -222,7 +223,7 @@ class AuthViewModel @Inject constructor(
      */
     fun loginAdmin(email:String, password:String){
         viewModelScope.launch {
-            _loginResult.value = Resource.Loading()
+            _loginAdminResult.value = Resource.Loading()
             try {
                 val response = repository.loginAdmin(LoginRequest(email, password))
                 if(response.isSuccessful){
@@ -241,14 +242,19 @@ class AuthViewModel @Inject constructor(
                         sessionManger.updateLoginState(true)
                         sessionManger.updateUserRole(authResponse.role)
 
-                        _loginResult.value = Resource.Success(authResponse)
+                        _loginAdminResult.value = Resource.Success(authResponse)
                     }
                 }
                 else{
-                    _loginResult.value = Resource.Error("Login failed: ${response.message()}")
+                    _loginAdminResult.value = Resource.Error("Login failed: ${response.message()}")
                 }
-            }catch (e:Exception){
-                _loginResult.value = Resource.Error("Login error: ${e.message}")
+            }
+            catch (e:HttpException){
+                val errorBody = e.response()?.errorBody()?.string() ?: "Unknown error"
+                _loginAdminResult.value = Resource.Error("Login error: $errorBody")
+            }
+            catch (e:Exception){
+                _loginAdminResult.value = Resource.Error("Login error: ${e.message}")
             }
         }
     }
@@ -258,7 +264,7 @@ class AuthViewModel @Inject constructor(
      */
     fun registerAdmin(name:String,email:String,password:String,phoneNumber:String,address:String,avatar:String=""){
         viewModelScope.launch {
-            _registerResult.value = Resource.Loading()
+            _registerAdminResult.value = Resource.Loading()
             try {
                 val request = SignUpRequest(name, email, password, phoneNumber, address, avatar)
                 val response = repository.registerAdmin(request)
@@ -272,15 +278,19 @@ class AuthViewModel @Inject constructor(
                             userId = authResponse.id,
                             userRole = authResponse.role)
 
-                        _registerResult.value = Resource.Success(response.body()!!)
+                        _registerAdminResult.value = Resource.Success(response.body()!!)
                     }
                 }
                 else{
-                    _registerResult.value = Resource.Error("Registration failed: ${response.message()}")
+                    _registerAdminResult.value = Resource.Error("Registration failed: ${response.message()}")
                 }
             }
+            catch (e:HttpException){
+                val errorBody = e.response()?.errorBody()?.string() ?: "Unknown error"
+                _registerAdminResult.value = Resource.Error("Registration error: $errorBody")
+            }
             catch (e:Exception){
-                _registerResult.value = Resource.Error("Registration error: ${e.message}")
+                _registerAdminResult.value = Resource.Error("Registration error: ${e.message}")
             }
         }
     }

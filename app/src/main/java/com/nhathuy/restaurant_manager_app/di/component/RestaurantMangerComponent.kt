@@ -5,6 +5,8 @@ import com.nhathuy.restaurant_manager_app.admin.add.AddFloorActivity
 import com.nhathuy.restaurant_manager_app.admin.add.AddMenuItemActivity
 import com.nhathuy.restaurant_manager_app.admin.add.AddTableActivity
 import com.nhathuy.restaurant_manager_app.admin.all.AllFloorActivity
+import com.nhathuy.restaurant_manager_app.admin.login.LoginAdminActivity
+import com.nhathuy.restaurant_manager_app.admin.register.RegisterAdminActivity
 import com.nhathuy.restaurant_manager_app.data.api.RetrofitClient
 import com.nhathuy.restaurant_manager_app.di.module.RepositoryModule
 import com.nhathuy.restaurant_manager_app.di.module.RestaurantManagerModule
@@ -59,4 +61,6 @@ interface RestaurantMangerComponent {
     fun inject(orderPaymentActivity: OrderPaymentActivity)
     fun inject(subTotalFragment: SubTotalFragment)
     fun inject(splashActivity: SplashActivity)
+    fun inject(registerAdminActivity: RegisterAdminActivity)
+    fun inject(loginAdminActivity: LoginAdminActivity)
 }

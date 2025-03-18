@@ -36,6 +36,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding:ActivityLoginBinding
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var authWebView:WebView
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModel: AuthViewModel by viewModels { viewModelFactory }
