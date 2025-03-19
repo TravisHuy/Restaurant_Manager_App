@@ -13,4 +13,9 @@
     <string name="confirm_update_order_status">Bạn có muốn cập nhật trạng thái đơn hàng này không?</string>
     <string name="yes">Có</string>
     <string name="no">Không</string>
+
+    <string name="navigation_drawer_open">Open</string>
+    <string name="navigation_drawer_close">Close</string>
+
+
 </resources>
