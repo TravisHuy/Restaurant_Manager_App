@@ -245,15 +245,16 @@
                         android:text="Floor Map -"
                         android:fontFamily="@font/noto_sans_bold"
                         />
-                    <TextView
-                        android:id="@+id/tv_floor"
-                        android:layout_width="match_parent"
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/spinner_floors"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Tang 1"
                         android:layout_marginStart="5dp"
-                        android:fontFamily="@font/noto_sans_bold"
-                        />
+                        android:background="@drawable/spinner_background"
+                        android:spinnerMode="dropdown"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_add_floor"
                         android:layout_width="wrap_content"
@@ -266,7 +267,7 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rec_floor"
+                    android:id="@+id/rec_table"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </LinearLayout>

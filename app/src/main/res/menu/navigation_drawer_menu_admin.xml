@@ -26,7 +26,7 @@
             android:icon="@drawable/ic_inventory"
             />
 
-        <item android:id="@+id/nav_delete_account"
+        <item android:id="@+id/nav_staff_management"
             android:title="Staff Management"
             android:icon="@drawable/ic_staff_manager"
             />

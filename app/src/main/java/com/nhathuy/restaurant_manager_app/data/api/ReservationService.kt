@@ -2,6 +2,7 @@ package com.nhathuy.restaurant_manager_app.data.api
 
 import com.nhathuy.restaurant_manager_app.data.dto.ReservationDTO
 import com.nhathuy.restaurant_manager_app.data.model.Reservation
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -14,4 +15,7 @@ interface ReservationService {
 
     @GET("api/reservations/check/{tableId}")
     suspend fun checkTableReservation(@Path("tableId") tableId: String):Boolean
+
+    @GET("api/reservations/{reservationId}")
+    suspend fun getReservation(@Path("reservationId") reservationId:String):Response<Reservation>
 }
