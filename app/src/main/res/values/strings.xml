@@ -16,6 +16,7 @@
 
     <string name="navigation_drawer_open">Open</string>
     <string name="navigation_drawer_close">Close</string>
-
+    <string name="seats">%d seats</string>
+    <string name="capacity">%d capacity</string>
 
 </resources>

@@ -27,18 +27,18 @@ class TableAdminAdapter(
 
                     // Only use the reservation data if it's available
                     if (reservation != null) {
-                        tvSeats.text = "${reservation.numberOfPeople} seats"
+                        tvSeats.text = root.context.getString(R.string.seats,reservation.numberOfPeople)
                     } else {
                         // Show a loading state if reservation data isn't available yet
                         tvSeats.text = "Loading..."
                     }
                 } else {
                     // No reservation, show capacity
-                    tvSeats.text = "Capacity: ${table.capacity}"
+                    tvSeats.text = root.context.getString(R.string.capacity,table.capacity)
                 }
 
                 // Set the background color based on availability
-                root.setBackgroundResource(
+                cardTable.setBackgroundResource(
                     if (table.available) {
                         R.color.green
                     } else {

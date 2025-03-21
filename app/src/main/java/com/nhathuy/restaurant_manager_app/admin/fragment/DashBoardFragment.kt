@@ -1,6 +1,7 @@
 package com.nhathuy.restaurant_manager_app.admin.fragment
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,24 +11,34 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.adapter.TableAdapter
 import com.nhathuy.restaurant_manager_app.adapter.TableAdminAdapter
+import com.nhathuy.restaurant_manager_app.data.model.Order
 import com.nhathuy.restaurant_manager_app.data.model.Reservation
 import com.nhathuy.restaurant_manager_app.data.model.Table
 import com.nhathuy.restaurant_manager_app.databinding.FragmentDashBoardBinding
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
+import com.nhathuy.restaurant_manager_app.viewmodel.OrderViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ReservationViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.TableViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.observeOn
 import kotlinx.coroutines.launch
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 /**
@@ -51,7 +62,7 @@ class DashBoardFragment : Fragment() {
     private val reservationViewModel: ReservationViewModel by viewModels { viewModelFactory }
     private val floorViewModel:FloorViewModel by viewModels { viewModelFactory  }
     private val tableViewModel:TableViewModel by viewModels { viewModelFactory  }
-
+    private val orderViewModel : OrderViewModel by viewModels { viewModelFactory  }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -59,6 +70,7 @@ class DashBoardFragment : Fragment() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -71,6 +83,7 @@ class DashBoardFragment : Fragment() {
         observerViewModel()
 
         floorViewModel.getAllFloors()
+        orderViewModel.getAllOrders()
 
         return binding.root
     }
@@ -176,6 +189,7 @@ class DashBoardFragment : Fragment() {
             }
         }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun observerViewModel(){
         floorViewModel.floors.observe(viewLifecycleOwner) { result ->
             when (result) {
@@ -239,8 +253,94 @@ class DashBoardFragment : Fragment() {
                 }
             }
         }
+
+        //
+        orderViewModel.orderItems.observe(viewLifecycleOwner) {
+            result ->
+            when (result) {
+                is Resource.Success -> {
+                    showLoading(false)
+                    result.data?.let { orders ->
+                       showInformation(orders)
+                    }
+                }
+                is Resource.Error -> {
+                    showLoading(false)
+                    showError(result.message ?: "Failed to load tables")
+                }
+                is Resource.Loading -> {
+                    showLoading(true)
+                }
+            }
+        }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun showInformation(orders: List<Order>) {
+        binding.tvTotalOrder.text = orders.size.toString()
+
+        val totalSales = orders.sumOf { it.totalAmount }
+        binding.tvTotalSales.text = formatCurrency(totalSales)
+
+        val avgOrderValue = if(orders.isNotEmpty()) {
+            totalSales / orders.size
+        }
+        else{
+            0.0
+        }
+
+        binding.tvAvgOrderValue.text = formatCurrency(avgOrderValue)
+
+        // Setup sales over time chart
+        setupSalesOverTimeChart(orders)
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setupSalesOverTimeChart(orders: List<Order>) {
+        val chart = binding.chartSales
+
+        val salesByDate=  orders
+            .sortedBy { it.orderTime }
+            .groupBy { it.orderTime }
+            .map { (date, ordersOnDate) ->
+                Pair(date, ordersOnDate.sumOf { it.totalAmount })
+            }
+        val entries = ArrayList<Entry>()
+        salesByDate.forEachIndexed { index, (_,amount) ->  entries.add(Entry(index.toFloat(),amount.toFloat()))}
+
+        val dataSet = LineDataSet(entries,"Sales")
+        dataSet.color = ContextCompat.getColor(requireContext(),R.color.grey_300)
+        dataSet.valueTextColor  = ContextCompat.getColor(requireContext(),R.color.black)
+        dataSet.lineWidth = 2f
+        dataSet.setCircleColor(ContextCompat.getColor(requireContext(),R.color.gray_dark))
+        dataSet.circleRadius = 4f
+        dataSet.setDrawCircleHole(false)
+        dataSet.valueTextSize = 10f
+
+        val lineData = LineData(dataSet)
+
+        chart.description.isEnabled = false
+        chart.legend.isEnabled = false
+
+        val xAxis = chart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false)
+        xAxis.valueFormatter = IndexAxisValueFormatter(salesByDate.map {
+            it.first.format(DateTimeFormatter.ofPattern("MM/dd"))
+        })
+        xAxis.labelRotationAngle = -45f
+
+        val leftAxis = chart.axisLeft
+        leftAxis.setDrawZeroLine(true)
+
+        chart.axisRight.isEnabled = false
+
+        chart.data = lineData
+        chart.animateX(1000)
+        chart.invalidate()
+    }
+    private fun formatCurrency(amount:Double) :String {
+        return "$" + String.format("%.2f", amount)
+    }
     // Add this function to DashBoardFragment
     private fun loadReservationsForTables(tables: List<Table>) {
         // Clear old cache when loading new tables
