@@ -67,7 +67,7 @@ class TableAdapter(var tables:List<Table>,private val onTableClick: (Table) -> U
     override fun getItemCount(): Int  = tables.size
 
     fun updateTables(newTables: List<Table>){
-        this.tables = newTables
+        tables = newTables
         notifyDataSetChanged()
     }
 }

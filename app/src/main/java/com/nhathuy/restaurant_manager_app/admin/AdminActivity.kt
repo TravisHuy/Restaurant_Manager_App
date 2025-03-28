@@ -8,6 +8,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.admin.fragment.DashBoardFragment
+import com.nhathuy.restaurant_manager_app.admin.fragment.FloorTableAdminFragment
 import com.nhathuy.restaurant_manager_app.admin.fragment.InvoicesAdminFragment
 import com.nhathuy.restaurant_manager_app.admin.fragment.MenuItemsAdminFragment
 import com.nhathuy.restaurant_manager_app.admin.fragment.OrderAdminFragment
@@ -55,6 +56,10 @@ class AdminActivity : AppCompatActivity() {
             when(menuItem.itemId) {
                 R.id.nav_dashboard -> {
                     supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment,DashBoardFragment())
+                        .commit()
+                }
+                R.id.nav_floor_table -> {
+                    supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment,FloorTableAdminFragment())
                         .commit()
                 }
                 R.id.nav_menu_items-> {
