@@ -34,15 +34,15 @@ class TableAdminAdapter(
                     }
                 } else {
                     // No reservation, show capacity
-                    tvSeats.text = root.context.getString(R.string.capacity,table.capacity)
+                    tvSeats.text = ""
                 }
 
                 // Set the background color based on availability
-                cardTable.setBackgroundResource(
+                cardTable.setCardBackgroundColor(
                     if (table.available) {
-                        R.color.green
+                        root.context.getColor(R.color.green)
                     } else {
-                        R.color.red
+                        root.context.getColor(R.color.red)
                     }
                 )
 
