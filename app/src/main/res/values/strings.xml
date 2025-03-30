@@ -9,14 +9,24 @@
     <string name="table_not_order">Table Not Ordered</string>
     <string name="not_order_message">Table not ordered yet. Please select a table that is already ordered.</string>
 
-    <string name="update_order_status">Cập nhật trạng thái đơn hàng</string>
-    <string name="confirm_update_order_status">Bạn có muốn cập nhật trạng thái đơn hàng này không?</string>
-    <string name="yes">Có</string>
-    <string name="no">Không</string>
+    <string name="update_order_status">Update order status</string>
+    <string name="confirm_update_order_status">Do you want to update the status of this order?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <string name="navigation_drawer_open">Open</string>
     <string name="navigation_drawer_close">Close</string>
     <string name="seats">%d seats</string>
     <string name="capacity">%d capacity</string>
 
+
+    <string name="order_management">Order Management</string>
+    <string name="search_orders">Search Orders</string>
+    <string name="filter_orders">Filter Orders</string>
+    <string name="no_orders">No Orders</string>
+    <string name="no_orders_found">No orders found</string>
+    <string name="add_new_order">Add New Order</string>
+    <string name="view_details">View Details</string>
+    <string name="update_status">Update Status</string>
+    <string name="total_amount">$ %d</string>
 </resources>

@@ -11,4 +11,14 @@
     <color name="red">#ff0000</color>
     <color name="blue_500">#2196F3</color>
     <color name="grey_300">#E0E0E0</color>
+
+
+    <color name="primary_color">#2196F3</color>
+    <color name="background_light">#F5F5F5</color>
+    <color name="text_primary">#212121</color>
+
+    <color name="status_pending">#eb712a</color>
+    <color name="status_in_process">#2aaeeb</color>
+    <color name="status_completed">#17d133</color>
+    <color name="status_paid">#d11518</color>
 </resources>
