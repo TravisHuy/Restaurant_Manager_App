@@ -1,28 +1,38 @@
 package com.nhathuy.restaurant_manager_app.adapter
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nhathuy.restaurant_manager_app.R
+import com.nhathuy.restaurant_manager_app.data.dto.OrderItemDTO
 import com.nhathuy.restaurant_manager_app.data.model.Order
 import com.nhathuy.restaurant_manager_app.data.model.OrderItem
 import com.nhathuy.restaurant_manager_app.data.model.Status
 import com.nhathuy.restaurant_manager_app.databinding.ItemOrderAdminBinding
 import java.text.SimpleDateFormat
+import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
-
+/**
+ * Adapter class for the orders admin recyclerview
+ *
+ * @return 0.1
+ * @since 20-02-2025
+ * @author TravisHuy
+ */
 class OrderItemAdminAdapter( private val onOrderClick: (Order) -> Unit,
                              private val onUpdateStatusClick: (Order) -> Unit):RecyclerView.Adapter<OrderItemAdminAdapter.OrderItemAdminViewModel>() {
 
     private var orders : List<Order> = listOf()
-    private var orderItems: Map<String, List<OrderItem>> = mapOf()
+    private var orderItemsMap: Map<String, List<OrderItemDTO>> = mapOf()
 
     inner class OrderItemAdminViewModel(val binding:ItemOrderAdminBinding):RecyclerView.ViewHolder(binding.root){
 
-        private val orderItemsAdapter = OrderItemsAdapter()
+        private val orderMenuItemAdapter = OrderMenuItemAdapter()
 
         init {
             binding.root.setOnClickListener {
@@ -47,7 +57,7 @@ class OrderItemAdminAdapter( private val onOrderClick: (Order) -> Unit,
             }
 
             binding.tvOrderItems.apply {
-                adapter = orderItemsAdapter
+                adapter = orderMenuItemAdapter
                 layoutManager = LinearLayoutManager(binding.root.context)
             }
         }
@@ -61,9 +71,9 @@ class OrderItemAdminAdapter( private val onOrderClick: (Order) -> Unit,
                 val context = binding.root.context
                 tvOrderTotal.text = context.getString(R.string.total_amount,order.totalAmount)
 
-                val formattedTime = formatOrderTime(order.orderTime)
-                tvOrderTime.text = formattedTime
-
+//                val formattedTime = formatOrderTime(order.orderTime)
+//                tvOrderTime.text = formattedTime
+                tvOrderTime.text = formatDateTime(order.orderTime)
 
                 when (order.status) {
                     Status.PENDING -> tvOrderStatus.setTextColor(root.context.getColor(R.color.status_pending))
@@ -74,15 +84,8 @@ class OrderItemAdminAdapter( private val onOrderClick: (Order) -> Unit,
 
 
 
-                val items = orderItems[order.id]
-                if (items != null) {
-                    val allOrderItemDetails = items.flatMap { item ->
-                        item.menuItemIds.map { detail -> detail }
-                    }
-                    orderItemsAdapter.setOrderItems(allOrderItemDetails)
-                } else {
-                    orderItemsAdapter.setOrderItems(emptyList())
-                }
+                val orderItems = orderItemsMap[order.id]
+                orderMenuItemAdapter.updateOrderItem(orderItems)
             }
         }
     }
@@ -95,6 +98,7 @@ class OrderItemAdminAdapter( private val onOrderClick: (Order) -> Unit,
         return OrderItemAdminViewModel(binding)
     }
 
+
     override fun onBindViewHolder(
         holder: OrderItemAdminAdapter.OrderItemAdminViewModel,
         position: Int
@@ -105,17 +109,22 @@ class OrderItemAdminAdapter( private val onOrderClick: (Order) -> Unit,
 
     override fun getItemCount(): Int = orders.size
 
-    fun setOrders(orders: List<Order>, orderItems: Map<String, List<OrderItem>>) {
+    fun setOrders(orders: List<Order>, orderItems: Map<String, List<OrderItemDTO>>) {
         this.orders = orders
-        this.orderItems = orderItems
+        this.orderItemsMap = orderItems
         notifyDataSetChanged()
     }
 
-    fun formatOrderTime(orderTime: String): String {
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-        val date: Date? = inputFormat.parse(orderTime)
-        return if (date != null) outputFormat.format(date) else "Invalid time"
+    private fun formatDateTime(dateTimeStr:String):String{
+        return try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+            val date = inputFormat.parse(dateTimeStr)
+            outputFormat.format(date)
+        }
+        catch (e:Exception){
+            dateTimeStr
+        }
     }
 }

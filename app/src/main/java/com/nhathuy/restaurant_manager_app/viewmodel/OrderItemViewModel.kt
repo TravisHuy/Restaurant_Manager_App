@@ -23,20 +23,7 @@ class OrderItemViewModel @Inject constructor(private val orderItemRepository: Or
     private val _allOrderItems = MutableLiveData<Resource<List<OrderItemDTO>>>()
     val allOrderItem : LiveData<Resource<List<OrderItemDTO>>> = _allOrderItems
 
-    fun getOrderItemId(orderItemId:String) = viewModelScope.launch {
-        try {
-            orderItemRepository.getOrderItemById(orderItemId).collect {
-                _orderItem.value = it
-            }
-        }
-        catch(e: HttpException){
-            val errorBody = e.response()?.errorBody()?.string() ?: "Unknown error"
-            _orderItem.value = Resource.Error("Error: $errorBody")
-        }
-        catch (e:Exception){
-            _orderItem.value = Resource.Error("Network error: ${e.message}")
-        }
-    }
+
     fun getListOrderItem(orderItemIds:List<String>) = viewModelScope.launch {
         try {
             orderItemRepository.getListOrderItem(orderItemIds).collect {
@@ -51,4 +38,18 @@ class OrderItemViewModel @Inject constructor(private val orderItemRepository: Or
             _orderItem.value = Resource.Error("Network error: ${e.message}")
         }
     }
+//    fun getOrderItemId(orderItemId:String) = viewModelScope.launch {
+//        try {
+//            orderItemRepository.getOrderItemById(orderItemId).collect {
+//                _orderItem.value = it
+//            }
+//        }
+//        catch(e: HttpException){
+//            val errorBody = e.response()?.errorBody()?.string() ?: "Unknown error"
+//            _orderItem.value = Resource.Error("Error: $errorBody")
+//        }
+//        catch (e:Exception){
+//            _orderItem.value = Resource.Error("Network error: ${e.message}")
+//        }
+//    }
 }

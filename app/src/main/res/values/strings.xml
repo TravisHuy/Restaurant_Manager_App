@@ -28,5 +28,5 @@
     <string name="add_new_order">Add New Order</string>
     <string name="view_details">View Details</string>
     <string name="update_status">Update Status</string>
-    <string name="total_amount">$ %d</string>
+    <string name="total_amount">$ %.2f</string>
 </resources>

@@ -17,11 +17,15 @@ class OrderItemsAdapter : RecyclerView.Adapter<OrderItemsAdapter.OrderItemViewHo
 
     inner class OrderItemViewHolder(private val binding: OrderItemsLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        fun bind(orderItemDetail: OrderItem.OrderItemDetail)  {
 
-        fun bind(orderItemDetail: OrderItem.OrderItemDetail) {
-            binding.tvQuantity.text = "${orderItemDetail.quantity}x"
-            binding.tvMenuName.text = orderItemDetail.menuItemName
         }
+
+
+//        fun bind(orderItemDetail: OrderItem.OrderItemDetail) {
+//            binding.tvQuantity.text = "${orderItemDetail.quantity}x"
+//            binding.tvMenuName.text = orderItemDetail.menuItemName
+//        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderItemViewHolder {

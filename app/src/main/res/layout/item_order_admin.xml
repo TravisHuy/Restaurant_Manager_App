@@ -85,8 +85,8 @@
             android:orientation="horizontal"
             android:textSize="14sp"
             android:textColor="#555555"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/order_items_layout"/>
+            tools:itemCount="3"
+            tools:listitem="@layout/order_menu_payment_item"/>
 
         <!-- Order Total and Time -->
         <View
