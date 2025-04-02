@@ -5,6 +5,8 @@ import com.nhathuy.restaurant_manager_app.data.dto.TableDto
 import com.nhathuy.restaurant_manager_app.data.model.Table
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import retrofit2.Response
@@ -105,6 +107,24 @@ class TableRepository @Inject constructor(private val tableService: TableService
             Resource.Error("HTTP Error: $errorBody")
         } catch (e: Exception) {
             Resource.Error("Error: ${e.message ?: "Unknown error"}")
+        }
+    }
+
+    suspend fun getTablesByOrderId(orderId:String) : Flow<Resource<Table>> = flow {
+        emit(Resource.Loading())
+        try {
+            val response = tableService.getTableByOrderId(orderId)
+            if(response.isSuccessful){
+                response?.body()?.let {
+                    emit(Resource.Success(it))
+                }?:emit(Resource.Error("empty response body server"))
+            }
+            else{
+                emit(Resource.Error("Failed to get order by id: ${response.message()}"))
+            }
+        }
+        catch (e:Exception){
+            emit(Resource.Error("Network error: ${e.message}"))
         }
     }
 }

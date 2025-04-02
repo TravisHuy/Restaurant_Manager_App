@@ -2,6 +2,8 @@ package com.nhathuy.restaurant_manager_app.admin.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,14 +12,18 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.tabs.TabLayout
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.adapter.OrderItemAdminAdapter
 import com.nhathuy.restaurant_manager_app.data.dto.OrderItemDTO
 import com.nhathuy.restaurant_manager_app.data.model.Order
+import com.nhathuy.restaurant_manager_app.data.model.Status
+import com.nhathuy.restaurant_manager_app.data.model.Table
 import com.nhathuy.restaurant_manager_app.databinding.FragmentOrderAdminBinding
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import com.nhathuy.restaurant_manager_app.viewmodel.OrderItemViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.OrderViewModel
+import com.nhathuy.restaurant_manager_app.viewmodel.TableViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
 import javax.inject.Inject
 
@@ -41,12 +47,16 @@ class OrderAdminFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private val orderViewModel: OrderViewModel by viewModels { viewModelFactory }
     private val orderItemViewModel: OrderItemViewModel by viewModels { viewModelFactory }
+    private val tableViewModel: TableViewModel by viewModels { viewModelFactory }
 
     private var currentOrder: Order? = null
     private var orderItems = mutableListOf<OrderItemDTO>()
     private val orderItemsMap = mutableMapOf<String, List<OrderItemDTO>>()
+    private val tablesMap = mutableMapOf<String, Table>()
     private var orders = mutableListOf<Order>()
-
+    private var filteredOrders = mutableListOf<Order>()
+    private var currentStatus: Status? =null
+    private var searchQuery: String = ""
     override fun onAttach(context: Context) {
         super.onAttach(context)
         (requireActivity().application as RestaurantMangerApp).getRestaurantComponent().inject(this)
@@ -62,13 +72,41 @@ class OrderAdminFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setupStatusTabs()
         setupRecyclerView()
         setupListeners()
+        setupSearchView()
         observeViewModel()
 
         orderViewModel.getAllOrders()
     }
 
+    private fun setupStatusTabs(){
+        Status.values().forEach {
+            status ->
+            val tab = binding.orderStatusTabs.newTab().apply {
+                text = status.name
+                tag = status
+            }
+            binding.orderStatusTabs.addTab(tab)
+        }
+        val allTab = binding.orderStatusTabs.newTab().apply {
+            text = "ALL"
+            tag = null
+        }
+        binding.orderStatusTabs.addTab(allTab,0,true)
+
+        binding.orderStatusTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                currentStatus = tab.tag as? Status
+                filterOrders()
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+
+        })
+    }
     private fun setupRecyclerView() {
         adapter = OrderItemAdminAdapter(
             onOrderClick = { order ->
@@ -87,7 +125,58 @@ class OrderAdminFragment : Fragment() {
             orderViewModel.getAllOrders()
         }
     }
+    private fun setupSearchView() {
+        binding.searchOrderInput.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                searchQuery = s.toString().trim().lowercase()
+                filterOrders()
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+
+        })
+    }
+
+    private fun filterOrders(){
+        filteredOrders.clear()
+
+        val statusFiltered = if (currentStatus != null) {
+            orders.filter { it.status == currentStatus }
+        } else {
+            orders
+        }
+
+        if (searchQuery.isNotEmpty()) {
+            filteredOrders.addAll(statusFiltered.filter { order ->
+                order.id.lowercase().contains(searchQuery) ||
+                        order.customerName.lowercase().contains(searchQuery) ||
+                        order.tableId.lowercase().contains(searchQuery) ||
+                        orderItemsMap[order.id]?.any { orderItem ->
+                            orderItem.menuItems.any { menuItem ->
+                                menuItem.menuItemName.lowercase().contains(searchQuery)
+                            }
+                        } ?: false||
+
+                        order.totalAmount.toString().contains(searchQuery) ||
+                        order.status.name.lowercase().contains(searchQuery) ||
+                        tablesMap[order.tableId]?.number?.toString()?.lowercase()?.contains(searchQuery) ?: false
+            })
+        } else {
+            filteredOrders.addAll(statusFiltered)
+        }
+
+        if (tablesMap.isNotEmpty()) {
+            adapter.setOrdersTable(filteredOrders, orderItemsMap, tablesMap)
+        } else {
+            adapter.setOrders(filteredOrders, orderItemsMap)
+        }
+    }
     private fun observeViewModel() {
         orderViewModel.orderItems.observe(viewLifecycleOwner) { resource ->
             when(resource) {
@@ -100,6 +189,7 @@ class OrderAdminFragment : Fragment() {
                         Log.d("OrderAdmin", "Received ${ordersList.size} orders")
                         orders.clear()
                         orders.addAll(ordersList)
+
 
                         // Process each order sequentially
                         if (orders.isNotEmpty()) {
@@ -157,6 +247,36 @@ class OrderAdminFragment : Fragment() {
                         adapter.setOrders(orders, orderItemsMap)
                     }
                 }
+            }
+        }
+        tableViewModel.tablesByOrderId.observe(viewLifecycleOwner) {
+            result ->
+            when(result){
+                is Resource.Success -> {
+                    result?.data?.let {
+                        table ->
+                        val orderId = currentOrder?.id
+                        if (orderId != null) {
+                            tablesMap[orderId] = table
+                        }
+                        val currentIndex = orders.indexOfFirst { it.id == orderId }
+                        if (currentIndex >= 0 && currentIndex < orders.size - 1) {
+                            processNextOrder(currentIndex + 1)
+                        } else {
+                            adapter.setOrdersTable(orders, orderItemsMap, tablesMap)
+                        }
+                    }
+                }
+                is Resource.Error -> {
+                    Log.e("Tables", "Error fetching table: ${result.message}")
+                    val currentIndex = orders.indexOfFirst { it.id == currentOrder?.id }
+                    if (currentIndex >= 0 && currentIndex < orders.size - 1) {
+                        processNextOrder(currentIndex + 1)
+                    } else {
+                        adapter.setOrdersTable(orders, orderItemsMap, tablesMap)
+                    }
+                }
+                else -> {}
             }
         }
     }

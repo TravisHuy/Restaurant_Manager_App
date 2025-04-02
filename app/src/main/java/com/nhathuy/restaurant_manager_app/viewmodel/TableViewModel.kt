@@ -8,7 +8,10 @@ import com.nhathuy.restaurant_manager_app.data.dto.TableDto
 import com.nhathuy.restaurant_manager_app.data.model.Table
 import com.nhathuy.restaurant_manager_app.data.repository.TableRepository
 import com.nhathuy.restaurant_manager_app.resource.Resource
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import javax.inject.Inject
 
 /**
@@ -38,6 +41,10 @@ class TableViewModel @Inject constructor(
     // LiveData for tables by floor
     private val _tablesByFloor = MutableLiveData<Resource<List<Table>>>()
     val tablesByFloor: LiveData<Resource<List<Table>>> = _tablesByFloor
+
+    private val _tablesByOrderId = MutableLiveData<Resource<Table>>()
+    val tablesByOrderId : LiveData<Resource<Table>> = _tablesByOrderId
+
 
     /**
      * Fetches all tables from the repository.
@@ -89,6 +96,26 @@ class TableViewModel @Inject constructor(
         viewModelScope.launch {
             _tablesByFloor.value = Resource.Loading()
             _tablesByFloor.value = tableRepository.getTablesByFloorId(floorId)
+        }
+    }
+
+    /**
+     * Get tables for a specific orderId
+     *
+     * @param orderId the id of the orderId
+     */
+    fun getTablesByOrderId(orderId:String) = viewModelScope.launch {
+        try {
+            tableRepository.getTablesByOrderId(orderId).collect {
+                _tablesByOrderId.value = it
+            }
+        }
+        catch (e: HttpException) {
+            val errorBody = e.response()?.errorBody()?.string() ?: "Unknown error"
+            _tablesByOrderId.value = Resource.Error("Error: $errorBody")
+        }
+        catch (e:Exception){
+            _tablesByOrderId.value = Resource.Error("Network error: ${e.message}")
         }
     }
 }

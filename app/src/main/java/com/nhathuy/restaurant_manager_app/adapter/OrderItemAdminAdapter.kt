@@ -11,6 +11,7 @@ import com.nhathuy.restaurant_manager_app.data.dto.OrderItemDTO
 import com.nhathuy.restaurant_manager_app.data.model.Order
 import com.nhathuy.restaurant_manager_app.data.model.OrderItem
 import com.nhathuy.restaurant_manager_app.data.model.Status
+import com.nhathuy.restaurant_manager_app.data.model.Table
 import com.nhathuy.restaurant_manager_app.databinding.ItemOrderAdminBinding
 import java.text.SimpleDateFormat
 import java.time.OffsetDateTime
@@ -29,6 +30,7 @@ class OrderItemAdminAdapter( private val onOrderClick: (Order) -> Unit,
 
     private var orders : List<Order> = listOf()
     private var orderItemsMap: Map<String, List<OrderItemDTO>> = mapOf()
+    private var tablesMap: Map<String,Table> = mapOf()
 
     inner class OrderItemAdminViewModel(val binding:ItemOrderAdminBinding):RecyclerView.ViewHolder(binding.root){
 
@@ -71,10 +73,15 @@ class OrderItemAdminAdapter( private val onOrderClick: (Order) -> Unit,
                 val context = binding.root.context
                 tvOrderTotal.text = context.getString(R.string.total_amount,order.totalAmount)
 
-//                val formattedTime = formatOrderTime(order.orderTime)
-//                tvOrderTime.text = formattedTime
                 tvOrderTime.text = formatDateTime(order.orderTime)
 
+                val table = tablesMap[order.tableId]
+                tvTableNumber.text = if(table!=null){
+                    context.getString(R.string.table_number,table.number)
+                }
+                else {
+                    "Table: ${order.tableId}"
+                }
                 when (order.status) {
                     Status.PENDING -> tvOrderStatus.setTextColor(root.context.getColor(R.color.status_pending))
                     Status.IN_PROCESS -> tvOrderStatus.setTextColor(root.context.getColor(R.color.status_in_process))
@@ -114,7 +121,12 @@ class OrderItemAdminAdapter( private val onOrderClick: (Order) -> Unit,
         this.orderItemsMap = orderItems
         notifyDataSetChanged()
     }
-
+    fun setOrdersTable(orders: List<Order>, orderItems: Map<String, List<OrderItemDTO>>,tables:Map<String,Table>) {
+        this.orders = orders
+        this.orderItemsMap = orderItems
+        this.tablesMap = tables
+        notifyDataSetChanged()
+    }
 
     private fun formatDateTime(dateTimeStr:String):String{
         return try {

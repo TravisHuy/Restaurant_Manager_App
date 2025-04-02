@@ -51,4 +51,13 @@ interface TableService {
      */
     @GET("api/tables/byFloor/{floorId}")
     suspend fun getTablesByFloorId(@Path("floorId") floorId: String): Response<List<Table>>
+
+    /**
+     * Get a table by order ID
+     *
+     * @param orderId The order ID
+     * @return a table
+     */
+    @GET("api/tables/byOrder/{orderId}")
+    suspend fun getTableByOrderId(@Path("orderId") orderId:String) : Response<Table>
 }

@@ -29,4 +29,6 @@
     <string name="view_details">View Details</string>
     <string name="update_status">Update Status</string>
     <string name="total_amount">$ %.2f</string>
+
+    <string name="table_number">Table %d</string>
 </resources>
