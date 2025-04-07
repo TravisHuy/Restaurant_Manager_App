@@ -18,12 +18,30 @@ class InvoiceViewModel @Inject constructor(private val invoiceRepository: Invoic
     private val _addInvoice = MutableLiveData<Resource<Invoice>>()
     val addInvoice : LiveData<Resource<Invoice>>  = _addInvoice
 
+
+    private val _allInvoice = MutableLiveData<Resource<List<Invoice>>>()
+    val allInvoice : LiveData<Resource<List<Invoice>>>  = _allInvoice
     fun addInvoice(invoiceRequest: InvoiceRequest){
         viewModelScope.launch {
             try {
                 invoiceRepository.addInvoice(invoiceRequest).collect {
                         result ->
                     _addInvoice.value = result
+                }
+            }
+            catch(e: HttpException){
+                val errorBody = e.response()?.errorBody()?.string() ?: "Unknown error"
+                _addInvoice.value = Resource.Error("Error: $errorBody")
+            }
+        }
+    }
+
+    fun getAllInvoice(){
+        viewModelScope.launch {
+            try {
+                invoiceRepository.getAllInvoice().collect {
+                    result ->
+                    _allInvoice.value = result
                 }
             }
             catch(e: HttpException){

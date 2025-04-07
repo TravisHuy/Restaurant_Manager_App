@@ -76,11 +76,11 @@ class OrderItemAdminAdapter( private val onOrderClick: (Order) -> Unit,
                 tvOrderTime.text = formatDateTime(order.orderTime)
 
                 val table = tablesMap[order.tableId]
-                tvTableNumber.text = if(table!=null){
-                    context.getString(R.string.table_number,table.number)
+                if(table!=null){
+                    tvTableNumber.text =  context.getString(R.string.table_number,table.number)
                 }
                 else {
-                    "Table: ${order.tableId}"
+                    tvTableNumber.text =  "Table: ${order.tableId}"
                 }
                 when (order.status) {
                     Status.PENDING -> tvOrderStatus.setTextColor(root.context.getColor(R.color.status_pending))

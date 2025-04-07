@@ -4,6 +4,7 @@ import com.nhathuy.restaurant_manager_app.data.model.Invoice
 import com.nhathuy.restaurant_manager_app.oauth2.request.InvoiceRequest
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 /**
@@ -17,5 +18,6 @@ interface InvoiceService {
 
     @POST("api/invoices/add")
     suspend fun addInvoice(@Body invoiceRequest: InvoiceRequest):Response<Invoice>
-
+    @GET("/all")
+    suspend fun getAllInvoices() : Response<List<Invoice>>
 }

@@ -33,4 +33,19 @@ class InvoiceRepository @Inject constructor(private val invoiceService: InvoiceS
         }
     }
 
+    suspend fun getAllInvoice() : Flow<Resource<List<Invoice>>>  = flow {
+        emit(Resource.Loading())
+        try {
+            val response = invoiceService.getAllInvoices()
+            if(response.isSuccessful){
+                response.body()?.let {
+                    invoices ->
+                    Resource.Success(invoices)
+                }
+            }
+        }
+        catch (e:HttpException){
+            emit(Resource.Error("Network error: ${e.localizedMessage ?: "Unknown error"}"))
+        }
+    }
 }
