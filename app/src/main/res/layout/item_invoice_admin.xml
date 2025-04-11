@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tv_invoice_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="INV-001"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_payment_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tiền mặt"
+            android:textColor="@android:color/white"
+            android:background="@drawable/bg_payment_status"
+            android:textAlignment="textEnd"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_invoice_id" />
+
+        <!-- Order ID -->
+        <TextView
+            android:id="@+id/tv_order_id_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Mã đơn hàng:"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_invoice_id" />
+
+        <TextView
+            android:id="@+id/tv_order_id_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="ORD-2025-001"
+            android:textAlignment="textEnd"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_order_id_label"
+            app:layout_constraintTop_toTopOf="@+id/tv_order_id_label" />
+
+        <!-- Payment Time -->
+        <TextView
+            android:id="@+id/tv_payment_time_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Thời gian thanh toán:"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_order_id_label" />
+
+        <TextView
+            android:id="@+id/tv_payment_time_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="15:30 24/02/2025"
+            android:textAlignment="textEnd"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_payment_time_label"
+            app:layout_constraintTop_toTopOf="@+id/tv_payment_time_label" />
+
+        <!-- Total Amount -->
+        <TextView
+            android:id="@+id/tv_total_amount_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Tổng tiền:"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_payment_time_label" />
+
+        <TextView
+            android:id="@+id/tv_total_amount_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="1.250.000 đ"
+            android:textAlignment="textEnd"
+            android:textColor="#E91E63"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_total_amount_label"
+            app:layout_constraintTop_toTopOf="@+id/tv_total_amount_label" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/tv_total_amount_label">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_view_details"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:text="Chi tiết"
+                android:textAllCaps="false"
+                app:strokeColor="#2196F3" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_print"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:backgroundTint="#2196F3"
+                android:text="In hóa đơn"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
