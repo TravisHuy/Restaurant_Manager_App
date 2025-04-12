@@ -46,7 +46,7 @@ class InvoiceViewModel @Inject constructor(private val invoiceRepository: Invoic
             }
             catch(e: HttpException){
                 val errorBody = e.response()?.errorBody()?.string() ?: "Unknown error"
-                _addInvoice.value = Resource.Error("Error: $errorBody")
+                _allInvoice.value = Resource.Error("Error: $errorBody")
             }
         }
     }

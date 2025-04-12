@@ -35,7 +35,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- RecyclerView hình tròn -->
+
     <com.nhathuy.circlerecyclerview.CircleRecyclerView
         android:id="@+id/circle_recycler_view"
         android:layout_width="match_parent"

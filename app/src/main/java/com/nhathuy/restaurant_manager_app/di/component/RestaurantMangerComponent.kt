@@ -7,6 +7,7 @@ import com.nhathuy.restaurant_manager_app.admin.add.AddTableActivity
 import com.nhathuy.restaurant_manager_app.admin.all.AllFloorActivity
 import com.nhathuy.restaurant_manager_app.admin.fragment.DashBoardFragment
 import com.nhathuy.restaurant_manager_app.admin.fragment.FloorTableAdminFragment
+import com.nhathuy.restaurant_manager_app.admin.fragment.InvoicesAdminFragment
 import com.nhathuy.restaurant_manager_app.admin.fragment.MenuItemsAdminFragment
 import com.nhathuy.restaurant_manager_app.admin.fragment.OrderAdminFragment
 import com.nhathuy.restaurant_manager_app.admin.login.LoginAdminActivity
@@ -71,4 +72,6 @@ interface RestaurantMangerComponent {
     fun inject(floorTableAdminFragment: FloorTableAdminFragment)
     fun inject(menuItemsAdminFragment: MenuItemsAdminFragment)
     fun inject(orderAdminFragment: OrderAdminFragment)
+
+    fun inject(invoicesAdminFragment: InvoicesAdminFragment)
 }

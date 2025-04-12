@@ -6,24 +6,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".admin.fragment.InvoicesAdminFragment">
 
-   <!--Header-->
-   <androidx.appcompat.widget.Toolbar
-       android:id="@+id/toolbar"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:background="@android:color/white"
-       app:layout_constraintTop_toTopOf="parent"
-       >
-       <TextView
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="Quản lý hóa đơn"
-           android:textSize="18sp"
-           android:textColor="@color/black"
-           android:textStyle="bold"
-           android:layout_gravity="center_vertical"
-           />
-   </androidx.appcompat.widget.Toolbar>
+    <!--Header-->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quản lý hóa đơn"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_gravity="center_vertical"
+            />
+    </androidx.appcompat.widget.Toolbar>
 
     <!--Searchbar-->
     <androidx.cardview.widget.CardView
@@ -77,28 +77,31 @@
         >
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.Chip.Choice"
             android:text="Tất cả" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_cash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:text="Tiền mặt" />
+            android:text="Cash" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_pending"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:text="Chưa xác nhận" />
+            android:text="Card" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_transfer"
+            android:id="@+id/chip_online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:text="Chuyển khoản" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_paid"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:text="Đã thanh toán" />
+            android:text="Online" />
 
     </com.google.android.material.chip.ChipGroup>
 
