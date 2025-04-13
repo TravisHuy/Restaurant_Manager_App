@@ -1,5 +1,6 @@
 package com.nhathuy.restaurant_manager_app.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -57,6 +58,17 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    private val mapPickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.let { data ->
+                val address = data.getStringExtra(MapPickerActivity.EXTRA_SELECTED_ADDRESS)
+                address?.let {
+                    binding.textfieldAddress.setText(it)
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
@@ -98,6 +110,12 @@ class RegisterActivity : AppCompatActivity() {
             btnSignGithub.setOnClickListener {
                 startGithubSignIn()
             }
+
+            chooseLocation.setOnClickListener {
+                val intent = Intent(this@RegisterActivity, MapPickerActivity::class.java)
+                mapPickerLauncher.launch(intent)
+            }
+
         }
     }
     private fun setupWebView() {
