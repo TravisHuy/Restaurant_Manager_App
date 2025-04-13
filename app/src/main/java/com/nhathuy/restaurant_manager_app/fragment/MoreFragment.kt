@@ -18,6 +18,7 @@ import com.nhathuy.restaurant_manager_app.admin.login.LoginAdminActivity
 import com.nhathuy.restaurant_manager_app.databinding.FragmentMoreBinding
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import com.nhathuy.restaurant_manager_app.ui.LoginActivity
+import com.nhathuy.restaurant_manager_app.ui.TestActivity
 import com.nhathuy.restaurant_manager_app.viewmodel.AuthViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
@@ -67,6 +68,9 @@ class MoreFragment : Fragment() {
         }
         binding.linearLayoutAdmin.setOnClickListener {
             navigateAdminDialog()
+        }
+        binding.supportFragment.setOnClickListener {
+            startActivity(Intent(requireActivity(),TestActivity::class.java))
         }
     }
     private fun observeViewModel(){

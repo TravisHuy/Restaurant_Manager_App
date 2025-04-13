@@ -29,13 +29,14 @@
 
         <!-- Status bar and navigation -->
         <item name="android:statusBarColor">@color/primary</item>
-        <item name="android:navigationBarColor">@color/gray_50</item>
+        <item name="android:navigationBarColor">@color/primary_dark</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
 
         <!-- Card and dialog styling -->
         <item name="cardBackgroundColor">@color/card_light</item>
         <item name="dividerColor">@color/divider_color</item>
+
     </style>
 
     <style name="Theme.Restaurant_Manager_App" parent="Base.Theme.Restaurant_Manager_App" />

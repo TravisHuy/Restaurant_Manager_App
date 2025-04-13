@@ -31,11 +31,18 @@
     <string name="total_amount">$ %.2f</string>
 
     <string name="table_number">Table %d</string>
-    <string name="login_in">Login In</string>
+    <string name="login_in">Sign In</string>
     <string name="sign_up">Sign up</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="or_sign_in_email">or sign in with email</string>
     <string name="remember_me">Remember me</string>
     <string name="welcome">Welcome back</string>
     <string name="text_sign_in">Sign in to your account to continue</string>
+    <string name="r">R</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="text_input_email">your.email@example.com</string>
+    <string name="text_input_password">Enter your password</string>
+
 </resources>

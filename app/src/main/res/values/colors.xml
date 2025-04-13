@@ -24,10 +24,10 @@
 
 
     <!-- Primary palette -->
-    <color name="primary">#FF5722</color>
-    <color name="primary_dark">#E64A19</color>
-    <color name="primary_light">#FFCCBC</color>
-    <color name="primary_variant">#BF360C</color>
+    <color name="primary">#1e6586</color>
+    <color name="primary_dark">#90cef4</color>
+    <color name="primary_light">#c5e7ff</color>
+    <color name="primary_variant">#1e6586</color>
 
     <!-- Secondary palette -->
     <color name="secondary">#4CAF50</color> <!-- Green for success/available -->
