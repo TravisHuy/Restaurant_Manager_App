@@ -11,7 +11,7 @@
     <color name="red">#ff0000</color>
     <color name="blue_500">#2196F3</color>
     <color name="grey_300">#E0E0E0</color>
-
+    <color name="transparent">#00000000</color>
 
     <color name="primary_color">#2196F3</color>
     <color name="background_light">#F5F5F5</color>
@@ -21,4 +21,69 @@
     <color name="status_in_process">#2aaeeb</color>
     <color name="status_completed">#17d133</color>
     <color name="status_paid">#d11518</color>
+
+
+    <!-- Primary palette -->
+    <color name="primary">#FF5722</color>
+    <color name="primary_dark">#E64A19</color>
+    <color name="primary_light">#FFCCBC</color>
+    <color name="primary_variant">#BF360C</color>
+
+    <!-- Secondary palette -->
+    <color name="secondary">#4CAF50</color> <!-- Green for success/available -->
+    <color name="secondary_dark">#388E3C</color>
+    <color name="secondary_light">#C8E6C9</color>
+    <color name="secondary_variant">#1B5E20</color>
+
+    <!-- Accent colors -->
+    <color name="accent">#FFC107</color> <!-- Yellow/Gold for accents -->
+    <color name="accent_dark">#FFA000</color>
+    <color name="accent_light">#FFECB3</color>
+
+    <!-- Neutral colors -->
+    <color name="gray_50">#FAFAFA</color>
+    <color name="gray_100">#F5F5F5</color>
+    <color name="gray_200">#EEEEEE</color>
+    <color name="gray_300">#E0E0E0</color>
+    <color name="gray_400">#BDBDBD</color>
+    <color name="gray_500">#9E9E9E</color>
+    <color name="gray_600">#757575</color>
+    <color name="gray_700">#616161</color>
+    <color name="gray_800">#424242</color>
+    <color name="gray_900">#212121</color>
+
+    <!-- Restaurant specific colors -->
+    <color name="food_category_main">#D84315</color> <!-- Deep Orange -->
+    <color name="food_category_appetizer">#FF8A65</color> <!-- Light Orange -->
+    <color name="food_category_dessert">#F48FB1</color> <!-- Pink -->
+    <color name="food_category_beverage">#81D4FA</color> <!-- Light Blue -->
+    <color name="food_category_special">#FFD54F</color> <!-- Amber -->
+
+    <!-- Common UI colors -->
+    <color name="shadow_color">#33000000</color>
+    <color name="ripple_color">#1F000000</color>
+    <color name="scrim">#52000000</color>
+
+    <!-- Text colors for light theme -->
+    <color name="text_primary_light">#212121</color>
+    <color name="text_secondary_light">#757575</color>
+    <color name="text_hint_light">#9E9E9E</color>
+
+    <!-- Text colors for dark theme -->
+    <color name="text_primary_dark">#FFFFFF</color>
+    <color name="text_secondary_dark">#B0BEC5</color>
+    <color name="text_hint_dark">#70788C</color>
+
+    <!-- Background colors for light theme -->
+    <color name="surface_light">#FFFFFF</color>
+    <color name="card_light">#FFFFFF</color>
+
+    <!-- Background colors for dark theme -->
+    <color name="background_dark">#121212</color>
+    <color name="surface_dark">#1E1E1E</color>
+    <color name="card_dark">#2C2C2C</color>
+
+    <color name="login_button">#5E5CE6</color>
+    <color name="input_background_dark">#283B62</color>
+
 </resources>
