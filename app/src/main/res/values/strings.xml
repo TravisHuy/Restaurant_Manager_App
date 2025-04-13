@@ -55,5 +55,24 @@
     <string name="text_create_layout">Create your account</string>
     <string name="must_be_least">Must be at least 8 characters</string>
     <string name="does_not_contain">Does not contain your email address</string>
+    <string name="choose_location">Please choose your location</string>
+    <string name="GOOGLE_API_KEY_VALUE">AIzaSyBnab4M36hq9P2_qX3CF9V2iJh6eKQHDRQ</string>
 
+    <string name="choose_locations">Choose location</string>
+    <string name="pick_location">Pick Location</string>
+    <string name="search_location">Search location</string>
+    <string name="selected_address">Selected Address:</string>
+    <string name="no_address_selected">No address selected yet</string>
+    <string name="confirm_location">Confirm Location</string>
+    <string name="please_select_location">Please select a location first</string>
+    <string name="location_not_found">Location not found</string>
+    <string name="search_error">Search error: </string>
+    <string name="address_not_found">Address not found</string>
+    <string name="error_fetching_address">Error fetching address</string>
+    <string name="location_permission_denied">Location permission denied</string>
+    <string name="map_type">Map Type</string>
+    <string name="normal_map">Normal</string>
+    <string name="satellite_map">Satellite</string>
+    <string name="terrain_map">Terrain</string>
+    <string name="hybrid_map">Hybrid</string>
 </resources>

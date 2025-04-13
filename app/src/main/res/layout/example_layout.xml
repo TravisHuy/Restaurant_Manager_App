@@ -484,6 +484,38 @@
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!--Choose Location-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/choose_location_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toEndOf="@+id/text_input_layout_address"
+            app:layout_constraintTop_toBottomOf="@+id/text_input_layout_address">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_choose_location"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="@android:color/white"
+                android:text="@string/choose_location"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <ImageView
+                android:id="@+id/choose_location"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="5dp"
+                android:src="@drawable/ic_location"
+                app:layout_constraintBottom_toBottomOf="@+id/text_choose_location"
+                app:layout_constraintStart_toEndOf="@+id/text_choose_location"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <!-- Sign In Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_sign_up"
@@ -494,12 +526,12 @@
             android:textColor="@color/white"
             app:backgroundTint="#1CD54F"
             android:padding="15dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="20dp"
             app:cornerRadius="16dp"
             app:elevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_input_layout_address"
+            app:layout_constraintTop_toBottomOf="@+id/choose_location_layout"
             app:strokeColor="#000000"
             app:strokeWidth="1dp"
             tools:layout_editor_absoluteX="24dp"
