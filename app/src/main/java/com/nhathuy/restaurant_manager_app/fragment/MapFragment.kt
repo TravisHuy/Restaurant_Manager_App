@@ -15,6 +15,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.adapter.FloorAdapter
@@ -48,6 +51,9 @@ class MapFragment : Fragment() {
     private lateinit var floorAdapter: FloorAdapter
     private var floorId : String? = null
     private var tableName:String? = null
+
+    private lateinit var adView:AdView
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModel: FloorViewModel by viewModels { viewModelFactory }
@@ -60,6 +66,12 @@ class MapFragment : Fragment() {
     ): View? {
 
         binding = FragmentMapBinding.inflate(inflater, container, false)
+
+        //
+        MobileAds.initialize(requireContext()){}
+
+        adView = binding.adView
+        loadBannerAd()
 
         setupTableRecyclerView()
         setupFloorRecyclerView()
@@ -74,6 +86,11 @@ class MapFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         (requireActivity().application as RestaurantMangerApp).getRestaurantComponent().inject(this)
+    }
+
+    private fun loadBannerAd(){
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
     }
 
     private fun setupTableRecyclerView(){
@@ -340,5 +357,20 @@ class MapFragment : Fragment() {
     }
     private fun showLoading(isLoading:Boolean){
         binding.swipeRefreshLayout.isRefreshing = if(isLoading) true else false
+    }
+
+    override fun onPause() {
+        adView.pause()
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        adView.resume()
+    }
+
+    override fun onDestroy() {
+        adView.destroy()
+        super.onDestroy()
     }
 }

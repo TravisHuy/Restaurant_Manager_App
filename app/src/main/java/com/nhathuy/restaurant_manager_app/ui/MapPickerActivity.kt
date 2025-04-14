@@ -1,6 +1,7 @@
 package com.nhathuy.restaurant_manager_app.ui
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -248,12 +249,9 @@ class MapPickerActivity : AppCompatActivity(),OnMapReadyCallback {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             android.R.id.home -> {
-                // Handle back button click in the toolbar
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                    // For Android 13+ (API 33+)
                     finish()
                 } else {
-                    // For older Android versions
                     onBackPressed()
                 }
                 true
