@@ -10,6 +10,7 @@ import com.nhathuy.restaurant_manager_app.admin.fragment.FloorTableAdminFragment
 import com.nhathuy.restaurant_manager_app.admin.fragment.InvoicesAdminFragment
 import com.nhathuy.restaurant_manager_app.admin.fragment.MenuItemsAdminFragment
 import com.nhathuy.restaurant_manager_app.admin.fragment.OrderAdminFragment
+import com.nhathuy.restaurant_manager_app.admin.fragment.StaffManagementAdminFragment
 import com.nhathuy.restaurant_manager_app.admin.login.LoginAdminActivity
 import com.nhathuy.restaurant_manager_app.admin.register.RegisterAdminActivity
 import com.nhathuy.restaurant_manager_app.data.api.RetrofitClient
@@ -75,4 +76,5 @@ interface RestaurantMangerComponent {
     fun inject(orderAdminFragment: OrderAdminFragment)
     fun inject(invoicesAdminFragment: InvoicesAdminFragment)
     fun inject(testActivity: TestActivity)
+    fun inject(staffManagementAdminFragment: StaffManagementAdminFragment)
 }

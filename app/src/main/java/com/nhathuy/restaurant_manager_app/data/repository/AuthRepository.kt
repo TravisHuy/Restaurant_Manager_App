@@ -27,4 +27,5 @@ class AuthRepository @Inject constructor(private val authService: AuthService,
 
     suspend fun loginAdmin(request: LoginRequest) = authService.loginAdmin(request)
     suspend fun registerAdmin(request: SignUpRequest) = authService.registerAdmin(request)
+    suspend fun getAllUsers() = authService.getAllUsers()
 }

@@ -269,7 +269,7 @@ class FloorTableAdminFragment : Fragment() {
                             cleanInput(dialog)
                             dialog.dismiss()
 
-                            adManager.showInterstitialAdWithUX(this){
+                            adManager.showInterstitialAdWithUX(requireActivity()){
 
                             }
 

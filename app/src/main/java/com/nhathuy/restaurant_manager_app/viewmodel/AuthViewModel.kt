@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nhathuy.restaurant_manager_app.data.local.SessionManager
 import com.nhathuy.restaurant_manager_app.data.local.TokenManager
+import com.nhathuy.restaurant_manager_app.data.model.User
 import com.nhathuy.restaurant_manager_app.data.repository.AuthRepository
 import com.nhathuy.restaurant_manager_app.oauth2.request.LoginRequest
 import com.nhathuy.restaurant_manager_app.oauth2.request.SignUpRequest
@@ -67,6 +68,13 @@ class AuthViewModel @Inject constructor(
      */
     private val _registerAdminResult= MutableLiveData<Resource<AuthResponse>>()
     val registerAdminResult : LiveData<Resource<AuthResponse>> = _registerAdminResult
+
+    /**
+     * The allUsers LiveData.
+     * This LiveData is used to store the result of the list user operation.
+     */
+    private val _allUsers = MutableLiveData<Resource<List<User>>>()
+    val allUsers : LiveData<Resource<List<User>>> = _allUsers
 
     /**
      * The login function.
@@ -291,6 +299,30 @@ class AuthViewModel @Inject constructor(
             }
             catch (e:Exception){
                 _registerAdminResult.value = Resource.Error("Registration error: ${e.message}")
+            }
+        }
+    }
+
+    fun getAllUsers(){
+        viewModelScope.launch {
+            _allUsers.value = Resource.Loading()
+            try {
+                val response = repository.getAllUsers()
+                if(response.isSuccessful){
+                    response.body()?.let {
+                        _allUsers.value = Resource.Success(response.body()!!)
+                    }
+                }
+                else{
+                    _allUsers.value = Resource.Error("get list user failed")
+                }
+            }
+            catch (e:HttpException){
+                val errorBody = e.response()?.errorBody()?.string() ?: "Unknown error"
+                _allUsers.value = Resource.Error("Get all users error: $errorBody")
+            }
+            catch (e:Exception){
+                _allUsers.value = Resource.Error("Get all users error: ${e.message}")
             }
         }
     }

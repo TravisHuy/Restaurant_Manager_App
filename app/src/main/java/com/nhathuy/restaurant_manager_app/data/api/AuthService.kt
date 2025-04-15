@@ -1,5 +1,6 @@
 package com.nhathuy.restaurant_manager_app.data.api
 
+import com.nhathuy.restaurant_manager_app.data.model.User
 import com.nhathuy.restaurant_manager_app.oauth2.request.LoginRequest
 import com.nhathuy.restaurant_manager_app.oauth2.request.SignUpRequest
 import com.nhathuy.restaurant_manager_app.oauth2.response.AuthResponse
@@ -72,4 +73,12 @@ interface AuthService {
      */
     @POST("api/auth/admin/login")
     suspend fun loginAdmin(@Body loginRequest:LoginRequest): Response<AuthResponse>
+
+    /**
+     * Get all user
+     *
+     * @return List user
+     */
+    @GET("api/auth/all/users")
+    suspend fun getAllUsers() : Response<List<User>>
 }
