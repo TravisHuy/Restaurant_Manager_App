@@ -1,5 +1,6 @@
 package com.nhathuy.restaurant_manager_app.admin.fragment
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -29,6 +30,7 @@ import com.nhathuy.restaurant_manager_app.data.model.Floor
 import com.nhathuy.restaurant_manager_app.databinding.FragmentFloorTableAdminBinding
 import com.nhathuy.restaurant_manager_app.resource.AdManager
 import com.nhathuy.restaurant_manager_app.resource.Resource
+import com.nhathuy.restaurant_manager_app.util.Constants
 import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.TableViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
@@ -51,6 +53,8 @@ class FloorTableAdminFragment : Fragment() {
     private lateinit var tableAdapter: TableAdapter
 
     private var currentFloorId: String? = null
+    private var dialog: Dialog? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModel: FloorViewModel by viewModels { viewModelFactory }
@@ -142,6 +146,14 @@ class FloorTableAdminFragment : Fragment() {
             }
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == Constants.ADD_FLOOR_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            viewModel.getAllFloors()
+        }
+    }
+
     private fun showListTable(floorId: String) {
         viewModel.getFloorById(floorId)
     }
@@ -156,6 +168,15 @@ class FloorTableAdminFragment : Fragment() {
                         setupFloorChips(floors)
                         adapter.updateFloors(floors)
 
+                        if (currentFloorId == null && floors.isNotEmpty()) {
+                            currentFloorId = floors[0].id
+                            showListTable(floors[0].id)
+
+                            // Make sure the first chip is selected
+                            if (binding.chipGroupFloors.childCount > 0) {
+                                (binding.chipGroupFloors.getChildAt(0) as? Chip)?.isChecked = true
+                            }
+                        }
                     }
                 }
                 is Resource.Error -> {
@@ -216,9 +237,33 @@ class FloorTableAdminFragment : Fragment() {
                 }
             }
         }
+
+        tableViewModel.addTableResult.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Resource.Loading -> {
+                    showLoading(true)
+                }
+                is Resource.Success -> {
+                    showLoading(false)
+                    Toast.makeText(requireContext(), "Table added successfully", Toast.LENGTH_SHORT).show()
+
+                    dialog?.dismiss()
+
+                    currentFloorId?.let { floorId ->
+                        tableViewModel.getTablesByFloorId(floorId)
+                    }
+
+                    adManager.showInterstitialAdWithUX(requireActivity()) {}
+                }
+                is Resource.Error -> {
+                    showLoading(false)
+                    Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
     private fun setupFloorChips(floors: List<Floor>) {
-        binding.chipGroupFloors.removeAllViews() // Xóa chips cũ
+        binding.chipGroupFloors.removeAllViews()
 
         floors.forEach { floor ->
             val chip = Chip(requireContext()).apply {
@@ -226,70 +271,50 @@ class FloorTableAdminFragment : Fragment() {
                 isClickable = true
                 isCheckable = true
                 setOnClickListener {
-                    // Xử lý khi click vào floor
+
                     currentFloorId = floor.id
                     showListTable(floor.id)
                 }
             }
             binding.chipGroupFloors.addView(chip)
+
+            if (floor.id == currentFloorId) {
+                chip.isChecked = true
+            }
         }
     }
     private fun showDialogAddTable(floorId:String) {
-        val dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_add_table)
+        dialog = Dialog(requireContext())
+        dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog?.setContentView(R.layout.dialog_add_table)
 
-        val table_number=dialog.findViewById<TextInputEditText>(R.id.ed_add_table_number)
-        val table_capacity=dialog.findViewById<TextInputEditText>(R.id.ed_add_table_capacity)
-        val layoutTableNumber = dialog.findViewById<TextInputLayout>(R.id.layout_add_table_number)
-        val layoutTableCapacity = dialog.findViewById<TextInputLayout>(R.id.layout_add_table_capacity)
-        val btnAddTable = dialog.findViewById<MaterialButton>(R.id.btn_add_table)
-        val btnClose = dialog.findViewById<ImageView>(R.id.ic_close)
+        val table_number=dialog?.findViewById<TextInputEditText>(R.id.ed_add_table_number)
+        val table_capacity=dialog?.findViewById<TextInputEditText>(R.id.ed_add_table_capacity)
+        val layoutTableNumber = dialog?.findViewById<TextInputLayout>(R.id.layout_add_table_number)
+        val layoutTableCapacity = dialog?.findViewById<TextInputLayout>(R.id.layout_add_table_capacity)
+        val btnAddTable = dialog?.findViewById<MaterialButton>(R.id.btn_add_table)
+        val btnClose = dialog?.findViewById<ImageView>(R.id.ic_close)
 
-        btnAddTable.setOnClickListener {
-            val tableNumber = table_number.text.toString()
-            val tableCapacity = table_capacity.text.toString()
+        btnAddTable?.setOnClickListener {
+            val tableNumber = table_number?.text.toString()
+            val tableCapacity = table_capacity?.text.toString()
 
-            if(validateInput(tableNumber,tableCapacity,layoutTableNumber, layoutTableCapacity)){
-                tableViewModel.addTable(TableDto(tableNumber.toInt(),tableCapacity.toInt(),true),floorId)
-
-
-                tableViewModel.addTableResult.observe(requireActivity()) {
-                        result ->
-                    when(result) {
-                        is Resource.Loading -> {
-                        }
-                        is Resource.Success -> {
-                            Toast.makeText(requireContext(), "Table added successfully", Toast.LENGTH_SHORT).show()
-
-                            currentFloorId?.let { floorId ->
-                                tableViewModel.getTablesByFloorId(floorId)
-                            }
-
-                            cleanInput(dialog)
-                            dialog.dismiss()
-
-                            adManager.showInterstitialAdWithUX(this){
-
-                            }
-
-                        }
-                        is Resource.Error -> {
-                            Toast.makeText(requireContext(),result.message, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
+            if(validateInput(tableNumber,tableCapacity,layoutTableNumber!!, layoutTableCapacity!!)) {
+                tableViewModel.addTable(
+                    TableDto(tableNumber.toInt(), tableCapacity.toInt(), true),
+                    floorId
+                )
             }
 
         }
-        btnClose.setOnClickListener {
-            dialog.dismiss()
+        btnClose?.setOnClickListener {
+            dialog?.dismiss()
         }
 
-        dialog.show()
-        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        dialog.window?.attributes?.windowAnimations=R.style.DialogAnimation;
-        dialog.window?.setGravity(Gravity.CENTER)
+        dialog?.show()
+        dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog?.window?.attributes?.windowAnimations=R.style.DialogAnimation;
+        dialog?.window?.setGravity(Gravity.CENTER)
     }
     private fun cleanInput(dialog: Dialog){
         dialog.findViewById<TextInputEditText>(R.id.ed_add_table_number).text?.clear()

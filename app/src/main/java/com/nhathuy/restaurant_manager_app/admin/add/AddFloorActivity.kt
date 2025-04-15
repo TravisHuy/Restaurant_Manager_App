@@ -1,5 +1,6 @@
 package com.nhathuy.restaurant_manager_app.admin.add
 
+import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -62,9 +63,9 @@ class AddFloorActivity : AppCompatActivity() {
                 is Resource.Success -> {
                     binding.progressBar.visibility = View.GONE
                     clearInput()
-
+                    setResult(Activity.RESULT_OK)
                     adManager.showInterstitialAd(this){
-
+                        finish()
                     }
                 }
                 is Resource.Error -> {

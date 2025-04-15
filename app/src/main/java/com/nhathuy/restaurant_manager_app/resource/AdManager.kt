@@ -42,18 +42,18 @@ class AdManager @Inject constructor(){
         val adRequest = AdRequest.Builder().build()
 
         InterstitialAd.load(context,context.getString(R.string.Interstitial_AD_UNIT_ID),adRequest,
-        object: InterstitialAdLoadCallback() {
-            override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                isAdLoading = false
-                interstitialAd = null
-            }
+            object: InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    isAdLoading = false
+                    interstitialAd = null
+                }
 
-            override fun onAdLoaded(ad: InterstitialAd) {
-                isAdLoading = false
-                interstitialAd = ad
-                setupAdCallbacks()
-            }
-        })
+                override fun onAdLoaded(ad: InterstitialAd) {
+                    isAdLoading = false
+                    interstitialAd = ad
+                    setupAdCallbacks()
+                }
+            })
     }
     /**
      * Set up callbacks for ad

@@ -27,5 +27,5 @@ object Constants {
     const val REQUEST_CODE_CREATE_ORDER = 1001
     const val REQUEST_CODE_CREATE_ORDER_ITEM=1002
     const val REQUEST_CODE_ORDER_PAYMENT=1003
-
+    const val ADD_FLOOR_REQUEST_CODE = 100
 }
