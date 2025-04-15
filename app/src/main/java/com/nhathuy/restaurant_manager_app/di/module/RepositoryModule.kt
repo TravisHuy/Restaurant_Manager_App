@@ -20,6 +20,7 @@ import com.nhathuy.restaurant_manager_app.data.repository.OrderItemRepository
 import com.nhathuy.restaurant_manager_app.data.repository.OrderRepository
 import com.nhathuy.restaurant_manager_app.data.repository.ReservationRepository
 import com.nhathuy.restaurant_manager_app.data.repository.TableRepository
+import com.nhathuy.restaurant_manager_app.resource.AdManager
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -139,5 +140,17 @@ class RepositoryModule {
     @Singleton
     fun provideInvoiceRepository(invoiceService: InvoiceService): InvoiceRepository {
         return InvoiceRepository(invoiceService)
+    }
+
+    /**
+     * Provides the orderItem repository for the application.
+     *
+     * @param invoiceService The category service
+     * @return The invoice repository
+     */
+    @Provides
+    @Singleton
+    fun provideAdManager():AdManager {
+        return AdManager()
     }
 }

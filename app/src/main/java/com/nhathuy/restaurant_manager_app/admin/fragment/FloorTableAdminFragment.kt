@@ -27,6 +27,7 @@ import com.nhathuy.restaurant_manager_app.admin.add.AddFloorActivity
 import com.nhathuy.restaurant_manager_app.data.dto.TableDto
 import com.nhathuy.restaurant_manager_app.data.model.Floor
 import com.nhathuy.restaurant_manager_app.databinding.FragmentFloorTableAdminBinding
+import com.nhathuy.restaurant_manager_app.resource.AdManager
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.TableViewModel
@@ -55,6 +56,8 @@ class FloorTableAdminFragment : Fragment() {
     private val viewModel: FloorViewModel by viewModels { viewModelFactory }
     private val tableViewModel : TableViewModel by viewModels  { viewModelFactory }
 
+    @Inject
+    lateinit var adManager: AdManager
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -77,6 +80,8 @@ class FloorTableAdminFragment : Fragment() {
         // Inflate the layout for this fragment and return the view
         binding = FragmentFloorTableAdminBinding.inflate(LayoutInflater.from(context),container,false)
 
+
+        adManager.loadInterstitialAd(requireContext())
 
         setupRecyclerView()
         setupTableRecyclerView()
@@ -263,6 +268,11 @@ class FloorTableAdminFragment : Fragment() {
 
                             cleanInput(dialog)
                             dialog.dismiss()
+
+                            adManager.showInterstitialAdWithUX(this){
+
+                            }
+
                         }
                         is Resource.Error -> {
                             Toast.makeText(requireContext(),result.message, Toast.LENGTH_SHORT).show()

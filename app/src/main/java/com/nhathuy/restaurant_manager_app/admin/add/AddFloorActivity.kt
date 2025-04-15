@@ -9,6 +9,7 @@ import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.data.model.Floor
 import com.nhathuy.restaurant_manager_app.databinding.ActivityAddFloorBinding
+import com.nhathuy.restaurant_manager_app.resource.AdManager
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.TableViewModel
@@ -29,12 +30,16 @@ class AddFloorActivity : AppCompatActivity() {
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModel: FloorViewModel by viewModels { viewModelFactory }
 
+    @Inject
+    lateinit var adManager: AdManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddFloorBinding.inflate(layoutInflater)
         setContentView(binding.root)
         (application as RestaurantMangerApp).getRestaurantComponent().inject(this)
 
+        adManager.loadInterstitialAd(this)
 
         setupClickListeners()
         observeViewModel()
@@ -57,6 +62,10 @@ class AddFloorActivity : AppCompatActivity() {
                 is Resource.Success -> {
                     binding.progressBar.visibility = View.GONE
                     clearInput()
+
+                    adManager.showInterstitialAd(this){
+
+                    }
                 }
                 is Resource.Error -> {
                     binding.progressBar.visibility = View.GONE
