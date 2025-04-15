@@ -58,7 +58,7 @@
     <string name="choose_location">Please choose your location</string>
     <string name="GOOGLE_API_KEY_VALUE">AIzaSyBnab4M36hq9P2_qX3CF9V2iJh6eKQHDRQ</string>
     <string name="ADMOD_APP_ID">ca-app-pub-1809276120261084~6061491791</string>
-    <string name="ADMOD_AD_UNIT_ID">ca-app-pub-1809276120261084~6061491791</string>
+    <string name="ADMOD_AD_UNIT_ID">ca-app-pub-1809276120261084/9598483952</string>
     
     <string name="choose_locations">Choose location</string>
     <string name="pick_location">Pick Location</string>

@@ -10,6 +10,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
@@ -44,6 +48,7 @@ class MoreFragment : Fragment() {
     //
     private var navigatingToAdmin = false
 
+    private lateinit var adView:AdView
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -56,12 +61,32 @@ class MoreFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentMoreBinding.inflate(inflater, container, false)
 
+
+        MobileAds.initialize(requireContext()){}
+
+        val adView = AdView(requireContext())
+        adView.adUnitId = context?.getString(R.string.ADMOD_AD_UNIT_ID)!!
+// Request an anchored adaptive banner with a width of 360.
+        adView.setAdSize(AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(requireContext(), 360))
+        this.adView = adView
+
+// Replace ad container with new ad view.
+        binding.adViewContainer.removeAllViews()
+        binding.adViewContainer.addView(adView)
+
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
+
+
         observeViewModel()
         setupListeners()
 
         return binding.root
     }
-
+    private fun loadBannerAd(){
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
+    }
     private fun setupListeners() {
         binding.linearLogout.setOnClickListener {
             authViewModel.logout()
