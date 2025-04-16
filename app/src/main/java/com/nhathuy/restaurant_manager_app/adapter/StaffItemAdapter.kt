@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.data.model.Invoice
 import com.nhathuy.restaurant_manager_app.data.model.User
 import com.nhathuy.restaurant_manager_app.databinding.ItemStaffBinding
@@ -33,6 +34,11 @@ class StaffItemAdapter(private val onUserClick: (User) -> Unit) : ListAdapter<Us
                 staffEmail.text = user.email
                 staffPhone.text = user.phoneNumber
                 staffRole.text = user.role.toString()
+
+                Glide.with(root.context)
+                    .load(R.drawable.default_image)
+                    .circleCrop()
+                    .into(binding.staffImageAvatar)
             }
         }
 
