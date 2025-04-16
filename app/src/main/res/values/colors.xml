@@ -21,7 +21,7 @@
     <color name="status_in_process">#2aaeeb</color>
     <color name="status_completed">#17d133</color>
     <color name="status_paid">#d11518</color>
-
+    <color name="icon_color">#757575</color>
 
     <!-- Primary palette -->
     <color name="primary">#1e6586</color>
