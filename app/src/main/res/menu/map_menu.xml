@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_map_type"
         android:title="@string/map_type"
-        app:showAsAction="ifRoom">
+        app:showAsAction="always">
         <menu>
             <item
                 android:id="@+id/menu_normal_map"
-                android:title="@string/normal_map" />
+                android:title="@string/normal_map"
+                />
             <item
                 android:id="@+id/menu_satellite_map"
                 android:title="@string/satellite_map" />

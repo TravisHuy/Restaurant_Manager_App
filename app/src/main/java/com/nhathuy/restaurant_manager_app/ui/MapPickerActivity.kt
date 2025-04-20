@@ -58,6 +58,7 @@ class MapPickerActivity : AppCompatActivity(),OnMapReadyCallback {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.pick_location)
+
     }
     private fun initializeMap(){
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment

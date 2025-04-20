@@ -39,6 +39,7 @@ interface PaymentService {
      * @param orderId ID of the order to be paid
      * @return Response containing payment URL and test card information
      */
+    @POST("api/payments/vnpay/paymentTest/qr/{orderId}")
     suspend fun createVnPayTestPayment(@Path("orderId") orderId:String) : Response<TestPaymentResponse>
 
     /**

@@ -6,16 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.nhathuy.restaurant_manager_app.R
-
-
+import com.nhathuy.restaurant_manager_app.databinding.FragmentProvisionalBillBinding
 
 /**
- * A simple [Fragment] subclass.
- * Use the [ProvisionalBillFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * Fragment responsible for displaying a provisional bill to customer
+ * Used to provide a quick overview of the total cost before final checkout.
+ *
+ * @return 0.1
+ * @version 20-04-2025
+ * @author TravisHuy
  */
-class ProvisionalBillFragment : Fragment() {
 
+class ProvisionalBillFragment : Fragment() {
+    private var _binding : FragmentProvisionalBillBinding? = null
+    private val binding get() = _binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

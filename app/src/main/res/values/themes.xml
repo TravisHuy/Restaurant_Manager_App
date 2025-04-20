@@ -37,6 +37,13 @@
         <item name="cardBackgroundColor">@color/card_light</item>
         <item name="dividerColor">@color/divider_color</item>
 
+        <!--Menu Map Type-->
+        <item name="popupMenuStyle">@style/PopupMenuStyle</item>
+        <item name="actionOverflowMenuStyle">@style/PopupMenuOverflowStyle</item>
+        <item name="android:dropDownItemStyle">@style/PopupMenuItemStyle</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/TextAppearance.PopupMenu</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/TextAppearance.PopupMenu</item>
+
     </style>
 
     <style name="Theme.Restaurant_Manager_App" parent="Base.Theme.Restaurant_Manager_App" />
@@ -80,6 +87,26 @@
         <item name="cardElevation">2dp</item>
         <item name="cardCornerRadius">8dp</item>
         <item name="contentPadding">16dp</item>
+    </style>
+
+    <!-- Add or update these styles in your styles.xml -->
+    <style name="PopupMenuStyle" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:background">@color/gray_200</item>
+        <item name="android:popupBackground">@color/gray_200</item>
+    </style>
+
+    <style name="PopupMenuOverflowStyle" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:background">@color/gray_200</item>
+        <item name="android:popupBackground">@color/gray_200</item>
+    </style>
+    <style name="PopupMenuItemStyle" parent="Widget.AppCompat.DropDownItem.Spinner">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:background">@color/gray_200</item>
+    </style>
+    <style name="TextAppearance.PopupMenu" parent="TextAppearance.AppCompat.Menu">
+        <item name="android:textColor">@android:color/black</item>
     </style>
 
 </resources>

@@ -85,5 +85,6 @@
 
     <color name="login_button">#5E5CE6</color>
     <color name="input_background_dark">#283B62</color>
+    <color name="map_menu_background">#333333</color>
 
 </resources>
