@@ -7,6 +7,7 @@ import com.nhathuy.restaurant_manager_app.data.api.InvoiceService
 import com.nhathuy.restaurant_manager_app.data.api.MenuItemService
 import com.nhathuy.restaurant_manager_app.data.api.OrderItemService
 import com.nhathuy.restaurant_manager_app.data.api.OrderService
+import com.nhathuy.restaurant_manager_app.data.api.PaymentService
 import com.nhathuy.restaurant_manager_app.data.api.ReservationService
 import com.nhathuy.restaurant_manager_app.data.api.TableService
 import com.nhathuy.restaurant_manager_app.data.local.TokenManager
@@ -18,6 +19,7 @@ import com.nhathuy.restaurant_manager_app.data.repository.InvoiceRepository
 import com.nhathuy.restaurant_manager_app.data.repository.MenuItemRepository
 import com.nhathuy.restaurant_manager_app.data.repository.OrderItemRepository
 import com.nhathuy.restaurant_manager_app.data.repository.OrderRepository
+import com.nhathuy.restaurant_manager_app.data.repository.PaymentRepository
 import com.nhathuy.restaurant_manager_app.data.repository.ReservationRepository
 import com.nhathuy.restaurant_manager_app.data.repository.TableRepository
 import com.nhathuy.restaurant_manager_app.resource.AdManager
@@ -152,5 +154,17 @@ class RepositoryModule {
     @Singleton
     fun provideAdManager():AdManager {
         return AdManager()
+    }
+
+    /**
+     * Provides the payment repository for the application.
+     *
+     * @param paymentService The payment service
+     * @return The payment repository
+     */
+    @Provides
+    @Singleton
+    fun providePaymentRepository(paymentService: PaymentService):PaymentRepository {
+        return PaymentRepository(paymentService)
     }
 }

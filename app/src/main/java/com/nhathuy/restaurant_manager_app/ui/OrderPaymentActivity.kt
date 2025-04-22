@@ -1,5 +1,6 @@
 package com.nhathuy.restaurant_manager_app.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +17,7 @@ import com.nhathuy.restaurant_manager_app.data.dto.OrderItemDTO
 import com.nhathuy.restaurant_manager_app.data.model.Order
 import com.nhathuy.restaurant_manager_app.data.model.PaymentMethod
 import com.nhathuy.restaurant_manager_app.databinding.ActivityOrderPaymentBinding
+import com.nhathuy.restaurant_manager_app.fragment.ProvisionalBillFragment
 import com.nhathuy.restaurant_manager_app.oauth2.request.InvoiceRequest
 import com.nhathuy.restaurant_manager_app.resource.Resource
 import com.nhathuy.restaurant_manager_app.viewmodel.InvoiceViewModel
@@ -39,6 +41,9 @@ class OrderPaymentActivity : AppCompatActivity() {
 
     private var selectedPaymentMethod: PaymentMethod? = null
     private var currentOrder: Order? = null
+    private var orderId:String? = null
+    private var tableNumber:String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityOrderPaymentBinding.inflate(layoutInflater)
@@ -46,8 +51,8 @@ class OrderPaymentActivity : AppCompatActivity() {
 
         (application as RestaurantMangerApp).getRestaurantComponent().inject(this)
 
-        val orderId = intent.getStringExtra("ORDER_ID")
-        val tableNumber = intent.getStringExtra("TABLE_NUMBER")
+        orderId = intent.getStringExtra("ORDER_ID")
+        tableNumber = intent.getStringExtra("TABLE_NUMBER")
 
         setupListeners()
         setupRecyclerview()
@@ -68,7 +73,9 @@ class OrderPaymentActivity : AppCompatActivity() {
                     Toast.makeText(this@OrderPaymentActivity, "Please select a payment method", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
-                showConfirmationDialog()
+//                showConfirmationDialog()
+
+                navigateToProvisionalBill()
             }
 
             // Setup toolbar back button
@@ -86,6 +93,21 @@ class OrderPaymentActivity : AppCompatActivity() {
         otherCards.forEach { card ->
             card.isChecked = false
             card.strokeColor = getColor(R.color.grey_300)
+        }
+    }
+    private fun navigateToProvisionalBill(){
+        try {
+            val fragment = ProvisionalBillFragment().apply {
+                arguments = Bundle().apply {
+                    putString("orderId",orderId)
+                    putString("tableNumber",tableNumber)
+                }
+            }
+            fragment.show(supportFragmentManager,"ProvisionalBillDialog")
+        }
+        catch (e:Exception){
+            Log.e("OrderPaymentActivity","Error navigating to provisional bill: ${e.message}")
+            Toast.makeText(this, "Error navigating to payment screen", Toast.LENGTH_SHORT).show()
         }
     }
     private fun showConfirmationDialog() {

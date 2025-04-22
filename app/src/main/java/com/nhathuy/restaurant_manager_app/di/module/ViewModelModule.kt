@@ -10,6 +10,7 @@ import com.nhathuy.restaurant_manager_app.viewmodel.InvoiceViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.MenuItemViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.OrderItemViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.OrderViewModel
+import com.nhathuy.restaurant_manager_app.viewmodel.PaymentViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ReservationViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.TableViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.ViewModelFactory
@@ -140,4 +141,15 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(InvoiceViewModel::class)
     abstract fun bindInvoiceViewModel(invoiceViewModel: InvoiceViewModel): ViewModel
+
+    /**
+     * Binds the PaymentViewModel class to the ViewModel class.
+     *
+     * @param  paymentViewModel The payment view model
+     * @return The view model
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(PaymentViewModel::class)
+    abstract fun bindPaymentViewModel(paymentViewModel: PaymentViewModel): ViewModel
 }

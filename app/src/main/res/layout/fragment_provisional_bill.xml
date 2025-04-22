@@ -405,7 +405,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/provisional_bill_qr_layout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 >
                 <TextView
                     android:id="@+id/tv_thank_you"
@@ -441,26 +440,29 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_print"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="Print Provisional Bill"
+                android:layout_gravity="bottom"
+                android:textAllCaps="false"
+                android:textSize="18sp"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_print"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/footer_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-
-    <!--
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_print"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="16dp"
-        android:fontFamily="@font/be_vietnam_bold"
-        android:text="Print Provisional Bill"
-        android:layout_gravity="bottom"
-        android:textAllCaps="false"
-        android:textSize="18sp"
-        app:cornerRadius="12dp"
-        app:icon="@drawable/ic_check"
-        app:iconGravity="textStart"
-        app:iconPadding="8dp"
-        />
-    -->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
