@@ -289,4 +289,33 @@ object RetrofitClient {
     fun provideInvoiceApi(@InvoiceRetrofit retrofit: Retrofit): InvoiceService{
         return retrofit.create(InvoiceService::class.java);
     }
+
+
+
+    /**
+     * Provides a singleton instance of Retrofit for payment related requests.
+     *
+     * @return A configured [Retrofit] instance for handling order operations.
+     */
+    @PaymentRetrofit
+    @Provides
+    @Singleton
+    fun providePaymentRetrofit(okHttpClient: OkHttpClient) : Retrofit{
+        return Retrofit.Builder().baseUrl(Constants.AUTH_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+    }
+
+    /**
+     * Provides a singleton instance of [PaymentService] for handling payemnt related requests.
+     *
+     * @param retrofit The [Retrofit] instance used to create the service.
+     * @return An implementation of [PaymentService].
+     */
+    @Provides
+    @Singleton
+    fun providePaymentApi(@PaymentRetrofit retrofit: Retrofit): PaymentService{
+        return retrofit.create(PaymentService::class.java);
+    }
 }

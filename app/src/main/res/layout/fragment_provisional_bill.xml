@@ -389,7 +389,9 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_payment">
+
                     <ImageView
+                        android:id="@+id/qr_provisional_bill"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
                         android:src="@drawable/ic_add_image" />
@@ -453,6 +455,7 @@
                 android:textAllCaps="false"
                 android:textSize="18sp"
                 app:cornerRadius="12dp"
+                android:textColor="@android:color/white"
                 app:icon="@drawable/ic_print"
                 app:iconGravity="textStart"
                 app:iconPadding="8dp"

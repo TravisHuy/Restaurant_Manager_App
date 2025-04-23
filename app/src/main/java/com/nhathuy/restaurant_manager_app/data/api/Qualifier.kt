@@ -66,3 +66,11 @@ annotation class OrderItemRetrofit
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class InvoiceRetrofit
+
+/**
+ * Qualifier for the payment Retrofit client
+ */
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class PaymentRetrofit
