@@ -285,8 +285,13 @@ class MapFragment : Fragment() {
                 is Resource.Success -> {
                     showLoading(false)
                     result.data?.let {
-                        tables ->
-                        floorAdapter.updateFloors(tables)
+                        floors ->
+                        floorAdapter.updateFloors(floors)
+
+                        if(floorId ==null && floors.isNotEmpty()){
+                            floorId = floors[0].id
+                            showListTable(floors[0].id)
+                        }
                     }
                 }
                 is Resource.Error -> {
