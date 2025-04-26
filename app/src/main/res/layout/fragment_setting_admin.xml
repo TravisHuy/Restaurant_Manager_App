@@ -1,14 +1,775 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".admin.fragment.SettingAdminFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayoutSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="1dp"
+        >
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar_setting"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:contentInsetStartWithNavigation="0dp"
+            >
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/iv_setting"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_setting"
+                    android:contentDescription="@string/settings_icon"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_setting_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/admin_settings"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/noto_sans_bold"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="12dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_setting"
+                    app:layout_constraintStart_toEndOf="@id/iv_setting"
+                    app:layout_constraintTop_toTopOf="@+id/iv_setting" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.appbar.MaterialToolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-</FrameLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            >
+
+            <!---Restaurant Information Section-->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/restaurantInfoCard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                android:elevation="1dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                >
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+                    <ImageView
+                        android:id="@+id/iv_restaurant_setting"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_restaurant"
+                        android:contentDescription="@string/restaurant_icon"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_restaurant_info_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:fontFamily="@font/noto_sans"
+                        android:text="Restaurant Information"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/iv_restaurant_setting"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/iv_restaurant_setting"
+                        app:layout_constraintTop_toTopOf="@+id/iv_restaurant_setting" />
+
+                    <!--Email Input Field-->
+                    <TextView
+                        android:id="@+id/tv_restaurant_name_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/restaurant_name"
+                        android:fontFamily="@font/noto_sans"
+                        android:layout_marginTop="20dp"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_restaurant_info_title"
+                        />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/text_input_restaurant_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        app:hintEnabled="false"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        app:layout_constraintTop_toBottomOf="@id/tv_restaurant_name_label"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        >
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_restaurant_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <!--Contact Email Label-->
+                    <TextView
+                        android:id="@+id/tv_contract_email_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/contact_email"
+                        android:fontFamily="@font/noto_sans"
+                        android:layout_marginTop="10dp"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/text_input_restaurant_name"
+                        />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/text_input_contact_email"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        app:hintEnabled="false"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        app:layout_constraintTop_toBottomOf="@id/tv_contract_email_label"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        >
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_contact_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textEmailAddress"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!--Phone Number-->
+                    <TextView
+                        android:id="@+id/tv_phone_number_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/phone_number"
+                        android:fontFamily="@font/noto_sans"
+                        android:layout_marginTop="10dp"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/text_input_contact_email"
+                        />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/text_input_phone_number"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        app:hintEnabled="false"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        app:layout_constraintTop_toBottomOf="@id/tv_phone_number_label"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        >
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_phone_number"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="phone"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+                    <!--Address-->
+                    <TextView
+                        android:id="@+id/tv_address_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/address"
+                        android:fontFamily="@font/noto_sans"
+                        android:layout_marginTop="10dp"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/text_input_phone_number"
+                        />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/text_input_address"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        app:hintEnabled="false"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        app:layout_constraintTop_toBottomOf="@id/tv_address_label"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        >
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_save_changes"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="12sp"
+                        android:textColor="#15A4E4"
+                        app:strokeColor="#15A4E4"
+                        app:iconTint="#15A4E4"
+                        android:backgroundTint="#CBEFFF"
+                        app:icon="@drawable/ic_save"
+                        app:iconGravity="textStart"
+                        app:iconPadding="8dp"
+                        android:textAllCaps="false"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/save_changes"
+                        app:layout_constraintTop_toBottomOf="@id/text_input_address"
+                        app:layout_constraintEnd_toEndOf="@id/text_input_address"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--System Setting-->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/systemSettingCard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                android:elevation="1dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@id/restaurantInfoCard"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                >
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+                    <ImageView
+                        android:id="@+id/iv_system_setting"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_restaurant"
+                        android:contentDescription="@string/restaurant_icon"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_system_setting_info_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:fontFamily="@font/noto_sans"
+                        android:text="@string/system_settings"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/iv_system_setting"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/iv_system_setting"
+                        app:layout_constraintTop_toTopOf="@+id/iv_system_setting" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_order_notifications"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/send_order_notifications"
+                        android:layout_marginTop="20dp"
+                        android:checked="true"
+                        android:fontFamily="@font/noto_sans"
+                        app:layout_constraintTop_toBottomOf="@id/tv_system_setting_info_title"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_payment_notifications"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/send_payment_notifications"
+                        android:layout_marginTop="10dp"
+                        android:checked="true"
+                        android:fontFamily="@font/noto_sans"
+                        app:layout_constraintTop_toBottomOf="@id/switch_order_notifications"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
+
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_reservation_notifications"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/send_reservation_notifications"
+                        android:layout_marginTop="10dp"
+                        android:checked="true"
+                        android:fontFamily="@font/noto_sans"
+                        app:layout_constraintTop_toBottomOf="@id/switch_payment_notifications"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_table_notifications"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/allow_table_reservations"
+                        android:layout_marginTop="10dp"
+                        android:checked="true"
+                        android:fontFamily="@font/noto_sans"
+                        app:layout_constraintTop_toBottomOf="@id/switch_reservation_notifications"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_enable_dark_mode"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/enable_drak_mode"
+                        android:layout_marginTop="10dp"
+                        android:checked="false"
+                        android:fontFamily="@font/noto_sans"
+                        app:layout_constraintTop_toBottomOf="@id/switch_table_notifications"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
+
+                    <!--Address-->
+                    <TextView
+                        android:id="@+id/tv_default_reservation_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/default_reservation_time_minutes"
+                        android:fontFamily="@font/noto_sans_light"
+                        android:textSize="13sp"
+                        android:layout_marginTop="10dp"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/switch_enable_dark_mode"
+                        />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/text_input_reservation_time"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        app:hintEnabled="false"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        app:layout_constraintTop_toBottomOf="@id/tv_default_reservation_label"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        >
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_reservation_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:hint="120"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_save_changes_system_settings"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="12sp"
+                        android:textColor="#15A4E4"
+                        app:strokeColor="#15A4E4"
+                        app:iconTint="#15A4E4"
+                        android:backgroundTint="#CBEFFF"
+                        app:icon="@drawable/ic_save"
+                        app:iconGravity="textStart"
+                        app:iconPadding="8dp"
+                        android:textAllCaps="false"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/save_changes"
+                        app:layout_constraintTop_toBottomOf="@id/text_input_reservation_time"
+                        app:layout_constraintEnd_toEndOf="@id/text_input_reservation_time"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--Notification Settings-->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/notificationSettingCard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                android:elevation="1dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@id/systemSettingCard"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                >
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+                    <ImageView
+                        android:id="@+id/iv_notification_setting"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_restaurant"
+                        android:contentDescription="@string/restaurant_icon"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_notification_setting_info_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:fontFamily="@font/noto_sans"
+                        android:text="@string/notification_settings"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/iv_notification_setting"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/iv_notification_setting"
+                        app:layout_constraintTop_toTopOf="@+id/iv_notification_setting" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_email_notifications"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/email_notifications"
+                        android:layout_marginTop="20dp"
+                        android:checked="true"
+                        android:fontFamily="@font/noto_sans"
+                        app:layout_constraintTop_toBottomOf="@id/tv_notification_setting_info_title"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_push_notifications"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/push_notifications"
+                        android:layout_marginTop="10dp"
+                        android:checked="true"
+                        android:fontFamily="@font/noto_sans"
+                        app:layout_constraintTop_toBottomOf="@id/switch_email_notifications"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
+
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_sms_notifications"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sms_notification"
+                        android:layout_marginTop="10dp"
+                        android:checked="true"
+                        android:fontFamily="@font/noto_sans"
+                        app:layout_constraintTop_toBottomOf="@id/switch_push_notifications"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
+
+
+                    <!--Notification Email-->
+                    <TextView
+                        android:id="@+id/tv_notification_email_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/notification_email"
+                        android:fontFamily="@font/noto_sans_light"
+                        android:textSize="13sp"
+                        android:layout_marginTop="10dp"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/switch_sms_notifications"
+                        />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/text_input_notification_email"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        app:hintEnabled="false"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        app:layout_constraintTop_toBottomOf="@id/tv_notification_email_label"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        >
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_notification_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textEmailAddress"
+                            android:hint="notification@travishuy.com"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_save_changes_notification_settings"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="12sp"
+                        android:textColor="#15A4E4"
+                        app:strokeColor="#15A4E4"
+                        app:iconTint="#15A4E4"
+                        android:backgroundTint="#CBEFFF"
+                        app:icon="@drawable/ic_save"
+                        app:iconGravity="textStart"
+                        app:iconPadding="8dp"
+                        android:textAllCaps="false"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/save_changes"
+                        app:layout_constraintTop_toBottomOf="@id/text_input_notification_email"
+                        app:layout_constraintEnd_toEndOf="@id/text_input_notification_email"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!--Payment Method-->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/paymentMethodSettingCard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                android:elevation="1dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@id/notificationSettingCard"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                >
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+                    <ImageView
+                        android:id="@+id/iv_paymentmethod_setting"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_restaurant"
+                        android:contentDescription="@string/restaurant_icon"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_paymentmethod_setting_info_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:fontFamily="@font/noto_sans"
+                        android:text="@string/paymentmethod_settings"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/iv_paymentmethod_setting"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/iv_paymentmethod_setting"
+                        app:layout_constraintTop_toTopOf="@+id/iv_paymentmethod_setting" />
+
+                    <TextView
+                        android:id="@+id/cash_payment_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cash_payement"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        android:fontFamily="@font/noto_sans"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_paymentmethod_setting_info_title"
+                        app:layout_constraintEnd_toStartOf="@id/cash_payment_switch"
+                        />
+
+                    <TextView
+                        android:id="@+id/cash_payment_desc"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/allow_cash_payment"
+                        android:layout_marginTop="5dp"
+                        android:textAppearance="?attr/textAppearanceCaption"
+                        app:layout_constraintEnd_toStartOf="@id/cash_payment_switch"
+                        app:layout_constraintStart_toStartOf="@+id/cash_payment_label"
+                        app:layout_constraintTop_toBottomOf="@id/cash_payment_label" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/cash_payment_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:fontFamily="@font/noto_sans"
+                        app:layout_constraintTop_toTopOf="@id/cash_payment_label"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@id/cash_payment_desc"
+                        />
+
+                    <TextView
+                        android:id="@+id/card_payment_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/card_payment"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        android:fontFamily="@font/noto_sans"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/cash_payment_desc"
+                        app:layout_constraintEnd_toStartOf="@id/card_payment_switch"
+                        />
+
+                    <TextView
+                        android:id="@+id/card_payment_desc"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/allow_card_payment"
+                        android:layout_marginTop="5dp"
+                        android:textAppearance="?attr/textAppearanceCaption"
+                        app:layout_constraintEnd_toStartOf="@id/card_payment_switch"
+                        app:layout_constraintStart_toStartOf="@+id/card_payment_label"
+                        app:layout_constraintTop_toBottomOf="@id/card_payment_label" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/card_payment_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:fontFamily="@font/noto_sans"
+                        app:layout_constraintTop_toTopOf="@id/card_payment_label"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@id/card_payment_desc"
+                        />
+
+                    <TextView
+                        android:id="@+id/online_payment_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/online_payment"
+                        android:textAppearance="?attr/textAppearanceSubtitle2"
+                        android:fontFamily="@font/noto_sans"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/card_payment_desc"
+                        app:layout_constraintEnd_toStartOf="@id/online_payment_switch"
+                        />
+
+                    <TextView
+                        android:id="@+id/online_payment_desc"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/allow_online_payment"
+                        android:layout_marginTop="5dp"
+                        android:textAppearance="?attr/textAppearanceCaption"
+                        app:layout_constraintEnd_toStartOf="@id/online_payment_switch"
+                        app:layout_constraintStart_toStartOf="@+id/online_payment_label"
+                        app:layout_constraintTop_toBottomOf="@id/online_payment_label" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/online_payment_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:fontFamily="@font/noto_sans"
+                        app:layout_constraintTop_toTopOf="@id/online_payment_label"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@id/online_payment_desc"
+                        />
+
+                    <!--VAT-->
+                    <TextView
+                        android:id="@+id/tv_vat_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/vat"
+                        android:fontFamily="@font/noto_sans"
+                        android:layout_marginTop="10dp"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/online_payment_desc"
+                        />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/text_input_vat"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        app:hintEnabled="false"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        app:layout_constraintTop_toBottomOf="@id/tv_vat_label"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        >
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_vat"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:hint="5"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_payment_method_settings"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="12sp"
+                        android:textColor="#15A4E4"
+                        app:strokeColor="#15A4E4"
+                        app:iconTint="#15A4E4"
+                        android:backgroundTint="#CBEFFF"
+                        app:icon="@drawable/ic_save"
+                        app:iconGravity="textStart"
+                        app:iconPadding="8dp"
+                        android:textAllCaps="false"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/save_changes"
+                        app:layout_constraintTop_toBottomOf="@id/text_input_vat"
+                        app:layout_constraintEnd_toEndOf="@id/text_input_vat"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
