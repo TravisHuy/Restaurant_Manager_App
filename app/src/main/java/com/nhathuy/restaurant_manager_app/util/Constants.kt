@@ -28,4 +28,10 @@ object Constants {
     const val REQUEST_CODE_CREATE_ORDER_ITEM=1002
     const val REQUEST_CODE_ORDER_PAYMENT=1003
     const val ADD_FLOOR_REQUEST_CODE = 100
+
+
+    //notification
+    const val TAG = "WebSocketService"
+    const val CHANNEL_ID = "admin_notification_channel"
+    const val NOTIFICATION_ID = 1004
 }

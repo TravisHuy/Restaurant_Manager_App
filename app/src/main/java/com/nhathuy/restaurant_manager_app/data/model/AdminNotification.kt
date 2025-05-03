@@ -1,5 +1,8 @@
 package com.nhathuy.restaurant_manager_app.data.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 /**
  * Represents an administrative notification in the restaurant management system.
  *
@@ -12,6 +15,7 @@ package com.nhathuy.restaurant_manager_app.data.model
  * @since 17/04/2025
  *
  */
+@Parcelize
 data class AdminNotification(
     val id:String ,
     val title:String,
@@ -19,4 +23,4 @@ data class AdminNotification(
     val notificationType: NotificationType,
     val relatedId : String,
     val timestamp:String
-)
+): Parcelable

@@ -1,9 +1,12 @@
 package com.nhathuy.restaurant_manager_app.adapter
 
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.data.model.Floor
 import com.nhathuy.restaurant_manager_app.databinding.ItemFloorBinding
 
@@ -15,6 +18,10 @@ class FloorAdapter(private val onFloorClick: (Floor) -> Unit): RecyclerView.Adap
         fun bind(floor: Floor, position: Int) {
             binding.apply {
                 textFloor.text = floor.name
+
+                val greenColor = ContextCompat.getColor(itemView.context, R.color.green_light)
+                val background = textFloor.background.mutate() as GradientDrawable
+                background.setColor(greenColor)
 
                 itemView.setOnClickListener {
                     onFloorClick(floor)
