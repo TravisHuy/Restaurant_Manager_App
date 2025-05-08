@@ -9,6 +9,7 @@ import com.nhathuy.restaurant_manager_app.viewmodel.CategoryViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.InvoiceViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.MenuItemViewModel
+import com.nhathuy.restaurant_manager_app.viewmodel.NotificationViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.OrderItemViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.OrderViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.PaymentViewModel
@@ -165,4 +166,15 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(AdminNotificationViewModel::class)
     abstract fun bindAdminNotificationViewModel(adminNotificationViewModel: AdminNotificationViewModel): ViewModel
+
+    /**
+     * Binds the NotificationViewModel to the ViewModel class.
+     *
+     * @param  notificationViewModel The notification view model
+     * @return The view model
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(NotificationViewModel::class)
+    abstract fun bindNotificationViewModel(notificationViewModel: NotificationViewModel): ViewModel
 }

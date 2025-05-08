@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 class BackgroundNotificationWorker(appContext:Context,workerParams: WorkerParameters) : CoroutineWorker(appContext,workerParams) {
 
     override suspend fun doWork(): Result {
-        val serviceIntent  = Intent(applicationContext, WebSocketService::class.java)
+        val serviceIntent  = Intent(applicationContext, WebSocketServices::class.java)
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             applicationContext.startForegroundService(serviceIntent)
         }

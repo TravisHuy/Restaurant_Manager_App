@@ -35,7 +35,9 @@ object Constants {
     const val CHANNEL_ID = "admin_notification_channel"
     const val NOTIFICATION_ID = 1004
 
-    const val WEBSOCKET_URL = "ws://10.0.2.2:8080/ws/notifications"
+    const val WEBSOCKET_URL = "ws://10.0.2.2:8080/restaurant-websocket"
     const val WS_RECONNECT_INTERVAL = 5000L
     const val WS_CONNECTION_TIMEOUT = 10000L
+
+    const val REQUEST_NOTIFICATION_PERMISSION = 100
 }

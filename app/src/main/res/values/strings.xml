@@ -110,4 +110,6 @@
     <string name="online_payment">Online Payment</string>
     <string name="allow_online_payment">Allow online payment</string>
     <string name="vat">VAT (%)</string>
+    <string name="restaurant_notifications">Restaurant Notifications</string>
+    <string name="notifications_for_restaurant_management">Notifications for restaurant management</string>
 </resources>
