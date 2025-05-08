@@ -74,3 +74,11 @@ annotation class InvoiceRetrofit
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class PaymentRetrofit
+
+
+/**
+ * Qualifier for the admin notification Retrofit client
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class AdminNotificationRetrofit

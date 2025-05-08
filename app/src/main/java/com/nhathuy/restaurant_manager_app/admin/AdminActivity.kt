@@ -7,6 +7,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.nhathuy.restaurant_manager_app.R
+import com.nhathuy.restaurant_manager_app.admin.fragment.AdminNotificationFragment
 import com.nhathuy.restaurant_manager_app.admin.fragment.DashBoardFragment
 import com.nhathuy.restaurant_manager_app.admin.fragment.FloorTableAdminFragment
 import com.nhathuy.restaurant_manager_app.admin.fragment.InvoicesAdminFragment
@@ -78,6 +79,10 @@ class AdminActivity : AppCompatActivity() {
                 }
                 R.id.nav_staff_management -> {
                     supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment,StaffManagementAdminFragment())
+                        .commit()
+                }
+                R.id.nav_admin_notifications -> {
+                    supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment,AdminNotificationFragment())
                         .commit()
                 }
                 R.id.nav_setting -> {

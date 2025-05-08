@@ -165,7 +165,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-ads:21.1.0")
 
     // worker for background tasks
-    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("androidx.work:work-runtime-ktx:2.7.0")
 
     //moshi
     implementation("com.squareup.moshi:moshi:1.15.0")

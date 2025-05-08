@@ -318,4 +318,31 @@ object RetrofitClient {
     fun providePaymentApi(@PaymentRetrofit retrofit: Retrofit): PaymentService{
         return retrofit.create(PaymentService::class.java);
     }
+
+    /**
+     * Provides a singleton instance of Retrofit for admin notification related requests.
+     *
+     * @return A configured [Retrofit] instance for handling order operations.
+     */
+    @AdminNotificationRetrofit
+    @Provides
+    @Singleton
+    fun provideAdminNotificationRetrofit(okHttpClient: OkHttpClient) : Retrofit{
+        return Retrofit.Builder().baseUrl(Constants.AUTH_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+    }
+
+    /**
+     * Provides a singleton instance of [PaymentService] for handling payemnt related requests.
+     *
+     * @param retrofit The [Retrofit] instance used to create the service.
+     * @return An implementation of [PaymentService].
+     */
+    @Provides
+    @Singleton
+    fun provideAdminNotificationApi(@AdminNotificationRetrofit retrofit: Retrofit): AdminNotificationService{
+        return retrofit.create(AdminNotificationService::class.java);
+    }
 }

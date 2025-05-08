@@ -3,6 +3,7 @@ package com.nhathuy.restaurant_manager_app.di.module
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nhathuy.restaurant_manager_app.di.key.ViewModelKey
+import com.nhathuy.restaurant_manager_app.viewmodel.AdminNotificationViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.AuthViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.CategoryViewModel
 import com.nhathuy.restaurant_manager_app.viewmodel.FloorViewModel
@@ -152,4 +153,16 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(PaymentViewModel::class)
     abstract fun bindPaymentViewModel(paymentViewModel: PaymentViewModel): ViewModel
+
+
+    /**
+     * Binds the AdminNotificationViewModel class to the ViewModel class.
+     *
+     * @param  adminNotificationViewModel The admin notification view model
+     * @return The view model
+     */
+    @Binds
+    @IntoMap
+    @ViewModelKey(AdminNotificationViewModel::class)
+    abstract fun bindAdminNotificationViewModel(adminNotificationViewModel: AdminNotificationViewModel): ViewModel
 }

@@ -1,5 +1,6 @@
 package com.nhathuy.restaurant_manager_app.di.module
 
+import com.nhathuy.restaurant_manager_app.data.api.AdminNotificationService
 import com.nhathuy.restaurant_manager_app.data.api.AuthService
 import com.nhathuy.restaurant_manager_app.data.api.CategoryService
 import com.nhathuy.restaurant_manager_app.data.api.FloorService
@@ -12,6 +13,7 @@ import com.nhathuy.restaurant_manager_app.data.api.ReservationService
 import com.nhathuy.restaurant_manager_app.data.api.TableService
 import com.nhathuy.restaurant_manager_app.data.local.TokenManager
 import com.nhathuy.restaurant_manager_app.data.model.Invoice
+import com.nhathuy.restaurant_manager_app.data.repository.AdminNotificationRepository
 import com.nhathuy.restaurant_manager_app.data.repository.AuthRepository
 import com.nhathuy.restaurant_manager_app.data.repository.CategoryRepository
 import com.nhathuy.restaurant_manager_app.data.repository.FloorRepository
@@ -166,5 +168,17 @@ class RepositoryModule {
     @Singleton
     fun providePaymentRepository(paymentService: PaymentService):PaymentRepository {
         return PaymentRepository(paymentService)
+    }
+
+    /**
+     * Provides the adminNotification repository for the application.
+     *
+     * @param adminNotificationService The notification service
+     * @return The payment repository
+     */
+    @Provides
+    @Singleton
+    fun provideNotificationRepository(adminNotificationService: AdminNotificationService):AdminNotificationRepository {
+        return AdminNotificationRepository(adminNotificationService)
     }
 }
