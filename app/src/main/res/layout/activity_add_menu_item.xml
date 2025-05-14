@@ -87,7 +87,16 @@
                 android:hint="Category..."
                 />
         </com.google.android.material.textfield.TextInputLayout>
-
+        <TextView
+            android:id="@+id/add_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="Add category"
+            android:textStyle="italic"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

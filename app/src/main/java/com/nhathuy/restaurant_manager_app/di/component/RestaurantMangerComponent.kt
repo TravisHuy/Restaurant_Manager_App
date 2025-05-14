@@ -15,7 +15,7 @@ import com.nhathuy.restaurant_manager_app.admin.fragment.StaffManagementAdminFra
 import com.nhathuy.restaurant_manager_app.admin.login.LoginAdminActivity
 import com.nhathuy.restaurant_manager_app.admin.register.RegisterAdminActivity
 import com.nhathuy.restaurant_manager_app.data.api.RetrofitClient
-import com.nhathuy.restaurant_manager_app.di.module.NotificationModule
+import com.nhathuy.restaurant_manager_app.di.module.NotificationFirebaseModule
 import com.nhathuy.restaurant_manager_app.di.module.RepositoryModule
 import com.nhathuy.restaurant_manager_app.di.module.RestaurantManagerModule
 import com.nhathuy.restaurant_manager_app.di.module.ViewModelModule
@@ -24,7 +24,6 @@ import com.nhathuy.restaurant_manager_app.fragment.MoreFragment
 import com.nhathuy.restaurant_manager_app.fragment.OrderFragment
 import com.nhathuy.restaurant_manager_app.fragment.ProvisionalBillFragment
 import com.nhathuy.restaurant_manager_app.fragment.SubTotalFragment
-import com.nhathuy.restaurant_manager_app.service.WebSocketService
 import com.nhathuy.restaurant_manager_app.ui.MenuItemActivity
 import com.nhathuy.restaurant_manager_app.ui.LoginActivity
 import com.nhathuy.restaurant_manager_app.ui.MainActivity
@@ -51,7 +50,7 @@ import javax.inject.Singleton
     RetrofitClient::class,
     RepositoryModule::class,
     ViewModelModule::class,
-    NotificationModule::class
+    NotificationFirebaseModule::class
 ])
 interface RestaurantMangerComponent {
     fun inject(loginActivity: LoginActivity)
@@ -85,5 +84,5 @@ interface RestaurantMangerComponent {
     fun inject(staffManagementAdminFragment: StaffManagementAdminFragment)
     fun inject(provisionalBillFragment: ProvisionalBillFragment)
     fun inject(adminNotificationFragment: AdminNotificationFragment)
-    fun inject(webSocketService: WebSocketService)
+//    fun inject(webSocketService: WebSocketService)
 }

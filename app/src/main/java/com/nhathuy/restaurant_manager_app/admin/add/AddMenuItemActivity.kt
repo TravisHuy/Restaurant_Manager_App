@@ -1,5 +1,6 @@
 package com.nhathuy.restaurant_manager_app.admin.add
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -78,6 +79,9 @@ class AddMenuItemActivity : AppCompatActivity() {
             if(validateInputs()){
                 submitMenuItem()
             }
+        }
+        binding.addCategory.setOnClickListener {
+            startActivity(Intent(this,AddCategoryActivity::class.java))
         }
     }
     private fun submitMenuItem(){

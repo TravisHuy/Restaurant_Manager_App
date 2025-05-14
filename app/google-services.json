@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "444798832573",
+    "project_id": "restaurantmanager-312a8",
+    "storage_bucket": "restaurantmanager-312a8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444798832573:android:f8e7a72d6733b8cb63ccd4",
+        "android_client_info": {
+          "package_name": "com.nhathuy.restaurant_manager_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-ozTYtrtA1DTphDPERUBBsCB3RSOa3J8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

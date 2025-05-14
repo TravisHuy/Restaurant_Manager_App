@@ -37,20 +37,13 @@
             android:value="@string/ADMOD_APP_ID" />
 
         <service
-            android:name=".service.WebSocketService"
-            android:enabled="true"
-            android:exported="false" />
-
-        <!-- Add boot receiver to start service on device boot -->
-        <receiver
-            android:name=".receiver.BootReceiver"
-            android:enabled="true"
-            android:exported="false">
+            android:name =".service.RestaurantFirebaseMessagingService"
+            android:exported="false"
+            >
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
-        </receiver>
-
+        </service>
         <activity
             android:name=".ui.TestActivity"
             android:exported="false" />
@@ -71,7 +64,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="OPEN_NOTIFICATION"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
+
         <activity
             android:name=".ui.OrderPaymentActivity"
             android:exported="false" />

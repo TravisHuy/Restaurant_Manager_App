@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("kotlin-parcelize")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -173,4 +174,10 @@ dependencies {
 
 
     implementation("org.java-websocket:Java-WebSocket:1.5.3")
+
+    //firebase messaging
+    implementation(platform("com.google.firebase:firebase-bom:31.0.0"))
+    implementation("com.google.firebase:firebase-analytics:20.0.0")
+    implementation("com.google.firebase:firebase-messaging:22.0.0")
+
 }

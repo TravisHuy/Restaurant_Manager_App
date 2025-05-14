@@ -1,96 +1,140 @@
 package com.nhathuy.restaurant_manager_app.data.repository
 
-import com.nhathuy.restaurant_manager_app.data.api.AdminNotificationService
-import com.nhathuy.restaurant_manager_app.data.model.AdminNotification
-import com.nhathuy.restaurant_manager_app.data.model.WebSocketConnectionState
+import androidx.compose.animation.core.estimateAnimationDurationMillis
+import com.nhathuy.restaurant_manager_app.data.api.NotificationService
+import com.nhathuy.restaurant_manager_app.data.local.SessionManager
+import com.nhathuy.restaurant_manager_app.data.model.FcmTokenRequest
+import com.nhathuy.restaurant_manager_app.data.model.Notification
+import com.nhathuy.restaurant_manager_app.oauth2.request.AdminNotificationRequest
 import com.nhathuy.restaurant_manager_app.resource.Resource
-import com.nhathuy.restaurant_manager_app.service.RestaurantWebSocketClient
-import com.nhathuy.restaurant_manager_app.util.Constants
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * Repository for handling notifications
- *
- * @property notificationService The service for API calls related to notifications
- * @property webSocketClient The WebSocket client for real-time notifications
- * @version 0.1
- * @since 08-05-2025
- * @author TravisHuy
- */
 @Singleton
 class NotificationRepository @Inject constructor(
-    private val notificationService: AdminNotificationService,
-    private val webSocketClient: RestaurantWebSocketClient
+    private val notificationService: NotificationService,
+    private val sessionManager: SessionManager
 ) {
-    /**
-     * initializeWebsocket the websocket connection returns the connections state
-     */
-    fun initializeWebSocket() : Flow<WebSocketConnectionState>{
-        webSocketClient.connect(Constants.AUTH_URL)
-        return webSocketClient.connectionState
-    }
 
     /**
-     * Returns a flow of real-time notifications
+     * get notification based on user's role
      */
-    fun getRealtimeNotifications(): Flow<AdminNotification> {
-        return webSocketClient.notificationFlow
-    }
-
-    /**
-     * Loads all notifications from the API
-     */
-    fun loadNotifications(): Flow<Resource<List<AdminNotification>>> = flow {
+    suspend fun getNotifications(): Flow<Resource<List<Notification>>> = flow {
         emit(Resource.Loading())
         try {
-            val response = notificationService.getAllNotification()
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    emit(Resource.Success(it))
-                } ?: emit(Resource.Error("Empty response body"))
+            val userRole = sessionManager.userRole.value
+            val response = when (userRole) {
+                "ROLE_ADMIN" -> notificationService.getAdminNotification()
+                "ROLE_MANAGER" -> notificationService.getManagerNotification()
+                "ROLE_EMPLOYEE" -> notificationService.getEmployeeNotification()
+                else -> null
+            }
+
+            if (response != null && response.isSuccessful) {
+                emit(Resource.Success(response.body() ?: emptyList()))
             } else {
-                emit(Resource.Error("Error: ${response.code()} - ${response.message()}"))
+                val errorMsg = response?.errorBody()?.string() ?: "Unknown error occurred"
+                val errorCode = response?.code() ?: 0
+                emit(Resource.Error("Failed to fetch notifications: Code $errorCode - $errorMsg"))
             }
         } catch (e: Exception) {
-            emit(Resource.Error("Failed to load notifications: ${e.message}"))
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
-    /**
-     * get unread notification from the api
-     */
-    fun getUnreadNotifications() : Flow<Resource<List<AdminNotification>>> = flow {
+    suspend fun getUnreadNotifications(): Flow<Resource<List<Notification>>> = flow {
         emit(Resource.Loading())
         try {
-            val response = notificationService.getUnreadNotifications()
-            if(response.isSuccessful){
-                response.body()?.let {
-                    emit(Resource.Success(it))
-                }?:emit(Resource.Error("Error: ${response.code()} - ${response.message()}"))
-            }
-        }
-        catch (e:Exception){
-            emit(Resource.Error("Failed to load unread notifications ${e.message}"))
-        }
-    }
-
-    /**
-     * Marks a notification as read
-     */
-    fun markAsRead(id: String): Flow<Resource<Unit>> = flow  {
-        emit(Resource.Loading())
-        try {
-            val response = notificationService.markAsRead(id)
+            val userRole = sessionManager.userRole.value
+            val response = notificationService.getUnreadNotification(userRole!!)
             if (response.isSuccessful) {
-                emit(Resource.Success(Unit))
+                emit(Resource.Success(response.body() ?: emptyList()))
             } else {
-                emit(Resource.Error("Error: ${response.code()} - ${response.message()}"))
+                val errorMsg = response.errorBody()?.string() ?: "Unknown error"
+                emit(Resource.Error("Failed to fetch unread notifications: ${response.code()} - $errorMsg"))
             }
         } catch (e: Exception) {
-            emit(Resource.Error("Failed to mark notification as read: ${e.message}"))
+            emit(Resource.Error(e.message ?: "Unknown error"))
+        }
+    }.flowOn(Dispatchers.IO)
+
+    suspend fun markAsRead(notificationId: String): Resource<List<Notification>> {
+        return try {
+            val response = notificationService.markAsRead(notificationId)
+            if (response.isSuccessful) {
+                Resource.Success(response.body() ?: emptyList())
+            } else {
+                val errorMsg = response.errorBody()?.string() ?: "unknow error"
+                Resource.Error("Failed to fetch mark as read notifications: ${response.code()} - $errorMsg")
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message ?: "Unknown error")
         }
     }
+
+    suspend fun markAllAsRead(): Resource<Unit> {
+        return try {
+            val userRole = sessionManager.userRole.value
+            val response = notificationService.markAllAsRead(userRole!!)
+            if (response.isSuccessful) {
+                Resource.Success(Unit)
+            } else {
+                val errorMsg = response.errorBody()?.string() ?: "Unknown error"
+                Resource.Error("Failed to mark all notifications as read: ${response.code()} - $errorMsg")
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message ?: "Unknown error")
+        }
+    }
+
+    fun getNotificationForEntity(entityId: String): Flow<Resource<List<Notification>>> = flow {
+        emit(Resource.Loading())
+        try {
+            val response = notificationService.getNotificationForEntity(entityId)
+            if (response.isSuccessful) {
+                emit(Resource.Success(response.body() ?: emptyList()))
+            } else {
+                val errorMsg = response.errorBody()?.string() ?: "Unknown error"
+                emit(Resource.Error("Failed to fetch entity notifications: ${response.code()} - $errorMsg"))
+            }
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "unknown error"))
+        }
+    }.flowOn(Dispatchers.IO)
+
+    suspend fun createAdminNotification(request: AdminNotificationRequest): Resource<Notification> {
+        return try {
+            val response = notificationService.createAdminNotification(request)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    Resource.Success(it)
+                } ?: Resource.Error("Empty response body")
+            } else {
+                val errorMsg = response.errorBody()?.string() ?: "Unknown error"
+                Resource.Error("Failed to create admin notification: ${response.code()} - $errorMsg")
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message ?: "unknown error")
+        }
+    }
+
+    suspend fun updateFcmToken(token: String): Resource<Unit> {
+        return try {
+            val request = FcmTokenRequest(token)
+            val response = notificationService.updateFcmToken(request)
+            if (response.isSuccessful) {
+                Resource.Success(Unit)
+            } else {
+                val errorMsg = response.errorBody()?.string() ?: "Unknown error"
+                Resource.Error("Failed to update FCM token: ${response.code()} - $errorMsg")
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message ?: "Unknown error")
+        }
+    }
+
 }
