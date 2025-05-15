@@ -24,6 +24,7 @@ import com.nhathuy.restaurant_manager_app.fragment.MoreFragment
 import com.nhathuy.restaurant_manager_app.fragment.OrderFragment
 import com.nhathuy.restaurant_manager_app.fragment.ProvisionalBillFragment
 import com.nhathuy.restaurant_manager_app.fragment.SubTotalFragment
+import com.nhathuy.restaurant_manager_app.service.RestaurantFirebaseMessagingService
 import com.nhathuy.restaurant_manager_app.ui.MenuItemActivity
 import com.nhathuy.restaurant_manager_app.ui.LoginActivity
 import com.nhathuy.restaurant_manager_app.ui.MainActivity
@@ -85,4 +86,5 @@ interface RestaurantMangerComponent {
     fun inject(provisionalBillFragment: ProvisionalBillFragment)
     fun inject(adminNotificationFragment: AdminNotificationFragment)
 //    fun inject(webSocketService: WebSocketService)
+    fun inject(restaurantFirebaseMessagingService: RestaurantFirebaseMessagingService)
 }

@@ -9,12 +9,16 @@ import android.content.Intent
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.nhathuy.restaurant_manager_app.R
+import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
+import com.nhathuy.restaurant_manager_app.data.api.NotificationService
 import com.nhathuy.restaurant_manager_app.data.local.SessionManager
+import com.nhathuy.restaurant_manager_app.data.model.FcmTokenRequest
 import com.nhathuy.restaurant_manager_app.ui.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +29,10 @@ class RestaurantFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject
     lateinit var sessionManager: SessionManager
+
+    @Inject
+    lateinit var notificationService: NotificationService
+
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -41,20 +49,34 @@ class RestaurantFirebaseMessagingService : FirebaseMessagingService() {
      */
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-
+        Log.d("Token", "Refreshed token: $token")
         scope.launch {
             registerTokenWithServer(token)
         }
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        (application as RestaurantMangerApp).getRestaurantComponent().inject(this)
+    }
     private fun registerTokenWithServer(token: String) {
         if (sessionManager.isLoggedIn.value) {
             // this should send the token to your backend userfcmcontroller
+            scope.launch {
+                try {
+                    val tokenRequest = FcmTokenRequest(token)
+                    notificationService.updateFcmToken(tokenRequest)
+                }
+                catch (e:Exception){}
+            }
         }
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        createNotificationChannel(notificationManager)
 
         val title = message.notification?.title ?: message.data["title"] ?: "New Notification"
         val body = message.notification?.body ?: message.data["message"] ?: ""

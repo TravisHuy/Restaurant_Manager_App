@@ -180,4 +180,6 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics:20.0.0")
     implementation("com.google.firebase:firebase-messaging:22.0.0")
 
+    implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.1.0")
+
 }
