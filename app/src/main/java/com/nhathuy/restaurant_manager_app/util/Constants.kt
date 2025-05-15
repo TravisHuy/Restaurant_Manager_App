@@ -12,7 +12,7 @@ object Constants {
      * Base URL for authentication API.
      * "10.0.2.2" is used to access the localhost of the development machine from an Android emulator.
      */
-    const val AUTH_URL="http://10.0.2.2:8080/"
+    const val AUTH_URL="http://192.168.1.12:8080/"
     const val GITHUB_AUTH_URL = "https://github.com/login/oauth/authorize"
     const val GITHUB_SCOPE = "user:email"
     const val GITHUB_REDIRECT_URI = "http://localhost:8080/api/auth/oauth2/callback/github"
@@ -35,7 +35,7 @@ object Constants {
     const val CHANNEL_ID = "admin_notification_channel"
     const val NOTIFICATION_ID = 1004
 
-    const val WEBSOCKET_URL = "ws://10.0.2.2:8080/restaurant-websocket"
+    const val WEBSOCKET_URL = "ws://192.168.1.12:8080/restaurant-websocket"
     const val WS_RECONNECT_INTERVAL = 5000L
     const val WS_CONNECTION_TIMEOUT = 10000L
 

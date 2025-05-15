@@ -87,4 +87,8 @@ interface RestaurantMangerComponent {
     fun inject(adminNotificationFragment: AdminNotificationFragment)
 //    fun inject(webSocketService: WebSocketService)
     fun inject(restaurantFirebaseMessagingService: RestaurantFirebaseMessagingService)
+
+    fun getNotificationService(): NotificationService
+    fun getSessionManager(): SessionManager
+    fun getContext(): Context
 }

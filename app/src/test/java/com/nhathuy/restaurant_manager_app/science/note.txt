@@ -1,0 +1,19 @@
+
+//private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+là cách tạo 1 CoroutineScope rieng biet cho viec chay cac coroutine trong mot component(service, repository, logic)
+nôm na là việc làm việc bất đồng bộ với quản lý vòng đời ứng dụng
+
+//Service
+dùng để thực thi công việc dài hạn
+có the chay nền (background task)
+cần tu start/stop
+co thể kết hợp với ForegroundService để chay lien tuc
+
+Ví dụ: như START_STICKY(chạy công việc dài như phát nhạc)
+
+//BroadcastReceiver
+dung để phản ứng nhanh với su kiện
+không nên làm việc nặng
+được hệ thống kích hoạt tự động
+thường chỉ xử lý trong vài giây rồi dừng
+

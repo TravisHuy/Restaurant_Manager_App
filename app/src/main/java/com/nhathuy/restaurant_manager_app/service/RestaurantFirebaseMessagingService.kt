@@ -33,7 +33,6 @@ class RestaurantFirebaseMessagingService : FirebaseMessagingService() {
     @Inject
     lateinit var notificationService: NotificationService
 
-
     private val scope = CoroutineScope(Dispatchers.IO)
 
     companion object {
@@ -42,6 +41,29 @@ class RestaurantFirebaseMessagingService : FirebaseMessagingService() {
         private const val CHANNEL_DESCRIPTION = "Notifications for Restaurants"
 
         const val NOTIFICATION_RECEIVED = "com.nhathuy.restaurant_manager_app.NOTIFICATION_RECEIVED"
+
+        // Add a method to register token that can be called from other parts of the app
+        fun registerToken(context: Context, token: String?) {
+            if (token == null) return
+
+            val app = context.applicationContext as RestaurantMangerApp
+            val notificationService = app.getRestaurantComponent().getNotificationService()
+            val sessionManager = app.getRestaurantComponent().getSessionManager()
+
+            if (sessionManager.isLoggedIn.value) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        val tokenRequest = FcmTokenRequest(token)
+                        notificationService.updateFcmToken(tokenRequest)
+                        Log.d("FCM", "Token registered successfully: $token")
+                    } catch (e: Exception) {
+                        Log.e("FCM", "Error registering token: ${e.message}")
+                    }
+                }
+            } else {
+                Log.d("FCM", "User not logged in, token registration skipped")
+            }
+        }
     }
 
     /**
@@ -59,16 +81,26 @@ class RestaurantFirebaseMessagingService : FirebaseMessagingService() {
         super.onCreate()
         (application as RestaurantMangerApp).getRestaurantComponent().inject(this)
     }
+
     private fun registerTokenWithServer(token: String) {
         if (sessionManager.isLoggedIn.value) {
             // this should send the token to your backend userfcmcontroller
             scope.launch {
                 try {
                     val tokenRequest = FcmTokenRequest(token)
-                    notificationService.updateFcmToken(tokenRequest)
+                    val response = notificationService.updateFcmToken(tokenRequest)
+                    if (response.isSuccessful) {
+                        Log.d("FCM", "Token registered successfully: $token")
+                    } else {
+                        Log.e("FCM", "Failed to register token: ${response.code()}")
+                    }
                 }
-                catch (e:Exception){}
+                catch (e: Exception) {
+                    Log.e("FCM", "Error registering token: ${e.message}")
+                }
             }
+        } else {
+            Log.d("FCM", "User not logged in, token registration skipped")
         }
     }
 
@@ -104,9 +136,9 @@ class RestaurantFirebaseMessagingService : FirebaseMessagingService() {
     /**
      * Send notification to foreground activity
      */
-    private fun sendForegroundNotification(data:HashMap<String,String>){
+    private fun sendForegroundNotification(data: HashMap<String, String>) {
         val intent = Intent(NOTIFICATION_RECEIVED).apply {
-            putExtra("data",data)
+            putExtra("data", data)
         }
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
@@ -114,27 +146,26 @@ class RestaurantFirebaseMessagingService : FirebaseMessagingService() {
     /**
      * show system notification when app is in background
      */
-    private fun showBackgroundNotification(title:String,body:String,type:String,relatedId:String){
+    private fun showBackgroundNotification(title: String, body: String, type: String, relatedId: String) {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val intent = Intent(this, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            putExtra("type",type)
-            putExtra("relatedId",relatedId)
+            putExtra("type", type)
+            putExtra("relatedId", relatedId)
         }
 
-        val pendingIntentFlag = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        val pendingIntentFlag = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        }
-        else{
+        } else {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
 
         val pendingIntent = PendingIntent.getActivity(
-            this,0,intent,pendingIntentFlag
+            this, 0, intent, pendingIntentFlag
         )
         //build notification
-        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
+        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
@@ -147,14 +178,14 @@ class RestaurantFirebaseMessagingService : FirebaseMessagingService() {
 
         //show notification
         val notificationId = System.currentTimeMillis().toInt()
-        notificationManager.notify(notificationId,notificationBuilder.build())
+        notificationManager.notify(notificationId, notificationBuilder.build())
     }
 
     /**
      * create notification channel for android O and above
      */
-    private fun createNotificationChannel(notificationManager: NotificationManager){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+    private fun createNotificationChannel(notificationManager: NotificationManager) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 CHANNEL_NAME,
@@ -168,13 +199,14 @@ class RestaurantFirebaseMessagingService : FirebaseMessagingService() {
             notificationManager.createNotificationChannel(channel)
         }
     }
+
     /**
      * Check if app is in foreground
      */
     private fun isAppInForeground(): Boolean {
         val appProcessInfo = ActivityManager.RunningAppProcessInfo()
         ActivityManager.getMyMemoryState(appProcessInfo)
-        return appProcessInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND_SERVICE
+        return appProcessInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND ||
+                appProcessInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND_SERVICE
     }
-
 }

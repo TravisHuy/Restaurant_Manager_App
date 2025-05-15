@@ -16,10 +16,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.messaging.FirebaseMessaging
 import com.nhathuy.restaurant_manager_app.R
 import com.nhathuy.restaurant_manager_app.RestaurantMangerApp
 import com.nhathuy.restaurant_manager_app.databinding.ActivityLoginBinding
 import com.nhathuy.restaurant_manager_app.resource.Resource
+import com.nhathuy.restaurant_manager_app.service.RestaurantFirebaseMessagingService
 import com.nhathuy.restaurant_manager_app.util.Constants
 import com.nhathuy.restaurant_manager_app.util.Constants.KEY_EMAIL
 import com.nhathuy.restaurant_manager_app.util.Constants.KEY_PASSWORD
@@ -104,6 +106,7 @@ class LoginActivity : AppCompatActivity() {
 
                 if(validateInput(currentEmail,currentPassword)){
                     viewModel.login(currentEmail,currentPassword)
+                    registerFcmToken()
                 }
             }
 
@@ -252,5 +255,13 @@ class LoginActivity : AppCompatActivity() {
         }
 
         return isValid
+    }
+    private fun registerFcmToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                RestaurantFirebaseMessagingService.registerToken(this, token)
+            }
+        }
     }
 }
